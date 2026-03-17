@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Physics Wallah Vidyapeeth Maharashtra</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<script>
+  const user = localStorage.getItem("loggedUser");
+  if (!user) window.location.href = "login.html";
+</script>
+
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <div class="logo">
+        <span class="logo-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/d/dd/Physics_wallah_logo.svg" alt="PW Vidyapeeth Logo"></span>
+        <div>
+          <div class="logo-text">PW Vidyapeeth</div>
+          <div class="logo-sub">Maharashtra</div>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="menu-item active" data-filter="all">
+          <span class="menu-icon">🗂️</span>
+          All Sheets
+        </div>
+        <div class="menu-item" data-filter="pinned">
+          <span class="menu-icon">📌</span>
+          Pinned
+        </div>
+
+        <div class="nav-divider"></div>
+        <div class="nav-section-label">Categories</div>
+
+        <div class="menu-item" data-filter="analysis">
+          <span class="menu-icon">📊</span>
+          Analysis
+        </div>
+        <div class="menu-item" data-filter="tracker" onclick="window.location.href='analysis.html'">
+          <span class="menu-icon">📈</span>
+          Tracker
+        </div>
+        <div class="menu-item" data-filter="b2b">
+          <span class="menu-icon">📝</span>
+          B2B
+        </div>
+        <div class="menu-item" data-filter="acad">
+          <span class="menu-icon">🎓</span>
+          Acad
+        </div>
+        <div class="menu-item" data-filter="bws">
+          <span class="menu-icon">🚨</span>
+          BWS
+        </div>
+
+        <div class="menu-item has-sub" data-filter="comms" onclick="toggleSub('comms-sub')">
+          <span class="menu-icon">📣</span>
+          <span>Comms</span>
+          <span class="chevron" id="chevron-comms-sub">▸</span>
+        </div>
+        <div class="sub-menu" id="comms-sub">
+          <div class="sub-item" data-filter="gen">Gen</div>
+          <div class="sub-item" data-filter="ptm">PTM</div>
+          <div class="sub-item" data-filter="orientation">Orientation</div>
+          <div class="sub-item" data-filter="batch start">Batch Start</div>
+        </div>
+
+        <div class="menu-item has-sub" data-filter="mh" onclick="toggleSub('mh-sub')">
+          <span class="menu-icon">📈</span>
+          <span>MH</span>
+          <span class="chevron" id="chevron-mh-sub">▸</span>
+        </div>
+        <div class="sub-menu" id="mh-sub">
+          <div class="sub-item" data-filter="maharashtra">Maharashtra</div>
+        </div>
+
+        <div class="nav-divider"></div>
+        <div class="nav-section-label">Quick Links</div>
+
+        <div class="menu-item" onclick="window.open('https://erp.pw.live/home', '_blank')">
+          <span class="menu-icon">🏢</span>
+          ERP PW
+          <span class="ext-icon">↗</span>
+        </div>
+
+        <div class="menu-item" onclick="window.open('https://ambikeshishere.github.io/PW-Web/', '_blank')">
+          <span class="menu-icon">📋</span>
+          PW Web Report
+          <span class="ext-icon">↗</span>
+        </div>
+
+      </nav>
+    </div>
+
+    <div class="sidebar-bottom">
+      <div class="theme-switcher">
+        <button class="theme-btn active" data-theme="dark" onclick="setTheme('dark')">🌙 Dark</button>
+        <button class="theme-btn" data-theme="light" onclick="setTheme('light')">☀️ Light</button>
+        <button class="theme-btn" data-theme="eve" onclick="setTheme('eve')">🌿 Eve</button>
+      </div>
+      <div class="user-badge" id="userBadge"></div>
+      <button class="logout-btn" onclick="logout()">
+        <span>↩</span> Logout
+      </button>
+    </div>
+  </aside>
+
+  <main class="content">
+
+    <div class="topbar">
+      <div class="topbar-left">
+        <h2 class="page-title">Sheet Library</h2>
+        <span class="sheet-count" id="sheetCount">— sheets</span>
+      </div>
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="Search sheets...">
+      </div>
+    </div>
+
+    <section class="section" id="pinnedSection">
+      <div class="section-header">
+        <h3>📌 Pinned</h3>
+        <span class="section-sub">Your quick-access sheets</span>
+      </div>
+      <div id="pinnedContainer" class="pinned-grid"></div>
+      <div id="pinnedEmpty" class="empty-state" style="display:none;">
+        <p>No pinned sheets yet. Click 📌 on any sheet to pin it.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h3>📁 All Sheets</h3>
+        <span class="section-sub" id="allCount"></span>
+      </div>
+      <div id="sheetList" class="sheet-list"></div>
+      <div id="listEmpty" class="empty-state" style="display:none;">
+        <p>No sheets found for your search.</p>
+      </div>
+    </section>
+
+  </main>
+
+</div>
+
+<!-- Toast notification -->
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+<script>
+  // Handle ?filter=xxx from URL (e.g. coming from analysis.html sidebar)
+  window.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    const f = params.get('filter');
+    if (f) setFilter(f);
+  });
+</script>
+</body>
+</html>

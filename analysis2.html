@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PW Vidyapeeth Maharashtra — Analysis</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* ── Analysis Page Specific Styles ── */
+    .analysis-wrap {
+      flex: 1;
+      padding: 32px 36px;
+      overflow-y: auto;
+      animation: fadeUp 0.4s ease both;
+    }
+
+    .analysis-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .analysis-topbar-left {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .analysis-title {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--text);
+    }
+
+    .analysis-sub {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* Summary Cards */
+    .summary-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .summary-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: var(--transition);
+    }
+
+    .summary-card:hover {
+      background: var(--surface-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+
+    .summary-card-icon {
+      font-size: 22px;
+      margin-bottom: 4px;
+    }
+
+    .summary-card-value {
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--accent2);
+      letter-spacing: -1px;
+      line-height: 1;
+    }
+
+    .summary-card-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
+    /* Table Section */
+    .table-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .table-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .table-title {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .table-badge {
+      font-size: 11px;
+      font-weight: 600;
+      background: rgba(249,115,22,0.12);
+      color: var(--accent2);
+      border: 1px solid rgba(249,115,22,0.2);
+      border-radius: 20px;
+      padding: 3px 10px;
+    }
+
+    .search-wrap-analysis {
+      position: relative;
+    }
+
+    .search-wrap-analysis input {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 14px 8px 34px;
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 13px;
+      outline: none;
+      transition: var(--transition);
+      width: 200px;
+    }
+
+    .search-wrap-analysis input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .search-wrap-analysis .si {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 14px;
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    /* Table */
+    .data-table-wrap {
+      overflow-x: auto;
+    }
+
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    table.data-table thead tr {
+      background: rgba(249,115,22,0.06);
+      border-bottom: 1px solid var(--border);
+    }
+
+    table.data-table thead th {
+      padding: 13px 20px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      cursor: pointer;
+      user-select: none;
+      transition: var(--transition);
+    }
+
+    table.data-table thead th:hover {
+      color: var(--accent2);
+    }
+
+    table.data-table thead th.sorted {
+      color: var(--accent2);
+    }
+
+    table.data-table thead th .sort-icon {
+      margin-left: 5px;
+      opacity: 0.5;
+      font-size: 10px;
+    }
+
+    table.data-table thead th.sorted .sort-icon {
+      opacity: 1;
+    }
+
+    table.data-table tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: var(--transition);
+      animation: fadeUp 0.3s ease both;
+    }
+
+    table.data-table tbody tr:last-child {
+      border-bottom: none;
+    }
+
+    table.data-table tbody tr:hover {
+      background: var(--surface-hover);
+    }
+
+    table.data-table tbody td {
+      padding: 14px 20px;
+      font-size: 13px;
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    /* Rank column */
+    .rank-cell {
+      color: var(--text-muted) !important;
+      font-size: 12px !important;
+      font-weight: 600;
+      width: 48px;
+    }
+
+    /* Center name */
+    .center-cell {
+      font-weight: 600;
+      font-family: var(--font-display);
+      font-size: 13px !important;
+    }
+
+    /* Count badge */
+    .count-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 36px;
+      height: 26px;
+      background: rgba(249,115,22,0.12);
+      color: var(--accent2);
+      border: 1px solid rgba(249,115,22,0.2);
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 13px;
+      font-family: var(--font-display);
+      padding: 0 8px;
+    }
+
+    /* Progress bar */
+    .progress-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 140px;
+    }
+
+    .progress-bar-bg {
+      flex: 1;
+      height: 6px;
+      background: var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), #fbbf24);
+      border-radius: 4px;
+      transition: width 0.6s ease;
+    }
+
+    .progress-pct {
+      font-size: 11px;
+      color: var(--text-muted);
+      min-width: 34px;
+      text-align: right;
+    }
+
+    /* Empty / Loading */
+    .table-loading {
+      padding: 48px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .table-empty {
+      padding: 48px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    /* Last updated */
+    .last-updated {
+      padding: 12px 20px;
+      font-size: 11px;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .refresh-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 11px;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-family: var(--font-body);
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .refresh-btn:hover {
+      color: var(--accent2);
+      border-color: var(--accent);
+      background: rgba(249,115,22,0.06);
+    }
+
+    .refreshing .refresh-icon {
+      animation: spin 0.8s linear infinite;
+    }
+
+    /* Filter chips */
+    .filter-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .filter-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      background: rgba(34,197,94,0.1);
+      color: #22c55e;
+      border: 1px solid rgba(34,197,94,0.2);
+      border-radius: 20px;
+      padding: 3px 10px;
+    }
+
+    /* Skeleton rows */
+    .skeleton-row td {
+      padding: 14px 20px;
+    }
+
+    .skeleton-cell {
+      height: 16px;
+      border-radius: 6px;
+      background: linear-gradient(90deg, var(--surface) 25%, var(--surface-hover) 50%, var(--surface) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+    }
+
+    /* Dual value card */
+    .dual-value-row {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-top: 4px;
+      width: 100%;
+    }
+    .dual-value-item {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      flex: 1;
+      padding: 0 10px;
+    }
+    .dual-value-item:first-child {
+      padding-left: 0;
+    }
+    .dual-val {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      line-height: 1.1;
+    }
+    .dual-sub {
+      font-size: 10px;
+      color: var(--text-muted);
+      font-weight: 500;
+      margin-top: 2px;
+    }
+    .dual-divider {
+      width: 1px;
+      height: 32px;
+      background: var(--border);
+      flex-shrink: 0;
+    }
+
+    /* Smaller summary cards */
+    .summary-card-sm {
+      padding: 14px 16px !important;
+      gap: 4px !important;
+    }
+    .summary-card-sm .summary-card-icon {
+      font-size: 16px !important;
+      margin-bottom: 2px !important;
+    }
+    .summary-card-sm .summary-card-value {
+      font-size: 20px !important;
+    }
+    .summary-card-sm .summary-card-label {
+      font-size: 10px !important;
+    }
+    .summary-cards {
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)) !important;
+      gap: 12px !important;
+    }
+
+    /* Date Range */
+    .date-range-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 6px 12px;
+    }
+
+    .date-input-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .date-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+
+    .date-input {
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 13px;
+      outline: none;
+      cursor: pointer;
+      padding: 2px 4px;
+      border-radius: 6px;
+      transition: var(--transition);
+      min-width: 120px;
+    }
+
+    .date-input:focus {
+      background: rgba(249,115,22,0.08);
+      color: var(--accent2);
+    }
+
+    .date-input::-webkit-calendar-picker-indicator {
+      filter: invert(0.5);
+      cursor: pointer;
+    }
+
+    [data-theme="dark"] .date-input::-webkit-calendar-picker-indicator {
+      filter: invert(0.7);
+    }
+
+    .date-sep {
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .clear-date-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 13px;
+      cursor: pointer;
+      padding: 2px 4px;
+      border-radius: 4px;
+      transition: var(--transition);
+      line-height: 1;
+    }
+
+    .clear-date-btn:hover {
+      color: var(--danger);
+      background: rgba(239,68,68,0.1);
+    }
+  </style>
+</head>
+<body>
+
+<script>
+  // Auth guard
+  const user = localStorage.getItem("loggedUser");
+  if (!user) window.location.href = "login.html";
+
+  // Apply saved theme
+  const t = localStorage.getItem("pwTheme") || "dark";
+  document.documentElement.setAttribute("data-theme", t);
+</script>
+
+<div class="app">
+
+  <!-- ── SIDEBAR (same as index.html) ── -->
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <div class="logo">
+        <span class="logo-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/d/dd/Physics_wallah_logo.svg" alt="PW Vidyapeeth Logo"></span>
+        <div>
+          <div class="logo-text">PW Vidyapeeth</div>
+          <div class="logo-sub">Maharashtra</div>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="menu-item" data-filter="all" onclick="window.location.href='index.html'">
+          <span class="menu-icon">🗂️</span>
+          All Sheets
+        </div>
+        <div class="menu-item" data-filter="pinned" onclick="window.location.href='index.html#pinned'">
+          <span class="menu-icon">📌</span>
+          Pinned
+        </div>
+
+        <div class="nav-divider"></div>
+        <div class="nav-section-label">Categories</div>
+
+        <div class="menu-item" onclick="window.location.href='index.html?filter=analysis'">
+          <span class="menu-icon">📊</span>
+          Analysis
+        </div>
+        <div class="menu-item active" onclick="window.location.href='analysis.html'">
+          <span class="menu-icon">📈</span>
+          Tracker
+        </div>
+        <div class="menu-item" onclick="window.location.href='index.html?filter=b2b'">
+          <span class="menu-icon">📝</span>
+          B2B
+        </div>
+        <div class="menu-item" onclick="window.location.href='index.html?filter=acad'">
+          <span class="menu-icon">🎓</span>
+          Acad
+        </div>
+        <div class="menu-item" onclick="window.location.href='index.html?filter=bws'">
+          <span class="menu-icon">🚨</span>
+          BWS
+        </div>
+
+        <div class="menu-item has-sub" onclick="toggleSub('comms-sub')">
+          <span class="menu-icon">📣</span>
+          <span>Comms</span>
+          <span class="chevron" id="chevron-comms-sub">▸</span>
+        </div>
+        <div class="sub-menu" id="comms-sub">
+          <div class="sub-item" onclick="window.location.href='index.html?filter=gen'">Gen</div>
+          <div class="sub-item" onclick="window.location.href='index.html?filter=ptm'">PTM</div>
+          <div class="sub-item" onclick="window.location.href='index.html?filter=orientation'">Orientation</div>
+          <div class="sub-item" onclick="window.location.href='index.html?filter=batch+start'">Batch Start</div>
+        </div>
+
+        <div class="menu-item has-sub" onclick="toggleSub('mh-sub')">
+          <span class="menu-icon">📈</span>
+          <span>MH</span>
+          <span class="chevron" id="chevron-mh-sub">▸</span>
+        </div>
+        <div class="sub-menu" id="mh-sub">
+          <div class="sub-item" onclick="window.location.href='index.html?filter=maharashtra'">Maharashtra</div>
+        </div>
+
+        <div class="nav-divider"></div>
+        <div class="nav-section-label">Quick Links</div>
+
+        <div class="menu-item" onclick="window.open('https://erp.pw.live/home', '_blank')">
+          <span class="menu-icon">🏢</span>
+          ERP PW
+          <span class="ext-icon">↗</span>
+        </div>
+
+        <div class="menu-item" onclick="window.open('https://ambikeshishere.github.io/PW-Web/', '_blank')">
+          <span class="menu-icon">📋</span>
+          PW Web Report
+          <span class="ext-icon">↗</span>
+        </div>
+      </nav>
+    </div>
+
+    <div class="sidebar-bottom">
+      <div class="theme-switcher">
+        <button class="theme-btn" data-theme="dark" onclick="setTheme('dark')">🌙 Dark</button>
+        <button class="theme-btn" data-theme="light" onclick="setTheme('light')">☀️ Light</button>
+        <button class="theme-btn" data-theme="eve" onclick="setTheme('eve')">🌿 Eve</button>
+      </div>
+      <div class="user-badge" id="userBadge"></div>
+      <button class="logout-btn" onclick="logout()">
+        <span>↩</span> Logout
+      </button>
+    </div>
+  </aside>
+
+  <!-- ── MAIN CONTENT ── -->
+  <main class="analysis-wrap">
+
+    <div class="analysis-topbar">
+      <div class="analysis-topbar-left">
+        <h2 class="analysis-title">📊 Tracker</h2>
+        <p class="analysis-sub">Center-wise Registration Overview</p>
+      </div>
+      <div class="filter-info">
+        <span class="filter-chip">✅ fees_paid &gt; 3498</span>
+        <span class="filter-chip">✅ free_admission = false</span>
+        <span class="filter-chip">✅ status = active</span>
+      </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="summary-cards" id="summaryCards">
+      <!-- Card: Total Centers -->
+      <div class="summary-card summary-card-sm">
+        <div class="summary-card-icon">🏫</div>
+        <div class="summary-card-value" id="totalCenters">—</div>
+        <div class="summary-card-label">Total Centers</div>
+      </div>
+
+      <!-- Card: Total Registrations (Vidyapeeth + Tuition) -->
+      <div class="summary-card summary-card-sm">
+        <div class="summary-card-icon">🎓</div>
+        <div class="summary-card-label" style="font-size:10px;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px;">Total Registrations</div>
+        <div class="dual-value-row">
+          <div class="dual-value-item">
+            <div class="dual-val" id="totalNoTuition" style="color:var(--accent2)">—</div>
+            <div class="dual-sub">Vidyapeeth</div>
+          </div>
+          <div class="dual-divider"></div>
+          <div class="dual-value-item">
+            <div class="dual-val" id="totalTuition" style="color:#94a3b8">—</div>
+            <div class="dual-sub">Tuition</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card: Reg in Date Range (Vidyapeeth + Tuition) -->
+      <div class="summary-card summary-card-sm">
+        <div class="summary-card-icon">📅</div>
+        <div class="summary-card-label" style="font-size:10px;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px;">Reg in Date Range</div>
+        <div class="dual-value-row">
+          <div class="dual-value-item">
+            <div class="dual-val" id="totalDateNoTuition" style="color:#818cf8">—</div>
+            <div class="dual-sub">Vidyapeeth</div>
+          </div>
+          <div class="dual-divider"></div>
+          <div class="dual-value-item">
+            <div class="dual-val" id="totalDateTuition" style="color:#94a3b8">—</div>
+            <div class="dual-sub">Tuition</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card: Batch Alloted (Vidyapeeth + Tuition) -->
+      <div class="summary-card summary-card-sm">
+        <div class="summary-card-icon">✅</div>
+        <div class="summary-card-label" style="font-size:10px;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px;">Batch Alloted</div>
+        <div class="dual-value-row">
+          <div class="dual-value-item">
+            <div class="dual-val" id="totalBatchNoTuition" style="color:#fbbf24">—</div>
+            <div class="dual-sub">Vidyapeeth</div>
+          </div>
+          <div class="dual-divider"></div>
+          <div class="dual-value-item">
+            <div class="dual-val" id="totalBatchTuition" style="color:#94a3b8">—</div>
+            <div class="dual-sub">Tuition</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-section">
+      <div class="table-header">
+        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+          <span class="table-title">Center-wise Registrations</span>
+          <span class="table-badge" id="rowCountBadge">Loading...</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+          <div class="date-range-wrap">
+            <div class="date-input-group">
+              <label class="date-label">From</label>
+              <input type="date" id="fromDate" class="date-input" onchange="applyDateFilter()">
+            </div>
+            <span class="date-sep">→</span>
+            <div class="date-input-group">
+              <label class="date-label">To</label>
+              <input type="date" id="toDate" class="date-input" onchange="applyDateFilter()">
+            </div>
+            <button class="clear-date-btn" onclick="clearDates()" title="Clear dates">✕</button>
+          </div>
+          <div class="search-wrap-analysis">
+            <span class="si">🔍</span>
+            <input type="text" id="tableSearch" placeholder="Search center..." oninput="filterTable()">
+          </div>
+        </div>
+      </div>
+
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th class="rank-cell">#</th>
+              <th onclick="sortTable('center')" id="th-center">
+                Center Name <span class="sort-icon">↕</span>
+              </th>
+              <th onclick="sortTable('count')" id="th-count" class="sorted">
+                Overall Registrations <span class="sort-icon">↓</span>
+              </th>
+              <th onclick="sortTable('dateCount')" id="th-dateCount">
+                Reg in Date Range <span class="sort-icon">↕</span>
+              </th>
+              <th onclick="sortTable('eligibleCount')" id="th-eligibleCount">
+                Eligible + 1st EMI Paid <span class="sort-icon">↕</span>
+              </th>
+              <th onclick="sortTable('batchCount')" id="th-batchCount">
+                Batch Alloted <span class="sort-icon">↕</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+          </tbody>
+        </table>
+      </div>
+
+      <div class="last-updated">
+        <span id="lastUpdatedText">Fetching data...</span>
+        <button class="refresh-btn" id="refreshBtn" onclick="loadData()">
+          <span class="refresh-icon">↻</span> Refresh
+        </button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const ANALYSIS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSIyfDHFpP7wqzoT3YoYM7y8lR8RBD-g9Pq-vgmb3v-yDZDdyUIS5DaCfysHvQBZVM80ny3LQBjVFSC/pub?gid=0&single=true&output=csv";
+
+  let tableData = [];       // full processed data
+  let filteredData = [];    // after search
+  let rawRows = [];         // all valid rows with joining_date
+  let sortKey = "count";
+  let sortAsc = false;
+
+  // ── User badge ──
+  const currentUser = localStorage.getItem("loggedUser");
+  document.getElementById("userBadge").innerText = "👤 " + currentUser;
+
+  // ── Parse CSV row ──
+  function parseCSVRow(row) {
+    const result = [];
+    let cur = "", inQ = false;
+    for (let i = 0; i < row.length; i++) {
+      const c = row[i];
+      if (c === '"') { inQ = !inQ; }
+      else if (c === ',' && !inQ) { result.push(cur); cur = ""; }
+      else { cur += c; }
+    }
+    result.push(cur);
+    return result;
+  }
+
+  // ── Fetch & process ──
+  async function loadData() {
+    const btn = document.getElementById("refreshBtn");
+    btn.classList.add("refreshing");
+    document.getElementById("lastUpdatedText").innerText = "Fetching...";
+    showSkeletons();
+
+    try {
+      const res = await fetch(ANALYSIS_CSV + "&t=" + Date.now());
+      const text = await res.text();
+      const lines = text.split("\n");
+
+      // Parse headers
+      const headers = parseCSVRow(lines[0]).map(h => h.trim().toLowerCase().replace(/\s+/g, '_'));
+
+      // Find column indices
+      const iCenter           = headers.indexOf("center");
+      const iFeesPaid         = headers.indexOf("fees_paid");
+      const iFreeAdmission    = headers.indexOf("free_admission");
+      const iStatus           = headers.indexOf("status");
+      const iJoiningDate      = headers.indexOf("joining_date");
+      const iEligibility      = headers.indexOf("eligibility_status");
+      const iNewPayment       = headers.indexOf("newpayment_checks");
+      const iBatch            = headers.indexOf("batch");
+
+      if (iCenter === -1 || iFeesPaid === -1 || iFreeAdmission === -1 || iStatus === -1) {
+        throw new Error("Required columns not found. Check sheet headers.");
+      }
+
+      // Process rows — store all valid rows with joining_date
+      const centerMap = {};
+      const eligibleMap = {};
+      const batchMap = {};
+      rawRows = [];
+      let totalFiltered = 0;
+
+      lines.slice(1).forEach(line => {
+        if (!line.trim()) return;
+        const cols = parseCSVRow(line);
+
+        const center       = cols[iCenter]?.trim() || "Unknown";
+        const feesPaid     = parseFloat(cols[iFeesPaid]?.trim().replace(/,/g, '') || "0");
+        const freeAdm      = cols[iFreeAdmission]?.trim().toUpperCase();
+        const status       = cols[iStatus]?.trim().toUpperCase();
+        const joiningRaw   = cols[iJoiningDate]?.trim() || "";
+        const joiningDate  = parseDate(joiningRaw);
+        const eligibility  = (cols[iEligibility]?.trim() || "").toLowerCase();
+        const newPayment   = (cols[iNewPayment]?.trim() || "").toLowerCase();
+        const batch        = (cols[iBatch]?.trim() || "").toLowerCase();
+
+        // Base filter
+        const valid =
+          feesPaid > 3498 &&
+          (freeAdm === "FALSE" || freeAdm === "NO" || freeAdm === "0") &&
+          status === "ACTIVE";
+
+        if (!valid) return;
+
+        totalFiltered++;
+        if (!centerMap[center]) centerMap[center] = 0;
+        centerMap[center]++;
+
+        // Eligible + 1st EMI Paid filter
+        const isEligible =
+          !eligibility.includes("not") &&
+          !newPayment.includes("token");
+
+        if (isEligible) {
+          if (!eligibleMap[center]) eligibleMap[center] = 0;
+          eligibleMap[center]++;
+        }
+
+        // Batch Alloted: batch exists and is not "no batch"
+        const hasBatch = batch !== "" && !batch.includes("no batch");
+        if (hasBatch) {
+          if (!batchMap[center]) batchMap[center] = 0;
+          batchMap[center]++;
+        }
+
+        // Store for date filtering
+        rawRows.push({ center, joiningDate, isEligible });
+      });
+
+      // Build table data
+      tableData = Object.entries(centerMap)
+        .map(([center, count]) => ({
+          center,
+          count,
+          dateCount: null,
+          eligibleCount: eligibleMap[center] || 0,
+          batchCount: batchMap[center] || 0
+        }))
+        .sort((a, b) => b.count - a.count);
+
+      // Update summary cards
+      const totalCenters = tableData.length;
+      const totalNoTuition = tableData
+        .filter(r => !r.center.toLowerCase().includes("tuition"))
+        .reduce((s, r) => s + r.count, 0);
+      const totalTuition = totalFiltered - totalNoTuition;
+      const totalBatchNoTuition = tableData
+        .filter(r => !r.center.toLowerCase().includes("tuition"))
+        .reduce((s, r) => s + r.batchCount, 0);
+      const totalBatchTuition = tableData
+        .filter(r => r.center.toLowerCase().includes("tuition"))
+        .reduce((s, r) => s + r.batchCount, 0);
+
+      document.getElementById("totalCenters").innerText        = totalCenters;
+      document.getElementById("totalNoTuition").innerText      = totalNoTuition.toLocaleString();
+      document.getElementById("totalTuition").innerText        = totalTuition.toLocaleString();
+      document.getElementById("totalBatchNoTuition").innerText = totalBatchNoTuition.toLocaleString();
+      document.getElementById("totalBatchTuition").innerText   = totalBatchTuition.toLocaleString();
+
+      // Render
+      filteredData = [...tableData];
+      applyDateFilter();
+
+      document.getElementById("lastUpdatedText").innerText =
+        "Last updated: " + new Date().toLocaleTimeString();
+
+      showToast("✅ Data loaded — " + totalFiltered + " registrations");
+
+    } catch (err) {
+      console.error(err);
+      document.getElementById("tableBody").innerHTML = `
+        <tr><td colspan="6" class="table-empty">
+          ❌ Error loading data: ${err.message}<br>
+          <small style="color:var(--text-muted)">Please check the sheet URL and try again.</small>
+        </td></tr>`;
+      document.getElementById("lastUpdatedText").innerText = "Failed to load.";
+    }
+
+    btn.classList.remove("refreshing");
+  }
+
+  // ── Render table ──
+  function renderTable(data, totalCount) {
+    const tbody = document.getElementById("tableBody");
+    const total = totalCount || data.reduce((s, r) => s + r.count, 0);
+
+    document.getElementById("rowCountBadge").innerText = data.length + " centers";
+
+    if (data.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="6" class="table-empty">No centers match your search.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = data.map((row, i) => {
+      const dateCell = row.dateCount === null
+        ? `<span style="color:var(--text-muted); font-size:12px;">— select range</span>`
+        : `<span class="count-badge" style="background:rgba(99,102,241,0.12);color:#818cf8;border-color:rgba(99,102,241,0.25)">${row.dateCount}</span>`;
+      return `
+        <tr style="animation-delay:${i * 0.03}s">
+          <td class="rank-cell">${i + 1}</td>
+          <td class="center-cell">${escHTML(row.center)}</td>
+          <td><span class="count-badge">${row.count}</span></td>
+          <td>${dateCell}</td>
+          <td>
+            <span class="count-badge" style="background:rgba(34,197,94,0.12);color:#22c55e;border-color:rgba(34,197,94,0.25)">${row.eligibleCount}</span>
+            <span style="font-size:11px;color:var(--text-muted);margin-left:5px;">(${row.count > 0 ? ((row.eligibleCount / row.count) * 100).toFixed(1) : 0}%)</span>
+          </td>
+          <td>
+            <span class="count-badge" style="background:rgba(251,191,36,0.12);color:#fbbf24;border-color:rgba(251,191,36,0.25)">${row.batchCount}</span>
+            <span style="font-size:11px;color:var(--text-muted);margin-left:5px;">(${row.eligibleCount > 0 ? ((row.batchCount / row.eligibleCount) * 100).toFixed(1) : 0}%)</span>
+          </td>
+        </tr>
+      `;
+    }).join("");
+  }
+
+  // ── Sort ──
+  function sortTable(key) {
+    if (sortKey === key) {
+      sortAsc = !sortAsc;
+    } else {
+      sortKey = key;
+      sortAsc = key === "center";
+    }
+
+    // Update header icons
+    ["center", "count", "dateCount", "eligibleCount", "batchCount"].forEach(k => {
+      const th = document.getElementById("th-" + k);
+      if (th) {
+        th.classList.toggle("sorted", k === sortKey);
+        const icon = th.querySelector(".sort-icon");
+        if (icon) icon.innerText = k === sortKey ? (sortAsc ? "↑" : "↓") : "↕";
+      }
+    });
+
+    filteredData.sort((a, b) => {
+      let valA = a[key], valB = b[key];
+      if (typeof valA === "string") valA = valA.toLowerCase();
+      if (typeof valB === "string") valB = valB.toLowerCase();
+      if (valA < valB) return sortAsc ? -1 : 1;
+      if (valA > valB) return sortAsc ? 1 : -1;
+      return 0;
+    });
+
+    renderTable(filteredData);
+  }
+
+  // ── Parse date from various formats ──
+  function parseDate(str) {
+    if (!str) return null;
+    // Try DD/MM/YYYY or DD-MM-YYYY
+    const dmy = str.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})$/);
+    if (dmy) return new Date(dmy[3], dmy[2] - 1, dmy[1]);
+    // Try YYYY-MM-DD
+    const ymd = str.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (ymd) return new Date(ymd[1], ymd[2] - 1, ymd[3]);
+    // Try MM/DD/YYYY
+    const mdy = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    if (mdy) return new Date(mdy[3], mdy[1] - 1, mdy[2]);
+    // Fallback
+    const d = new Date(str);
+    return isNaN(d) ? null : d;
+  }
+
+  // ── Apply date range filter ──
+  function applyDateFilter() {
+    const fromVal = document.getElementById("fromDate").value;
+    const toVal   = document.getElementById("toDate").value;
+
+    if (!fromVal && !toVal) {
+      // No date selected — reset dateCount to null
+      tableData.forEach(r => r.dateCount = null);
+    } else {
+      const fromDate = fromVal ? new Date(fromVal + "T00:00:00") : null;
+      const toDate   = toVal   ? new Date(toVal   + "T23:59:59") : null;
+
+      // Build center → dateCount map from rawRows
+      const dateCenterMap = {};
+      rawRows.forEach(row => {
+        if (!row.joiningDate) return;
+        // Compare date-only (strip time)
+        const d = new Date(
+          row.joiningDate.getFullYear(),
+          row.joiningDate.getMonth(),
+          row.joiningDate.getDate()
+        );
+        const from = fromDate ? new Date(fromDate.getFullYear(), fromDate.getMonth(), fromDate.getDate()) : null;
+        const to   = toDate   ? new Date(toDate.getFullYear(),   toDate.getMonth(),   toDate.getDate())   : null;
+        if (from && d < from) return;
+        if (to   && d > to)   return;
+        dateCenterMap[row.center] = (dateCenterMap[row.center] || 0) + 1;
+      });
+
+      tableData.forEach(r => {
+        r.dateCount = dateCenterMap[r.center] || 0;
+      });
+
+      // Update summary card totals
+      const totalInRange = Object.values(dateCenterMap).reduce((s, v) => s + v, 0);
+      const totalDateNoTuition = Object.entries(dateCenterMap)
+        .filter(([center]) => !center.toLowerCase().includes("tuition"))
+        .reduce((s, [, v]) => s + v, 0);
+      const totalDateTuition = totalInRange - totalDateNoTuition;
+      document.getElementById("totalDateNoTuition").innerText  = totalDateNoTuition.toLocaleString();
+      document.getElementById("totalDateTuition").innerText    = totalDateTuition.toLocaleString();
+    }
+
+    // Re-apply search filter then render
+    filterTable();
+  }
+
+  // ── Clear dates ──
+  function clearDates() {
+    document.getElementById("fromDate").value = "";
+    document.getElementById("toDate").value   = "";
+    tableData.forEach(r => r.dateCount = null);
+    document.getElementById("totalDateNoTuition").innerText = "—";
+    document.getElementById("totalDateTuition").innerText   = "—";
+    filterTable();
+  }
+
+  // ── Search / filter ──
+  function filterTable() {
+    const q = document.getElementById("tableSearch").value.toLowerCase().trim();
+    filteredData = q
+      ? tableData.filter(r => r.center.toLowerCase().includes(q))
+      : [...tableData];
+
+    // Re-sort after filter
+    filteredData.sort((a, b) => {
+      let valA = a[sortKey], valB = b[sortKey];
+      if (typeof valA === "string") { valA = valA.toLowerCase(); valB = valB.toLowerCase(); }
+      if (valA < valB) return sortAsc ? -1 : 1;
+      if (valA > valB) return sortAsc ? 1 : -1;
+      return 0;
+    });
+
+    renderTable(filteredData);
+  }
+
+  // ── Skeleton ──
+  function showSkeletons() {
+    document.getElementById("tableBody").innerHTML = Array(6).fill(0).map(() => `
+      <tr class="skeleton-row">
+        <td><div class="skeleton-cell" style="width:24px"></div></td>
+        <td><div class="skeleton-cell" style="width:180px"></div></td>
+        <td><div class="skeleton-cell" style="width:60px"></div></td>
+        <td><div class="skeleton-cell" style="width:130px"></div></td>
+      </tr>
+    `).join("");
+  }
+
+  // ── Sidebar helpers ──
+  function toggleSub(id) {
+    const sub = document.getElementById(id);
+    const chevron = document.getElementById("chevron-" + id);
+    if (sub) sub.classList.toggle("open");
+    if (chevron) chevron.classList.toggle("open");
+  }
+
+  // ── Theme ──
+  function setTheme(theme) {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("pwTheme", theme);
+    document.querySelectorAll(".theme-btn").forEach(btn => {
+      btn.classList.toggle("active", btn.dataset.theme === theme);
+    });
+  }
+
+  // ── Logout ──
+  function logout() {
+    localStorage.removeItem("loggedUser");
+    window.location.href = "login.html";
+  }
+
+  // ── Toast ──
+  function showToast(msg) {
+    const toast = document.getElementById("toast");
+    toast.innerText = msg;
+    toast.classList.add("show");
+    setTimeout(() => toast.classList.remove("show"), 2500);
+  }
+
+  // ── Helpers ──
+  function escHTML(str) {
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  // ── Init ──
+  (function init() {
+    const saved = localStorage.getItem("pwTheme") || "dark";
+    document.documentElement.setAttribute("data-theme", saved);
+    document.querySelectorAll(".theme-btn").forEach(btn => {
+      btn.classList.toggle("active", btn.dataset.theme === saved);
+    });
+
+    // Default date range: 1st of current month → today (local date)
+    const today = new Date();
+    const fmt = d => {
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${y}-${m}-${day}`;
+    };
+    const firstOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    document.getElementById("fromDate").value = fmt(firstOfMonth);
+    document.getElementById("toDate").value   = fmt(today);
+
+    loadData();
+  })();
+</script>
+
+</body>
+</html>

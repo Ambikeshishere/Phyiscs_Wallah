@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PW Vidyapeeth Maharashtra — Tracker</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <style>
+    .dash-wrap { flex:1; padding:24px 28px; overflow-y:auto; display:flex; flex-direction:column; gap:16px; min-width:0; max-width:100%; box-sizing:border-box; }
+    .dash-topbar { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; }
+    .dash-title { font-family:var(--font-display); font-size:20px; font-weight:800; letter-spacing:-0.5px; }
+    .dash-title span { color:var(--accent2); }
+    .dash-sub { font-size:12px; color:var(--text-muted); margin-top:2px; }
+
+    /* Filters */
+    .filters-bar { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:12px 16px; display:flex; align-items:flex-end; gap:10px; flex-wrap:wrap; }
+    .filter-group { display:flex; flex-direction:column; gap:4px; }
+    .filter-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; color:var(--text-muted); }
+    .filter-select { background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:6px 10px; color:var(--text); font-family:var(--font-body); font-size:12px; outline:none; cursor:pointer; transition:var(--transition); min-width:110px; }
+    .filter-select:focus { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent-glow); }
+    .date-filter-group { display:flex; align-items:center; gap:6px; background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:6px 10px; }
+    .date-filter-group label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-muted); }
+    .date-filter-group input[type="date"] { background:transparent; border:none; color:var(--text); font-family:var(--font-body); font-size:12px; outline:none; cursor:pointer; }
+    .date-filter-group input[type="date"]::-webkit-calendar-picker-indicator { filter:invert(0.5); cursor:pointer; }
+    .filter-sep { color:var(--text-muted); font-size:12px; }
+    /* Multi-select center filter */
+    .center-filter-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .center-filter-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+    .center-tags-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      flex: 1;
+      min-width: 0;
+    }
+    .center-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--surface-hover);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 4px 10px;
+      font-size: 12px;
+      color: var(--text-dim);
+      cursor: pointer;
+      transition: var(--transition);
+      user-select: none;
+      white-space: nowrap;
+    }
+    .center-tag:hover {
+      border-color: var(--accent);
+      color: var(--text);
+    }
+    .center-tag.selected {
+      background: rgba(249,115,22,0.15);
+      border-color: var(--accent);
+      color: var(--accent2);
+      font-weight: 600;
+    }
+    .center-tag .tag-x {
+      font-size: 10px;
+      opacity: 0.6;
+      margin-left: 2px;
+    }
+    .center-tag.selected .tag-x {
+      opacity: 1;
+    }
+    .center-search-input {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 12px;
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 12px;
+      outline: none;
+      transition: var(--transition);
+      width: 200px;
+    }
+    .center-search-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-glow);
+    }
+    .center-dropdown {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      background: var(--bg2);
+      border: 1px solid var(--border-bright);
+      border-radius: var(--radius-sm);
+      max-height: 220px;
+      overflow-y: auto;
+      z-index: 999;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      display: none;
+    }
+    .center-dropdown.open { display: block; }
+    .center-dropdown-item {
+      padding: 8px 14px;
+      font-size: 12px;
+      color: var(--text);
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .center-dropdown-item:hover { background: var(--surface-hover); }
+    .center-dropdown-item.selected { color: var(--accent2); font-weight: 600; }
+    .center-dropdown-item .check { font-size: 11px; width: 14px; }
+    .clear-centers-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 5px 10px;
+      font-size: 11px;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-family: var(--font-body);
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+    .clear-centers-btn:hover { color: var(--danger); border-color: var(--danger); }
+
+    .clear-btn { background:transparent; border:1px solid var(--border); border-radius:8px; padding:6px 12px; color:var(--text-muted); font-size:11px; font-weight:600; cursor:pointer; font-family:var(--font-body); transition:var(--transition); white-space:nowrap; }
+    .clear-btn:hover { color:var(--danger); border-color:var(--danger); background:rgba(239,68,68,0.06); }
+
+    /* Summary Cards */
+    .summary-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(140px,1fr)); gap:12px; }
+    .s-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:14px 16px; display:flex; flex-direction:column; gap:3px; transition:var(--transition); position:relative; overflow:hidden; }
+    .s-card::before { content:""; position:absolute; top:0; left:0; right:0; height:2px; background:var(--card-accent, var(--accent)); }
+    .s-card:hover { background:var(--surface-hover); transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,0.15); }
+    .s-card-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; color:var(--text-muted); }
+    .s-card-value { font-family:var(--font-display); font-size:22px; font-weight:800; letter-spacing:-1px; line-height:1; color:var(--card-accent, var(--accent2)); }
+    .s-card-sub { font-size:10px; color:var(--text-muted); margin-top:1px; }
+
+    /* Charts */
+    .charts-row { display:grid; grid-template-columns:3fr 2fr; gap:16px; }
+    .charts-row-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+
+    .charts-row-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; }
+    @media (max-width:1200px) {
+      .charts-row-3 { grid-template-columns:1fr 1fr; }
+    }
+    @media (max-width:1100px) {
+      .charts-row { grid-template-columns:1fr; }
+      .charts-row-2 { grid-template-columns:1fr; }
+      .charts-row-3 { grid-template-columns:1fr; }
+    }
+    @media (max-width:900px) {
+      .dash-wrap { padding:16px; gap:14px; }
+      .summary-grid { grid-template-columns:repeat(2,1fr); }
+      .filters-bar { gap:8px; }
+      .filter-group { min-width:100px; }
+      .date-filter-group { flex-wrap:wrap; }
+    }
+    @media (max-width:600px) {
+      .dash-wrap { padding:10px; gap:10px; }
+      .summary-grid { grid-template-columns:1fr 1fr; }
+      .s-card-value { font-size:18px !important; }
+      .filter-select { min-width:80px; font-size:11px; }
+      .center-search-input { width:100%; }
+    }
+    .chart-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:20px 22px; display:flex; flex-direction:column; gap:12px; min-height:300px; }
+    @media (max-width:900px) { .chart-card { min-height:240px; padding:14px 16px; } }
+    @media (max-width:600px) { .chart-card { min-height:200px; padding:12px 14px; } }
+    .chart-header { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+    .chart-title { font-family:var(--font-display); font-size:13px; font-weight:700; color:var(--text); }
+    .chart-badge { font-size:10px; font-weight:600; background:rgba(249,115,22,0.12); color:var(--accent2); border:1px solid rgba(249,115,22,0.2); border-radius:20px; padding:2px 8px; }
+    .chart-wrap { position:relative; width:100%; }
+    .fee-row { display:flex; gap:12px; align-items:center; }
+    .fee-legend { display:flex; flex-direction:column; gap:6px; flex:1; min-width:0; }
+    .fee-legend-item { display:flex; align-items:center; gap:5px; font-size:10px; }
+    .fee-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+    .fee-legend-label { color:var(--text-dim); flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .fee-legend-val { font-weight:700; font-family:var(--font-display); color:var(--text); font-size:10px; }
+    .fee-legend-pct { font-size:9px; color:var(--text-muted); min-width:28px; text-align:right; }
+
+    /* Table */
+    .table-section { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; }
+    .table-header { display:flex; align-items:center; justify-content:space-between; padding:14px 18px; border-bottom:1px solid var(--border); flex-wrap:wrap; gap:10px; }
+    .table-title { font-family:var(--font-display); font-size:13px; font-weight:700; }
+    .table-badge { font-size:10px; font-weight:600; background:rgba(249,115,22,0.12); color:var(--accent2); border:1px solid rgba(249,115,22,0.2); border-radius:20px; padding:2px 8px; }
+    .table-base-info { font-size:10px; color:var(--text-muted); }
+    .search-wrap-dash { position:relative; }
+    .search-wrap-dash input { background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:6px 10px 6px 28px; color:var(--text); font-family:var(--font-body); font-size:12px; outline:none; transition:var(--transition); width:160px; }
+    .search-wrap-dash input:focus { border-color:var(--accent); }
+    .search-wrap-dash .si { position:absolute; left:9px; top:50%; transform:translateY(-50%); font-size:12px; opacity:0.4; pointer-events:none; }
+    .data-table-wrap { overflow-x:auto; }
+    table.data-table { width:100%; border-collapse:collapse; }
+    table.data-table thead tr { background:rgba(249,115,22,0.05); border-bottom:1px solid var(--border); }
+    table.data-table thead th { padding:10px 14px; text-align:left; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; color:var(--text-muted); white-space:nowrap; cursor:pointer; user-select:none; transition:var(--transition); }
+    table.data-table thead th:hover, table.data-table thead th.sorted { color:var(--accent2); }
+    table.data-table tbody tr { border-bottom:1px solid var(--border); transition:var(--transition); }
+    table.data-table tbody tr:last-child { border-bottom:none; }
+    table.data-table tbody tr:hover { background:var(--surface-hover); }
+    table.data-table tbody td { padding:10px 14px; font-size:12px; color:var(--text); white-space:nowrap; }
+    .rank-cell { color:var(--text-muted) !important; font-size:11px !important; font-weight:600; width:32px; }
+    .center-cell { font-weight:600; font-family:var(--font-display); font-size:12px !important; }
+    .cb { display:inline-flex; align-items:center; justify-content:center; min-width:30px; height:20px; border-radius:6px; font-weight:700; font-size:11px; font-family:var(--font-display); padding:0 6px; border:1px solid; }
+    .cb-orange { background:rgba(249,115,22,0.12); color:var(--accent2); border-color:rgba(249,115,22,0.2); }
+    .cb-purple { background:rgba(129,140,248,0.12); color:#818cf8; border-color:rgba(129,140,248,0.25); }
+    .cb-green  { background:rgba(34,197,94,0.12);  color:#22c55e; border-color:rgba(34,197,94,0.25);  }
+    .cb-yellow { background:rgba(251,191,36,0.12); color:#fbbf24; border-color:rgba(251,191,36,0.25); }
+    .pct-text { font-size:10px; color:var(--text-muted); margin-left:3px; }
+    .last-updated { padding:10px 16px; font-size:11px; color:var(--text-muted); border-top:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+    .refresh-btn { background:transparent; border:1px solid var(--border); border-radius:6px; padding:3px 8px; font-size:11px; color:var(--text-muted); cursor:pointer; font-family:var(--font-body); transition:var(--transition); display:flex; align-items:center; gap:4px; }
+    .refresh-btn:hover { color:var(--accent2); border-color:var(--accent); }
+    .refreshing .refresh-icon { animation:spin 0.8s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+<script>
+  const user = localStorage.getItem("loggedUser");
+  if (!user) window.location.href = "login.html";
+  const t = localStorage.getItem("pwTheme") || "dark";
+  document.documentElement.setAttribute("data-theme", t);
+</script>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <div class="logo">
+        <span class="logo-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/d/dd/Physics_wallah_logo.svg" alt="PW Logo"></span>
+        <div><div class="logo-text">PW Vidyapeeth</div><div class="logo-sub">Maharashtra</div></div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="menu-item" onclick="window.location.href='index.html'"><span class="menu-icon">&#128193;</span> All Sheets</div>
+        <div class="menu-item" onclick="window.location.href='index.html#pinned'"><span class="menu-icon">&#128204;</span> Pinned</div>
+        <div class="nav-divider"></div>
+        <div class="nav-section-label">Categories</div>
+        <div class="menu-item" onclick="window.location.href='index.html?filter=analysis'"><span class="menu-icon">&#128202;</span> Analysis</div>
+        <div class="menu-item active" onclick="window.location.href='analysis.html'"><span class="menu-icon">&#128200;</span> Tracker</div>
+        <div class="menu-item" onclick="window.location.href='index.html?filter=b2b'"><span class="menu-icon">&#128221;</span> B2B</div>
+        <div class="menu-item" onclick="window.location.href='index.html?filter=acad'"><span class="menu-icon">&#127891;</span> Acad</div>
+        <div class="menu-item" onclick="window.location.href='index.html?filter=bws'"><span class="menu-icon">&#128680;</span> BWS</div>
+        <div class="menu-item has-sub" onclick="toggleSub('comms-sub')"><span class="menu-icon">&#128227;</span><span>Comms</span><span class="chevron" id="chevron-comms-sub">&#9658;</span></div>
+        <div class="sub-menu" id="comms-sub">
+          <div class="sub-item" onclick="window.location.href='index.html?filter=gen'">Gen</div>
+          <div class="sub-item" onclick="window.location.href='index.html?filter=ptm'">PTM</div>
+          <div class="sub-item" onclick="window.location.href='index.html?filter=orientation'">Orientation</div>
+          <div class="sub-item" onclick="window.location.href='index.html?filter=batch+start'">Batch Start</div>
+        </div>
+        <div class="menu-item has-sub" onclick="toggleSub('mh-sub')"><span class="menu-icon">&#128200;</span><span>MH</span><span class="chevron" id="chevron-mh-sub">&#9658;</span></div>
+        <div class="sub-menu" id="mh-sub"><div class="sub-item" onclick="window.location.href='index.html?filter=maharashtra'">Maharashtra</div></div>
+        <div class="nav-divider"></div>
+        <div class="nav-section-label">Quick Links</div>
+        <div class="menu-item" onclick="window.open('https://erp.pw.live/home','_blank')"><span class="menu-icon">&#127962;</span> ERP PW <span class="ext-icon">&#8599;</span></div>
+        <div class="menu-item" onclick="window.open('https://ambikeshishere.github.io/PW-Web/','_blank')"><span class="menu-icon">&#128203;</span> PW Web Report <span class="ext-icon">&#8599;</span></div>
+      </nav>
+    </div>
+    <div class="sidebar-bottom">
+      <div class="theme-switcher">
+        <button class="theme-btn" data-theme="dark" onclick="setTheme('dark')">&#127769; Dark</button>
+        <button class="theme-btn" data-theme="light" onclick="setTheme('light')">&#9728;&#65039; Light</button>
+        <button class="theme-btn" data-theme="eve" onclick="setTheme('eve')">&#127807; Eve</button>
+      </div>
+      <div class="user-badge" id="userBadge"></div>
+      <button class="logout-btn" onclick="logout()"><span>&#8617;</span> Logout</button>
+    </div>
+  </aside>
+
+  <main class="dash-wrap">
+    <!-- Topbar -->
+    <div class="dash-topbar">
+      <div>
+        <h2 class="dash-title">PW Vidyapeeth <span>Maharashtra</span> &mdash; CRP Dashboard</h2>
+        <p class="dash-sub">Based on Registration Data &middot; Base: fees_paid &gt; 3498, free_admission = false, status = active</p>
+      </div>
+      <button class="refresh-btn" id="refreshBtn" onclick="loadData()"><span class="refresh-icon">&#8635;</span> Refresh</button>
+    </div>
+
+    <!-- Center Multi-Select Filter -->
+    <div class="center-filter-wrap">
+      <span class="center-filter-label">&#127968; Centers</span>
+      <div style="position:relative;flex:1;min-width:200px;">
+        <input type="text" class="center-search-input" id="centerSearchInput"
+          placeholder="Search &amp; select centers..."
+          oninput="filterCenterDropdown()"
+          onfocus="openCenterDropdown()"
+          autocomplete="off">
+        <div class="center-dropdown" id="centerDropdown"></div>
+      </div>
+      <div class="center-tags-wrap" id="centerTagsWrap">
+        <span style="font-size:11px;color:var(--text-muted);padding:4px 6px;" id="allCentersLabel">All centers selected</span>
+      </div>
+      <button class="clear-centers-btn" onclick="clearCenterFilter()">&#10005; Clear</button>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters-bar">
+      <div class="filter-group">
+        <span class="filter-label">Center Type</span>
+        <select class="filter-select" id="fCenterType" onchange="applyFilters()">
+          <option value="all">All</option>
+          <option value="vidyapeeth">Vidyapeeth</option>
+          <option value="tuition">Tuition Center</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Stream</span>
+        <select class="filter-select" id="fStream" onchange="applyFilters()"><option value="all">All</option></select>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Class / Course</span>
+        <select class="filter-select" id="fClass" onchange="applyFilters()"><option value="all">All</option></select>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Admission Mode</span>
+        <select class="filter-select" id="fAdmMode" onchange="applyFilters()"><option value="all">All</option></select>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Date Range (Joining)</span>
+        <div class="date-filter-group">
+          <label>From</label>
+          <input type="date" id="fFromDate" onchange="applyFilters()">
+          <span class="filter-sep">&rarr;</span>
+          <label>To</label>
+          <input type="date" id="fToDate" onchange="applyFilters()">
+        </div>
+      </div>
+      <button class="clear-btn" onclick="clearFilters()">&#10005; Clear</button>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="summary-grid">
+      <div class="s-card" style="--card-accent:var(--accent2)">
+        <div class="s-card-label">Total Registrations</div>
+        <div class="s-card-value" id="cTotalReg">&#8212;</div>
+        <div class="s-card-sub" id="cTotalRegSub">Vidyapeeth + Tuition</div>
+      </div>
+      <div class="s-card" style="--card-accent:#818cf8">
+        <div class="s-card-label">Reg in Date Range</div>
+        <div class="s-card-value" id="cDateReg">&#8212;</div>
+        <div class="s-card-sub" id="cDateRegSub">Select date range</div>
+      </div>
+      <div class="s-card" style="--card-accent:#22c55e">
+        <div class="s-card-label">Eligible + 1st EMI</div>
+        <div class="s-card-value" id="cEligible">&#8212;</div>
+        <div class="s-card-sub" id="cEligiblePct">&#8212;% of total</div>
+      </div>
+      <div class="s-card" style="--card-accent:#fbbf24">
+        <div class="s-card-label">Batch Alloted</div>
+        <div class="s-card-value" id="cBatch">&#8212;</div>
+        <div class="s-card-sub" id="cBatchPct">&#8212;% of eligible</div>
+      </div>
+      <div class="s-card" style="--card-accent:#f43f5e">
+        <div class="s-card-label">Avg Fee Paid</div>
+        <div class="s-card-value" id="cAvgFee">&#8212;</div>
+        <div class="s-card-sub">per student</div>
+      </div>
+      <div class="s-card" style="--card-accent:#14b8a6">
+        <div class="s-card-label">Active Centers</div>
+        <div class="s-card-value" id="cCenters">&#8212;</div>
+        <div class="s-card-sub" id="cCentersSub">Vidyapeeth + Tuition</div>
+      </div>
+    </div>
+
+    <!-- Charts Row 1: DoD + Fee -->
+    <div class="charts-row">
+      <div class="chart-card" style="min-height:300px;">
+        <div class="chart-header">
+          <span class="chart-title">&#128197; Day-on-Day Registrations</span>
+          <span class="chart-badge" id="dodBadge">Last 30 days</span>
+        </div>
+        <div id="dodChartWrap" style="width:100%;height:240px;">
+          <canvas id="dodChart"></canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header"><span class="chart-title">&#128179; Fee Payment Breakdown</span></div>
+        <div class="fee-row" style="flex:1;align-items:center;">
+          <div class="chart-wrap" style="height:180px;width:180px;flex-shrink:0"><canvas id="feeChart"></canvas></div>
+          <div class="fee-legend" id="feeLegend"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Row 2: Center bar + Stream pie -->
+    <div class="charts-row-2">
+      <div class="chart-card">
+        <div class="chart-header">
+          <span class="chart-title">&#127968; Top 10 Centers by Registration</span>
+          <span class="chart-badge" id="centerBadge">&#8212;</span>
+        </div>
+        <div class="chart-wrap" style="min-height:200px;height:240px"><canvas id="centerChart"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header"><span class="chart-title">&#128218; Stream Split</span></div>
+        <div class="chart-wrap" style="min-height:200px;height:240px"><canvas id="streamChart"></canvas></div>
+      </div>
+    </div>
+    <div class="charts-row-3">
+      <div class="chart-card">
+        <div class="chart-header"><span class="chart-title">&#129693; Stream-wise ARPU</span></div>
+        <div class="chart-wrap" style="min-height:200px;height:240px"><canvas id="arpuPieChart"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header">
+          <span class="chart-title">&#127979; Class-wise Registration Students</span>
+          <span class="chart-badge" id="classBadge">&#8212;</span>
+        </div>
+        <div class="chart-wrap" style="min-height:200px;height:240px"><canvas id="classChart"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header">
+          <span class="chart-title">&#9989; Class-wise Batch Alloted</span>
+          <span class="chart-badge" id="batchClassBadge">&#8212;</span>
+        </div>
+        <div class="chart-wrap" style="min-height:200px;height:240px"><canvas id="batchClassChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Center Table -->
+    <div class="table-section">
+      <div class="table-header">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <span class="table-title">Center-wise Detail</span>
+          <span class="table-badge" id="rowCountBadge">&#8212;</span>
+          <span class="table-base-info">Base: fees_paid &gt; 3498 &middot; free_admission = false &middot; status = active</span>
+        </div>
+        <div class="search-wrap-dash">
+          <span class="si">&#128269;</span>
+          <input type="text" id="tableSearch" placeholder="Search center..." oninput="filterTable()">
+        </div>
+      </div>
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th class="rank-cell">#</th>
+              <th onclick="sortTable('center')" id="th-center">Center Name <span class="sort-icon">&#8597;</span></th>
+              <th onclick="sortTable('count')" id="th-count" class="sorted">Overall Reg <span class="sort-icon">&#8595;</span></th>
+              <th onclick="sortTable('dateCount')" id="th-dateCount">Reg in Range <span class="sort-icon">&#8597;</span></th>
+              <th onclick="sortTable('eligibleCount')" id="th-eligibleCount">Eligible + EMI <span class="sort-icon">&#8597;</span></th>
+              <th onclick="sortTable('batchCount')" id="th-batchCount">Batch Alloted <span class="sort-icon">&#8597;</span></th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+      <div class="last-updated">
+        <span id="lastUpdatedText">Fetching data...</span>
+        <button class="refresh-btn" onclick="loadData()"><span class="refresh-icon">&#8635;</span> Refresh</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSIyfDHFpP7wqzoT3YoYM7y8lR8RBD-g9Pq-vgmb3v-yDZDdyUIS5DaCfysHvQBZVM80ny3LQBjVFSC/pub?gid=0&single=true&output=csv";
+let allRows=[], tableData=[], filteredData=[], sortKey="count", sortAsc=false;
+let dodC, feeC, centerC, streamC, arpuC, arpuPieC, classC, batchClassC;
+
+document.getElementById("userBadge").innerText = "👤 " + localStorage.getItem("loggedUser");
+
+function parseCSVRow(row) {
+  const res=[]; let cur="", inQ=false;
+  for(let i=0;i<row.length;i++){const c=row[i];if(c==='"'){inQ=!inQ;}else if(c===','&&!inQ){res.push(cur);cur="";}else cur+=c;}
+  res.push(cur); return res;
+}
+function parseDate(s){
+  if(!s)return null;
+  const a=s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+  if(a)return new Date(+a[3],+a[2]-1,+a[1]);
+  const b=s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if(b)return new Date(+b[1],+b[2]-1,+b[3]);
+  const d=new Date(s); return isNaN(d)?null:d;
+}
+function fmtDate(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+function escH(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function showToast(msg){const t=document.getElementById("toast");t.innerText=msg;t.classList.add("show");setTimeout(function(){t.classList.remove("show");},2500);}
+function gc(){const s=getComputedStyle(document.documentElement);return{accent:s.getPropertyValue("--accent").trim()||"#f97316",accent2:s.getPropertyValue("--accent2").trim()||"#fb923c",border:s.getPropertyValue("--border").trim()||"rgba(255,255,255,0.08)",text:s.getPropertyValue("--text").trim()||"#f1f5f9",muted:s.getPropertyValue("--text-muted").trim()||"#64748b"};}
+
+async function loadData(){
+  document.getElementById("refreshBtn").classList.add("refreshing");
+  document.getElementById("lastUpdatedText").innerText="Fetching...";
+  try{
+    const res=await fetch(CSV_URL+"&t="+Date.now());
+    const text=await res.text();
+    const lines=text.split("\n");
+    const headers=parseCSVRow(lines[0]).map(function(h){return h.trim().toLowerCase().replace(/\s+/g,"_");});
+    const iC=headers.indexOf("center"), iF=headers.indexOf("fees_paid"), iFa=headers.indexOf("free_admission"),
+          iS=headers.indexOf("status"), iJ=headers.indexOf("joining_date"), iE=headers.indexOf("eligibility_status"),
+          iN=headers.indexOf("newpayment_checks"), iB=headers.indexOf("batch"), iSt=headers.indexOf("stream"),
+          iCl=headers.indexOf("class_course"), iA=headers.indexOf("admission_mode"), iFa2=headers.indexOf("fees_amt"),
+          iArpu=headers.indexOf("arpu_check"), iFormStatus=headers.indexOf("form_status"),
+          iArpuVal=headers.indexOf("arpu");
+    allRows=[];
+    lines.slice(1).forEach(function(line){
+      if(!line.trim())return;
+      const cols=parseCSVRow(line);
+      const fp=parseFloat((cols[iF]?.trim()||"0").replace(/,/g,""));
+      const fa=(cols[iFa]?.trim()||"").toUpperCase();
+      const st=(cols[iS]?.trim()||"").toUpperCase();
+      if(!(fp>3498&&(fa==="FALSE"||fa==="NO"||fa==="0")&&st==="ACTIVE"))return;
+      allRows.push({
+        center:cols[iC]?.trim()||"Unknown",
+        joiningDate:parseDate(cols[iJ]?.trim()||""),
+        eligibility:(cols[iE]?.trim()||"").toLowerCase(),
+        newPayment:(cols[iN]?.trim()||"").toLowerCase(),
+        batch:(cols[iB]?.trim()||"").toLowerCase(),
+        stream:cols[iSt]?.trim()||"Unknown",
+        classCourse:cols[iCl]?.trim()||"Unknown",
+        admMode:cols[iA]?.trim()||"Unknown",
+        feesPaid:fp,
+        feesAmt:parseFloat((cols[iFa2]?.trim()||"0").replace(/,/g,"")),
+        arpuCheck:(cols[iArpu]?.trim()||"").toUpperCase(),
+        formStatus:(cols[iFormStatus]?.trim()||"").toLowerCase(),
+        arpuVal:parseFloat((cols[iArpuVal]?.trim()||"0").replace(/,/g,"")),
+      });
+    });
+    buildCenterDropdown();
+    populateDrop("fStream",Array.from(new Set(allRows.map(function(r){return r.stream;}))).filter(Boolean).sort());
+    populateDrop("fClass",Array.from(new Set(allRows.map(function(r){return r.classCourse;}))).filter(Boolean).sort());
+    populateDrop("fAdmMode",Array.from(new Set(allRows.map(function(r){return r.admMode;}))).filter(Boolean).sort());
+    document.getElementById("lastUpdatedText").innerText="Last updated: "+new Date().toLocaleTimeString();
+    showToast("✅ "+allRows.length+" registrations loaded");
+    applyFilters();
+  }catch(e){console.error(e);document.getElementById("lastUpdatedText").innerText="❌ Failed";showToast("❌ Error loading data");}
+  document.getElementById("refreshBtn").classList.remove("refreshing");
+}
+
+function populateDrop(id,vals){
+  const sel=document.getElementById(id),cur=sel.value;
+  sel.innerHTML="<option value=\"all\">All</option>";
+  vals.forEach(function(v){var o=document.createElement("option");o.value=v;o.textContent=v;sel.appendChild(o);});
+  if(Array.from(sel.options).some(function(o){return o.value===cur;}))sel.value=cur;
+}
+
+// ── Center Multi-Select ──────────────────────────────────
+var selectedCenters = []; // empty = all
+
+function buildCenterDropdown() {
+  var allCenters = Array.from(new Set(allRows.map(function(r){return r.center;}))).sort();
+  var dropdown = document.getElementById("centerDropdown");
+  dropdown.innerHTML = "";
+  var q = document.getElementById("centerSearchInput").value.toLowerCase();
+  var filtered = allCenters.filter(function(c){ return c.toLowerCase().includes(q); });
+  if(filtered.length === 0) {
+    dropdown.innerHTML = '<div class="center-dropdown-item" style="color:var(--text-muted)">No centers found</div>';
+    return;
+  }
+  filtered.forEach(function(center) {
+    var item = document.createElement("div");
+    item.className = "center-dropdown-item" + (selectedCenters.includes(center) ? " selected" : "");
+    item.innerHTML = '<span class="check">' + (selectedCenters.includes(center) ? "&#10003;" : "") + '</span>' + center;
+    item.onclick = function(e) { e.stopPropagation(); toggleCenterSelection(center); };
+    dropdown.appendChild(item);
+  });
+}
+
+function openCenterDropdown() {
+  buildCenterDropdown();
+  document.getElementById("centerDropdown").classList.add("open");
+}
+
+function filterCenterDropdown() {
+  buildCenterDropdown();
+  document.getElementById("centerDropdown").classList.add("open");
+}
+
+function toggleCenterSelection(center) {
+  var idx = selectedCenters.indexOf(center);
+  if(idx > -1) {
+    selectedCenters.splice(idx, 1);
+  } else {
+    selectedCenters.push(center);
+  }
+  buildCenterDropdown();
+  renderCenterTags();
+  applyFilters();
+}
+
+function renderCenterTags() {
+  var wrap = document.getElementById("centerTagsWrap");
+  var allLabel = document.getElementById("allCentersLabel");
+  if(selectedCenters.length === 0) {
+    wrap.innerHTML = '<span style="font-size:11px;color:var(--text-muted);padding:4px 6px;" id="allCentersLabel">All centers selected</span>';
+    return;
+  }
+  var tagsHtml = "";
+  for(var ci=0;ci<selectedCenters.length;ci++){
+    var cn=selectedCenters[ci];
+    var safe=cn.replace(/"/g,"&quot;");
+    tagsHtml += '<span class="center-tag selected">' + cn + ' <span class="tag-x" onclick="removeCenterTag('+ci+')">&#10005;</span></span>';
+  }
+  wrap.innerHTML = tagsHtml;
+}
+
+function removeCenterTag(idx) {
+  selectedCenters.splice(idx, 1);
+  renderCenterTags();
+  applyFilters();
+}
+
+function clearCenterFilter() {
+  selectedCenters = [];
+  document.getElementById("centerSearchInput").value = "";
+  renderCenterTags();
+  applyFilters();
+}
+
+// Close dropdown on outside click
+document.addEventListener("click", function(e) {
+  var dd = document.getElementById("centerDropdown");
+  var inp = document.getElementById("centerSearchInput");
+  if(dd && inp && !dd.contains(e.target) && e.target !== inp) {
+    dd.classList.remove("open");
+  }
+});
+
+function applyFilters(){
+  const ct=document.getElementById("fCenterType").value;
+  const st=document.getElementById("fStream").value;
+  const cl=document.getElementById("fClass").value;
+  const am=document.getElementById("fAdmMode").value;
+  const fv=document.getElementById("fFromDate").value;
+  const tv=document.getElementById("fToDate").value;
+  const fd=fv?new Date(fv+"T00:00:00"):null;
+  const td=tv?new Date(tv+"T23:59:59"):null;
+
+  var filtered=allRows.filter(function(r){
+    if(ct==="vidyapeeth"&&r.center.toLowerCase().includes("tuition"))return false;
+    if(ct==="tuition"&&!r.center.toLowerCase().includes("tuition"))return false;
+    if(st!=="all"&&r.stream!==st)return false;
+    if(cl!=="all"&&r.classCourse!==cl)return false;
+    if(am!=="all"&&r.admMode!==am)return false;
+    if(selectedCenters.length>0&&!selectedCenters.includes(r.center))return false;
+    return true;
+  });
+
+  var dateRows=filtered.filter(function(r){
+    if(!r.joiningDate)return false;
+    const d=new Date(r.joiningDate.getFullYear(),r.joiningDate.getMonth(),r.joiningDate.getDate());
+    const f=fd?new Date(fd.getFullYear(),fd.getMonth(),fd.getDate()):null;
+    const t2=td?new Date(td.getFullYear(),td.getMonth(),td.getDate()):null;
+    if(f&&d<f)return false;
+    if(t2&&d>t2)return false;
+    return true;
+  });
+
+  updateCards(filtered,dateRows,fv,tv);
+  buildTable(filtered,dateRows);
+  updateCharts(filtered);
+}
+
+function clearFilters(){
+  ["fCenterType","fStream","fClass","fAdmMode"].forEach(function(id){document.getElementById(id).value="all";});
+  setDefaultDates(); applyFilters();
+}
+
+function updateCards(rows,dateRows,fv,tv){
+  const total=rows.length;
+  var vp=rows.filter(function(r){return !r.center.toLowerCase().includes("tuition");}).length;
+  var tc=rows.filter(function(r){return r.center.toLowerCase().includes("tuition");}).length;
+  var dvp=dateRows.filter(function(r){return !r.center.toLowerCase().includes("tuition");}).length;
+  var dtc=dateRows.filter(function(r){return r.center.toLowerCase().includes("tuition");}).length;
+  var elig=rows.filter(function(r){return !r.eligibility.includes("not")&&!r.newPayment.includes("token");}).length;
+  var bat=rows.filter(function(r){return r.batch&&!r.batch.includes("no batch");}).length;
+  var avgFee=total>0?Math.round(rows.reduce(function(s,r){return s+r.feesPaid;},0)/total):0;
+  var centers=new Set(rows.map(function(r){return r.center;})).size;
+  var vpCenters=new Set(rows.filter(function(r){return !r.center.toLowerCase().includes("tuition");}).map(function(r){return r.center;})).size;
+  var tcCenters=new Set(rows.filter(function(r){return r.center.toLowerCase().includes("tuition");}).map(function(r){return r.center;})).size;
+
+  document.getElementById("cTotalReg").innerText=total.toLocaleString();
+  document.getElementById("cTotalRegSub").innerText=vp.toLocaleString()+" Vidyapeeth · "+tc.toLocaleString()+" Tuition";
+  document.getElementById("cDateReg").innerText=dateRows.length.toLocaleString();
+  document.getElementById("cDateRegSub").innerText=(fv&&tv)?dvp.toLocaleString()+" VP · "+dtc.toLocaleString()+" TC":"No date filter";
+  document.getElementById("cEligible").innerText=elig.toLocaleString();
+  document.getElementById("cEligiblePct").innerText=total>0?((elig/total)*100).toFixed(1)+"% of total":"—";
+  document.getElementById("cBatch").innerText=bat.toLocaleString();
+  document.getElementById("cBatchPct").innerText=elig>0?((bat/elig)*100).toFixed(1)+"% of eligible":"—";
+  document.getElementById("cAvgFee").innerText="₹"+avgFee.toLocaleString();
+  document.getElementById("cCenters").innerText=centers;
+  document.getElementById("cCentersSub").innerText=vpCenters+" Vidyapeeth · "+tcCenters+" Tuition";
+}
+
+function buildTable(rows,dateRows){
+  const cm={},dm={},em={},bm={};
+  rows.forEach(function(r){
+    cm[r.center]=(cm[r.center]||0)+1;
+    if(!r.eligibility.includes("not")&&!r.newPayment.includes("token"))em[r.center]=(em[r.center]||0)+1;
+    if(r.batch&&!r.batch.includes("no batch"))bm[r.center]=(bm[r.center]||0)+1;
+  });
+  dateRows.forEach(function(r){dm[r.center]=(dm[r.center]||0)+1;});
+  tableData=Object.entries(cm).map(function(e){return {center:e[0],count:e[1],dateCount:dm[e[0]]||0,eligibleCount:em[e[0]]||0,batchCount:bm[e[0]]||0};}).sort(function(a,b){return b.count-a.count;});
+  document.getElementById("rowCountBadge").innerText=tableData.length+" centers";
+  filteredData=[...tableData]; renderTable(filteredData);
+}
+
+function renderTable(data){
+  const tb=document.getElementById("tableBody");
+  if(!data.length){tb.innerHTML='<tr><td colspan="6" style="padding:28px;text-align:center;color:var(--text-muted)">No data found.</td></tr>';return;}
+  tb.innerHTML=data.map(function(r,i){
+    var ep=r.count>0?((r.eligibleCount/r.count)*100).toFixed(1):0;
+    var bp=r.eligibleCount>0?((r.batchCount/r.eligibleCount)*100).toFixed(1):0;
+    return "<tr><td class=\"rank-cell\">"+( i+1)+"</td><td class=\"center-cell\">"+escH(r.center)+"</td><td><span class=\"cb cb-orange\">"+r.count+"</span></td><td><span class=\"cb cb-purple\">"+r.dateCount+"</span></td><td><span class=\"cb cb-green\">"+r.eligibleCount+"</span><span class=\"pct-text\">("+ep+"%)</span></td><td><span class=\"cb cb-yellow\">"+r.batchCount+"</span><span class=\"pct-text\">("+bp+"%)</span></td></tr>";
+  }).join("");
+}
+
+function filterTable(){
+  const q=document.getElementById("tableSearch").value.toLowerCase().trim();
+  filteredData=q?tableData.filter(function(r){return r.center.toLowerCase().includes(q);}):tableData.slice();
+  filteredData.sort(function(a,b){var va=a[sortKey],vb=b[sortKey];if(typeof va==="string"){va=va.toLowerCase();vb=vb.toLowerCase();}return sortAsc?(va<vb?-1:va>vb?1:0):(va>vb?-1:va<vb?1:0);});
+  renderTable(filteredData);
+}
+
+function sortTable(key){
+  sortAsc=sortKey===key?!sortAsc:(key==="center");sortKey=key;
+  ["center","count","dateCount","eligibleCount","batchCount"].forEach(function(k){
+    const th=document.getElementById("th-"+k);if(!th)return;
+    th.classList.toggle("sorted",k===sortKey);
+    th.querySelector(".sort-icon").innerText=k===sortKey?(sortAsc?"↑":"↓"):"↕";
+  });
+  filterTable();
+}
+
+function updateArpuChart(rows, c) {
+  // Filter: arpu_check = YES, form_status != admission cancel
+  var arpuRows = rows.filter(function(r){
+    return r.arpuCheck === "YES" && !r.formStatus.includes("admission cancel");
+  });
+
+  // Group by stream
+  var streamFees = {};
+  var streamCount = {};
+  arpuRows.forEach(function(r){
+    if(!streamFees[r.stream]) { streamFees[r.stream]=0; streamCount[r.stream]=0; }
+    streamFees[r.stream] += r.arpuVal;
+    streamCount[r.stream]++;
+  });
+
+  var arpuEntries = Object.entries(streamFees).map(function(e){
+    return { stream: e[0], arpu: streamCount[e[0]]>0 ? Math.round(e[1]/streamCount[e[0]]) : 0, count: streamCount[e[0]] };
+  }).sort(function(a,b){ return b.arpu - a.arpu; });
+
+  var aColors = ["#f97316","#818cf8","#22c55e","#fbbf24","#14b8a6","#f43f5e"];
+
+  if(arpuC) arpuC.destroy();
+  arpuC = new Chart(document.getElementById("arpuChart"),{
+    type:"bar",
+    data:{
+      labels: arpuEntries.map(function(e){ return e.stream+" ("+e.count+")"; }),
+      datasets:[{
+        data: arpuEntries.map(function(e){ return e.arpu; }),
+        backgroundColor: arpuEntries.map(function(e,i){ return aColors[i%aColors.length]+"99"; }),
+        borderColor: arpuEntries.map(function(e,i){ return aColors[i%aColors.length]; }),
+        borderWidth:1, borderRadius:6
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:false}, tooltip:{callbacks:{label:function(ctx){ return " ₹"+ctx.parsed.y.toLocaleString(); }}}},
+      scales:{
+        x:{ticks:{color:c.muted,font:{size:10}}, grid:{display:false}},
+        y:{ticks:{color:c.muted,font:{size:10},callback:function(v){ return "₹"+v.toLocaleString(); }}, grid:{color:c.border}, beginAtZero:true}
+      },
+      animation:{onComplete:function(){
+        var ch=this; var ctx=ch.ctx; var meta=ch.getDatasetMeta(0);
+        ctx.save(); ctx.font="bold 10px sans-serif"; ctx.fillStyle=c.text; ctx.textAlign="center"; ctx.textBaseline="bottom";
+        for(var i=0;i<meta.data.length;i++){
+          var bar=meta.data[i]; var val=ch.data.datasets[0].data[i];
+          if(val>0) ctx.fillText("₹"+val.toLocaleString(), bar.x, bar.y-3);
+        }
+        ctx.restore();
+      }}
+    }
+  });
+
+  // ARPU Pie chart
+  if(arpuPieC) arpuPieC.destroy();
+  var totalArpu = arpuEntries.reduce(function(s,e){ return s+e.arpu; }, 0);
+  arpuPieC = new Chart(document.getElementById("arpuPieChart"),{
+    type:"doughnut",
+    data:{
+      labels: arpuEntries.map(function(e){ return e.stream; }),
+      datasets:[{
+        data: arpuEntries.map(function(e){ return e.arpu; }),
+        backgroundColor: aColors.slice(0, arpuEntries.length),
+        borderWidth:0
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      cutout:"52%",
+      plugins:{
+        legend:{ display:true, position:"bottom", labels:{ color:c.text, font:{size:9}, boxWidth:7, padding:4 }},
+        tooltip:{ callbacks:{ label:function(ctx){
+          var val=ctx.parsed;
+          var pct=totalArpu>0?((val/totalArpu)*100).toFixed(1):0;
+          return " ₹"+val.toLocaleString()+" ("+pct+"%)";
+        }}}
+      }
+    }
+  });
+}
+
+function updateBatchClassChart(rows, c) {
+  var batchRows = rows.filter(function(r){ return r.batch && !r.batch.includes("no batch"); });
+  var classMap = {};
+  batchRows.forEach(function(r){
+    var cl = r.classCourse || "Unknown";
+    classMap[cl] = (classMap[cl]||0) + 1;
+  });
+  var entries = Object.entries(classMap).sort(function(a,b){return b[1]-a[1];});
+  var total = entries.reduce(function(s,e){return s+e[1];},0);
+  var cColors = ["#fbbf24","#f97316","#818cf8","#22c55e","#14b8a6","#f43f5e","#a78bfa","#34d399","#fb923c","#60a5fa"];
+
+  document.getElementById("batchClassBadge").innerText = total.toLocaleString() + " alloted";
+
+  if(batchClassC) batchClassC.destroy();
+  batchClassC = new Chart(document.getElementById("batchClassChart"),{
+    type:"bar",
+    data:{
+      labels: entries.map(function(e){ return e[0]; }),
+      datasets:[{
+        data: entries.map(function(e){ return e[1]; }),
+        backgroundColor: entries.map(function(e,i){ return cColors[i%cColors.length]+"99"; }),
+        borderColor: entries.map(function(e,i){ return cColors[i%cColors.length]; }),
+        borderWidth:1, borderRadius:6
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false}, tooltip:{callbacks:{label:function(ctx){
+        var pct=total>0?((ctx.parsed.y/total)*100).toFixed(1):0;
+        return " "+ctx.parsed.y+" ("+pct+"%)";
+      }}}},
+      scales:{
+        x:{ticks:{color:c.muted,font:{size:9},maxRotation:30},grid:{display:false}},
+        y:{ticks:{color:c.muted,font:{size:9}},grid:{color:c.border},beginAtZero:true}
+      },
+      animation:{onComplete:function(){
+        var ch=this; var ctx=ch.ctx; var meta=ch.getDatasetMeta(0);
+        ctx.save(); ctx.font="bold 9px sans-serif"; ctx.fillStyle=c.text; ctx.textAlign="center"; ctx.textBaseline="bottom";
+        for(var i=0;i<meta.data.length;i++){
+          var bar=meta.data[i]; var val=ch.data.datasets[0].data[i];
+          if(val>0) ctx.fillText(val, bar.x, bar.y-3);
+        }
+        ctx.restore();
+      }}
+    }
+  });
+}
+
+function updateClassChart(rows, c) {
+  var classMap = {};
+  rows.forEach(function(r){
+    var cl = r.classCourse || "Unknown";
+    classMap[cl] = (classMap[cl]||0) + 1;
+  });
+  var classEntries = Object.entries(classMap).sort(function(a,b){return b[1]-a[1];});
+  var total = classEntries.reduce(function(s,e){return s+e[1];}, 0);
+  var cColors = ["#f97316","#818cf8","#22c55e","#fbbf24","#14b8a6","#f43f5e","#a78bfa","#34d399","#fb923c","#60a5fa"];
+
+  document.getElementById("classBadge").innerText = classEntries.length + " classes";
+
+  if(classC) classC.destroy();
+  classC = new Chart(document.getElementById("classChart"), {
+    type: "bar",
+    data: {
+      labels: classEntries.map(function(e){ return e[0]; }),
+      datasets: [{
+        data: classEntries.map(function(e){ return e[1]; }),
+        backgroundColor: classEntries.map(function(e,i){ return cColors[i%cColors.length]+"99"; }),
+        borderColor: classEntries.map(function(e,i){ return cColors[i%cColors.length]; }),
+        borderWidth: 1, borderRadius: 6
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(ctx){
+        var pct = total>0 ? ((ctx.parsed.y/total)*100).toFixed(1) : 0;
+        return " "+ctx.parsed.y+" ("+pct+"%)";
+      }}}},
+      scales: {
+        x: { ticks: { color: c.muted, font: { size: 9 }, maxRotation: 30 }, grid: { display: false } },
+        y: { ticks: { color: c.muted, font: { size: 9 } }, grid: { color: c.border }, beginAtZero: true }
+      },
+      animation: { onComplete: function(){
+        var ch=this; var ctx=ch.ctx; var meta=ch.getDatasetMeta(0);
+        ctx.save(); ctx.font="bold 9px sans-serif"; ctx.fillStyle=c.text; ctx.textAlign="center"; ctx.textBaseline="bottom";
+        for(var i=0;i<meta.data.length;i++){
+          var bar=meta.data[i]; var val=ch.data.datasets[0].data[i];
+          if(val>0) ctx.fillText(val, bar.x, bar.y-3);
+        }
+        ctx.restore();
+      }}
+    }
+  });
+}
+
+function updateCharts(rows){
+  const c=gc();
+  // DoD
+  const dayMap={};
+  rows.forEach(function(r){if(!r.joiningDate)return;const k=fmtDate(r.joiningDate);dayMap[k]=(dayMap[k]||0)+1;});
+  const sorted=Object.entries(dayMap).sort(function(a,b){return a[0].localeCompare(b[0]);}).slice(-30);
+  const labels=sorted.map(function(e){var dt=new Date(e[0]+"T00:00:00");return dt.getDate()+" "+dt.toLocaleString("en",{month:"short"});});
+  const vals=sorted.map(function(e){return e[1];});
+  document.getElementById("dodBadge").innerText="Last "+sorted.length+" days";
+  if(dodC)dodC.destroy();
+  // Make DoD scrollable with all days but show 10 at a time
+  const dodCanvas = document.getElementById("dodChart");
+  if(dodC)dodC.destroy();
+  dodC=new Chart(dodCanvas,{type:"bar",data:{labels:labels,datasets:[{data:vals,backgroundColor:c.accent+"99",borderColor:c.accent,borderWidth:1,borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:c.muted,font:{size:10},maxRotation:45,autoSkip:false},grid:{color:c.border,display:false}},y:{ticks:{color:c.muted,font:{size:10}},grid:{color:c.border},beginAtZero:true}},animation:{onComplete:function(){var ch=this;var ctx=ch.ctx;var meta=ch.getDatasetMeta(0);ctx.save();ctx.font="bold 10px sans-serif";ctx.fillStyle=c.text;ctx.textAlign="center";ctx.textBaseline="bottom";for(var i=0;i<meta.data.length;i++){var bar=meta.data[i];var val=ch.data.datasets[0].data[i];if(val>0)ctx.fillText(val,bar.x,bar.y-3);}ctx.restore();}}}});
+
+  // Fee
+  const feeG={"Token Only":0,"Less than Token":0,"1st EMI Paid":0,"Token & EMI":0,"Total Paid":0,"Other":0};
+  rows.forEach(function(r){
+    const p=r.newPayment;
+    if(p.includes("token only"))feeG["Token Only"]++;
+    else if(p.includes("less than token"))feeG["Less than Token"]++;
+    else if(p.includes("1st emi")||p.includes("1st_emi"))feeG["1st EMI Paid"]++;
+    else if(p.includes("token")&&p.includes("emi"))feeG["Token & EMI"]++;
+    else if(p.includes("total paid"))feeG["Total Paid"]++;
+    else feeG["Other"]++;
+  });
+  const fColors=["#f97316","#fbbf24","#22c55e","#818cf8","#14b8a6","#94a3b8"];
+  const fEntries=Object.entries(feeG).filter(function(e){return e[1]>0;});
+  const fTotal=fEntries.reduce(function(s,e){return s+e[1];},0);
+  if(feeC)feeC.destroy();
+  feeC=new Chart(document.getElementById("feeChart"),{type:"doughnut",data:{labels:fEntries.map(function(e){return e[0];}),datasets:[{data:fEntries.map(function(e){return e[1];}),backgroundColor:fColors,borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:"65%",plugins:{legend:{display:false},tooltip:{callbacks:{label:function(ctx){var val=ctx.parsed;var pct=fTotal>0?((val/fTotal)*100).toFixed(1):0;return " "+val+" ("+pct+"%)";}}}}}});
+  document.getElementById("feeLegend").innerHTML=fEntries.map(function(e,i){var k=e[0];var v=e[1];return "<div class=\"fee-legend-item\"><div class=\"fee-dot\" style=\"background:"+fColors[i]+"\"></div><span class=\"fee-legend-label\">"+k+"</span><span class=\"fee-legend-val\">"+v.toLocaleString()+"</span><span class=\"fee-legend-pct\">"+(fTotal>0?((v/fTotal)*100).toFixed(1):0)+"%</span></div>";}).join("");
+
+  // Center bar
+  const cMap={};rows.forEach(function(r){cMap[r.center]=(cMap[r.center]||0)+1;});
+  const top10=Object.entries(cMap).sort(function(a,b){return b[1]-a[1];}).slice(0,10);
+  document.getElementById("centerBadge").innerText=Object.keys(cMap).length+" centers total";
+  if(centerC)centerC.destroy();
+  centerC=new Chart(document.getElementById("centerChart"),{type:"bar",data:{labels:top10.map(function(e){return e[0].replace(" Vidyapeeth","").replace(" Tuition Center","");}),datasets:[{data:top10.map(function(e){return e[1];}),backgroundColor:top10.map(function(e){return e[0].toLowerCase().includes("tuition")?"#818cf888":c.accent+"88";}),borderColor:top10.map(function(e){return e[0].toLowerCase().includes("tuition")?"#818cf8":c.accent;}),borderWidth:1,borderRadius:4}]},options:{indexAxis:"y",responsive:true,maintainAspectRatio:false,layout:{padding:{right:40}},plugins:{legend:{display:false}},scales:{x:{ticks:{color:c.muted,font:{size:9}},grid:{color:c.border}},y:{ticks:{color:c.text,font:{size:9}},grid:{display:false}}}}});
+  centerC.options.animation = {onComplete:function(){
+    var ch=this;var ctx2=ch.ctx;
+    ctx2.save();
+    ctx2.font="bold 10px sans-serif";
+    ctx2.fillStyle=c.text;
+    ctx2.textAlign="left";
+    ctx2.textBaseline="middle";
+    var meta=ch.getDatasetMeta(0);
+    for(var i=0;i<meta.data.length;i++){
+      var bar=meta.data[i];
+      var val=ch.data.datasets[0].data[i];
+      ctx2.fillText(val,bar.x+6,bar.y);
+    }
+    ctx2.restore();
+  }};
+  centerC.update();
+
+  // Stream donut
+  const sMap={};rows.forEach(function(r){sMap[r.stream]=(sMap[r.stream]||0)+1;});
+  const sEntries=Object.entries(sMap).sort(function(a,b){return b[1]-a[1];});
+  const sColors=["#f97316","#818cf8","#22c55e","#fbbf24","#14b8a6","#f43f5e"];
+  if(streamC)streamC.destroy();
+  var sTotal=sEntries.reduce(function(s,e){return s+e[1];},0);
+  streamC=new Chart(document.getElementById("streamChart"),{type:"doughnut",data:{labels:sEntries.map(function(e){return e[0]+" ("+e[1]+")";}),datasets:[{data:sEntries.map(function(e){return e[1];}),backgroundColor:sColors,borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:"52%",plugins:{legend:{display:true,position:"right",labels:{color:c.text,font:{size:9},boxWidth:7,padding:5}},tooltip:{callbacks:{label:function(ctx){var val=ctx.parsed;var pct=sTotal>0?((val/sTotal)*100).toFixed(1):0;return " "+val+" ("+pct+"%);";}}}}}});
+
+  // Stream-wise ARPU
+  updateArpuChart(rows, c);
+  // Class-wise students
+  updateClassChart(rows, c);
+  // Class-wise batch alloted
+  updateBatchClassChart(rows, c);
+}
+
+function toggleSub(id){document.getElementById(id)?.classList.toggle("open");document.getElementById("chevron-"+id)?.classList.toggle("open");}
+function setTheme(theme){document.documentElement.setAttribute("data-theme",theme);localStorage.setItem("pwTheme",theme);document.querySelectorAll(".theme-btn").forEach(function(b){b.classList.toggle("active",b.dataset.theme===theme);});if(allRows.length)applyFilters();}
+function logout(){localStorage.removeItem("loggedUser");window.location.href="login.html";}
+function setDefaultDates(){const today=new Date();const first=new Date(today.getFullYear(),today.getMonth(),1);document.getElementById("fFromDate").value=fmtDate(first);document.getElementById("fToDate").value=fmtDate(today);}
+
+(function init(){
+  const saved=localStorage.getItem("pwTheme")||"dark";
+  document.documentElement.setAttribute("data-theme",saved);
+  document.querySelectorAll(".theme-btn").forEach(function(b){b.classList.toggle("active",b.dataset.theme===saved);});
+  setDefaultDates(); loadData();
+})();
+</script>
+</body>
+</html>
