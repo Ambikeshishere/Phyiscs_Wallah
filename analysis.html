@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PW Vidyapeeth Maharashtra — Tracker</title>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
   <style>
@@ -208,15 +208,15 @@
     .search-wrap-dash .si { position:absolute; left:9px; top:50%; transform:translateY(-50%); font-size:12px; opacity:0.4; pointer-events:none; }
     .data-table-wrap { overflow-x:auto; }
     table.data-table { width:100%; border-collapse:collapse; }
-    table.data-table thead tr { background:rgba(249,115,22,0.05); border-bottom:1px solid var(--border); }
-    table.data-table thead th { padding:10px 14px; text-align:left; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; color:var(--text-muted); white-space:nowrap; cursor:pointer; user-select:none; transition:var(--transition); }
-    table.data-table thead th:hover, table.data-table thead th.sorted { color:var(--accent2); }
+    table.data-table thead tr { background:#160f2e; border-bottom:1px solid rgba(129,140,248,0.2); }
+    table.data-table thead th { padding:10px 14px; text-align:center; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; color:#a5b4fc; white-space:nowrap; cursor:pointer; user-select:none; transition:var(--transition); vertical-align:middle; }
+    table.data-table thead th:hover, table.data-table thead th.sorted { color:#818cf8; }
     table.data-table tbody tr { border-bottom:1px solid var(--border); transition:var(--transition); }
     table.data-table tbody tr:last-child { border-bottom:none; }
     table.data-table tbody tr:hover { background:var(--surface-hover); }
-    table.data-table tbody td { padding:10px 14px; font-size:12px; color:var(--text); white-space:nowrap; }
-    .rank-cell { color:var(--text-muted) !important; font-size:11px !important; font-weight:600; width:32px; }
-    .center-cell { font-weight:600; font-family:var(--font-display); font-size:12px !important; }
+    table.data-table tbody td { padding:10px 14px; font-size:12px; color:var(--text); white-space:nowrap; text-align:center; }
+    .rank-cell { color:var(--text-muted) !important; font-size:11px !important; font-weight:600; width:32px; text-align:center !important; vertical-align:middle; }
+    .center-cell { font-weight:600; font-family:var(--font-display); font-size:12px !important; text-align:left !important; }
     .cb { display:inline-flex; align-items:center; justify-content:center; min-width:30px; height:20px; border-radius:6px; font-weight:700; font-size:11px; font-family:var(--font-display); padding:0 6px; border:1px solid; }
     .cb-orange { background:rgba(249,115,22,0.12); color:var(--accent2); border-color:rgba(249,115,22,0.2); }
     .cb-purple { background:rgba(129,140,248,0.12); color:#818cf8; border-color:rgba(129,140,248,0.25); }
@@ -226,8 +226,39 @@
     .last-updated { padding:10px 16px; font-size:11px; color:var(--text-muted); border-top:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
     .refresh-btn { background:transparent; border:1px solid var(--border); border-radius:6px; padding:3px 8px; font-size:11px; color:var(--text-muted); cursor:pointer; font-family:var(--font-body); transition:var(--transition); display:flex; align-items:center; gap:4px; }
     .refresh-btn:hover { color:var(--accent2); border-color:var(--accent); }
-    .refreshing .refresh-icon { animation:spin 0.8s linear infinite; }
-    @keyframes spin { to { transform:rotate(360deg); } }
+
+    /* Pivot Table */
+    .pivot-wrap { overflow-x:auto; overflow-y:auto; max-height:420px; }
+    .pivot-table { border-collapse:collapse; font-size:11px; }
+    .pivot-table th, .pivot-table td { padding:7px 12px; white-space:nowrap; border-bottom:1px solid rgba(255,255,255,0.06); background:#0d1b2a; }
+    .pivot-table thead tr { position:sticky; top:0; z-index:3; }
+    .pivot-table thead th { background:#0c1e2e !important; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.7px; color:#67e8f9; text-align:center; border-right:1px solid rgba(103,232,249,0.15); box-shadow: 0 1px 0 rgba(103,232,249,0.2); }
+    .pivot-table thead th.center-col { text-align:left; min-width:220px; position:sticky; left:0; z-index:5; background:#0c1e2e !important; }
+    .pivot-table tbody td { text-align:center; color:#94a3b8; background:#0d1b2a; }
+    .pivot-table tbody td.has-data { color:#e2e8f0; font-weight:600; }
+    .pivot-table tbody td.center-col { position:sticky; left:0; background:#141f2e !important; z-index:2; font-weight:600; font-family:var(--font-display); font-size:12px; border-right:2px solid rgba(34,211,238,0.2); color:#e2e8f0 !important; }
+    .pivot-table tbody tr:hover td { background:#132030; }
+    .pivot-table tbody tr:hover td.center-col { background:#1a2a3e !important; }
+    .pivot-city-row td { background:#0f1e30 !important; font-weight:700 !important; color:#fb923c !important; font-family:var(--font-display); cursor:pointer; }
+    .pivot-city-row td.center-col { background:#0f1e30 !important; color:#fb923c !important; }
+    .pivot-city-row:hover td { background:#142033 !important; }
+    .pivot-city-row:hover td.center-col { background:#142033 !important; }
+    .pivot-center-row.collapsed { display:none; }
+    .city-toggle { font-size:10px; margin-right:6px; display:inline-block; transition:transform 0.2s; }
+    .city-toggle.open { transform:rotate(90deg); }
+    .pivot-total-cell { font-weight:700; color:#22d3ee; font-size:11px; }
+    .pivot-date-total { background:rgba(34,211,238,0.08) !important; font-weight:700; color:#22d3ee; }
+    .pivot-grand-row td { background:#0a1929 !important; }
+    .pivot-grand-row td.center-col { background:#0a1929 !important; }
+
+    .target-wrap { display:inline-flex; flex-direction:column; gap:3px; min-width:120px; align-items:center; }
+    .target-numbers { display:flex; align-items:center; justify-content:center; gap:4px; flex-wrap:wrap; }
+    .target-pct { font-size:10px; font-weight:700; }
+    .target-pct.good  { color:#22c55e; }
+    .target-pct.mid   { color:#fbbf24; }
+    .target-pct.low   { color:#f43f5e; }
+
+    .no-target { color:var(--text-muted); font-size:11px; }
   </style>
 </head>
 <body>
@@ -243,42 +274,98 @@
   <aside class="sidebar">
     <div class="sidebar-top">
       <div class="logo">
-        <span class="logo-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/d/dd/Physics_wallah_logo.svg" alt="PW Logo"></span>
-        <div><div class="logo-text">PW Vidyapeeth</div><div class="logo-sub">Maharashtra</div></div>
+        <span class="logo-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/d/dd/Physics_wallah_logo.svg" alt="PW Vidyapeeth Logo"></span>
+        <div>
+          <div class="logo-text">PW Vidyapeeth</div>
+          <div class="logo-sub">Maharashtra</div>
+        </div>
       </div>
       <nav class="sidebar-nav">
-        <div class="menu-item" onclick="window.location.href='index.html'"><span class="menu-icon">&#128193;</span> All Sheets</div>
-        <div class="menu-item" onclick="window.location.href='index.html#pinned'"><span class="menu-icon">&#128204;</span> Pinned</div>
+        <div class="menu-item" data-filter="all" onclick="window.location.href='index.html'">
+          <span class="menu-icon">🗂️</span>
+          All Sheets
+        </div>
+        <div class="menu-item" data-filter="pinned" onclick="window.location.href='index.html#pinned'">
+          <span class="menu-icon">📌</span>
+          Pinned
+        </div>
+
         <div class="nav-divider"></div>
         <div class="nav-section-label">Categories</div>
-        <div class="menu-item" onclick="window.location.href='index.html?filter=analysis'"><span class="menu-icon">&#128202;</span> Analysis</div>
-        <div class="menu-item active" onclick="window.location.href='analysis.html'"><span class="menu-icon">&#128200;</span> Tracker</div>
-        <div class="menu-item" onclick="window.location.href='index.html?filter=b2b'"><span class="menu-icon">&#128221;</span> B2B</div>
-        <div class="menu-item" onclick="window.location.href='index.html?filter=acad'"><span class="menu-icon">&#127891;</span> Acad</div>
-        <div class="menu-item" onclick="window.location.href='index.html?filter=bws'"><span class="menu-icon">&#128680;</span> BWS</div>
-        <div class="menu-item has-sub" onclick="toggleSub('comms-sub')"><span class="menu-icon">&#128227;</span><span>Comms</span><span class="chevron" id="chevron-comms-sub">&#9658;</span></div>
+        <div class="menu-item active" onclick="window.location.href='analysis.html'">
+          <span class="menu-icon">📈</span>
+          CRP Dashboard
+        </div>
+        <div class="menu-item" onclick="openSummaryModal()">
+          <span class="menu-icon">📋</span>
+          Embedded Summary
+        </div>
+        <div class="menu-item" data-filter="analysis" onclick="window.location.href='index.html?filter=analysis'">
+          <span class="menu-icon">📊</span>
+          Analysis
+        </div>
+        <div class="menu-item" data-filter="b2b" onclick="window.location.href='index.html?filter=b2b'">
+          <span class="menu-icon">📝</span>
+          B2B
+        </div>
+        <div class="menu-item" data-filter="acad" onclick="window.location.href='index.html?filter=acad'">
+          <span class="menu-icon">🎓</span>
+          Acad
+        </div>
+        <div class="menu-item" data-filter="bws" onclick="window.location.href='index.html?filter=bws'">
+          <span class="menu-icon">🚨</span>
+          BWS
+        </div>
+
+        <div class="menu-item has-sub" data-filter="comms" onclick="toggleSub('comms-sub')">
+          <span class="menu-icon">📣</span>
+          <span>Comms</span>
+          <span class="chevron" id="chevron-comms-sub">▸</span>
+        </div>
         <div class="sub-menu" id="comms-sub">
           <div class="sub-item" onclick="window.location.href='index.html?filter=gen'">Gen</div>
           <div class="sub-item" onclick="window.location.href='index.html?filter=ptm'">PTM</div>
           <div class="sub-item" onclick="window.location.href='index.html?filter=orientation'">Orientation</div>
           <div class="sub-item" onclick="window.location.href='index.html?filter=batch+start'">Batch Start</div>
         </div>
-        <div class="menu-item has-sub" onclick="toggleSub('mh-sub')"><span class="menu-icon">&#128200;</span><span>MH</span><span class="chevron" id="chevron-mh-sub">&#9658;</span></div>
-        <div class="sub-menu" id="mh-sub"><div class="sub-item" onclick="window.location.href='index.html?filter=maharashtra'">Maharashtra</div></div>
+
+        <div class="menu-item has-sub" data-filter="mh" onclick="toggleSub('mh-sub')">
+          <span class="menu-icon">📈</span>
+          <span>MH</span>
+          <span class="chevron" id="chevron-mh-sub">▸</span>
+        </div>
+        <div class="sub-menu" id="mh-sub">
+          <div class="sub-item" onclick="window.location.href='index.html?filter=maharashtra'">Maharashtra</div>
+        </div>
+
         <div class="nav-divider"></div>
         <div class="nav-section-label">Quick Links</div>
-        <div class="menu-item" onclick="window.open('https://erp.pw.live/home','_blank')"><span class="menu-icon">&#127962;</span> ERP PW <span class="ext-icon">&#8599;</span></div>
-        <div class="menu-item" onclick="window.open('https://ambikeshishere.github.io/PW-Web/','_blank')"><span class="menu-icon">&#128203;</span> PW Web Report <span class="ext-icon">&#8599;</span></div>
+
+        <div class="menu-item" onclick="window.open('https://erp.pw.live/home', '_blank')">
+          <span class="menu-icon">🏢</span>
+          ERP PW
+          <span class="ext-icon">↗</span>
+        </div>
+
+        <div class="menu-item" onclick="window.open('https://ambikeshishere.github.io/PW-Web/', '_blank')">
+          <span class="menu-icon">📋</span>
+          PW Web Report
+          <span class="ext-icon">↗</span>
+        </div>
+
       </nav>
     </div>
+
     <div class="sidebar-bottom">
       <div class="theme-switcher">
-        <button class="theme-btn" data-theme="dark" onclick="setTheme('dark')">&#127769; Dark</button>
-        <button class="theme-btn" data-theme="light" onclick="setTheme('light')">&#9728;&#65039; Light</button>
-        <button class="theme-btn" data-theme="eve" onclick="setTheme('eve')">&#127807; Eve</button>
+        <button class="theme-btn active" data-theme="dark" onclick="setTheme('dark')">🌙 Dark</button>
+        <button class="theme-btn" data-theme="light" onclick="setTheme('light')">☀️ Light</button>
+        <button class="theme-btn" data-theme="eve" onclick="setTheme('eve')">🌿 Eve</button>
       </div>
       <div class="user-badge" id="userBadge"></div>
-      <button class="logout-btn" onclick="logout()"><span>&#8617;</span> Logout</button>
+      <button class="logout-btn" onclick="logout()">
+        <span>↩</span> Logout
+      </button>
     </div>
   </aside>
 
@@ -367,9 +454,9 @@
         <div class="s-card-sub" id="cBatchPct">&#8212;% of eligible</div>
       </div>
       <div class="s-card" style="--card-accent:#f43f5e">
-        <div class="s-card-label">Avg Fee Paid</div>
+        <div class="s-card-label">Avg ARPU</div>
         <div class="s-card-value" id="cAvgFee">&#8212;</div>
-        <div class="s-card-sub">per student</div>
+        <div class="s-card-sub" id="cArpuSub">arpu_check = YES</div>
       </div>
       <div class="s-card" style="--card-accent:#14b8a6">
         <div class="s-card-label">Active Centers</div>
@@ -378,40 +465,63 @@
       </div>
     </div>
 
-    <!-- Charts Row 1: DoD + Fee -->
-    <div class="charts-row">
-      <div class="chart-card" style="min-height:300px;">
+    <!-- Row 1: DoD (horizontal scroll) + Top 10 Centers (vertical scroll) side by side -->
+    <div style="display:grid;grid-template-columns:3fr 2fr;gap:16px;">
+      <div class="chart-card" style="min-height:360px;overflow:hidden;">
         <div class="chart-header">
           <span class="chart-title">&#128197; Day-on-Day Registrations</span>
           <span class="chart-badge" id="dodBadge">Last 30 days</span>
         </div>
-        <div id="dodChartWrap" style="width:100%;height:240px;">
-          <canvas id="dodChart"></canvas>
+        <div style="overflow-x:auto;overflow-y:hidden;width:100%;">
+          <div id="dodChartWrap" style="min-width:600px;height:280px;">
+            <canvas id="dodChart"></canvas>
+          </div>
         </div>
       </div>
-      <div class="chart-card">
-        <div class="chart-header"><span class="chart-title">&#128179; Fee Payment Breakdown</span></div>
-        <div class="fee-row" style="flex:1;align-items:center;">
-          <div class="chart-wrap" style="height:180px;width:180px;flex-shrink:0"><canvas id="feeChart"></canvas></div>
-          <div class="fee-legend" id="feeLegend"></div>
+      <div class="chart-card" style="min-height:360px;">
+        <div class="chart-header">
+          <span class="chart-title">&#127968; Top 10 Centers by % Achievement</span>
+          <span class="chart-badge" id="centerBadge">&#8212;</span>
+        </div>
+        <div style="max-height:300px;overflow-y:auto;">
+          <table style="width:100%;border-collapse:collapse;" id="top10Table">
+            <thead style="position:sticky;top:0;background:#0f2118;z-index:2;box-shadow:0 1px 0 rgba(34,197,94,0.2);">
+              <tr style="border-bottom:1px solid var(--border);">
+                <th style="padding:8px 10px;text-align:center;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.7px;color:#4ade80;">#</th>
+                <th style="padding:8px 10px;text-align:center;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.7px;color:#4ade80;">Center</th>
+                <th style="padding:8px 10px;text-align:center;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.7px;color:#4ade80;">Target</th>
+                <th style="padding:8px 10px;text-align:center;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.7px;color:#4ade80;">Ach.</th>
+                <th style="padding:8px 10px;text-align:center;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.7px;color:#4ade80;">%</th>
+              </tr>
+            </thead>
+            <tbody id="top10Body"></tbody>
+          </table>
         </div>
       </div>
     </div>
 
-    <!-- Charts Row 2: Center bar + Stream pie -->
-    <div class="charts-row-2">
+    <!-- Row 3: Pie charts — Fee + Stream + Eligibility -->
+    <div class="charts-row-3">
       <div class="chart-card">
-        <div class="chart-header">
-          <span class="chart-title">&#127968; Top 10 Centers by Registration</span>
-          <span class="chart-badge" id="centerBadge">&#8212;</span>
-        </div>
-        <div class="chart-wrap" style="min-height:200px;height:240px"><canvas id="centerChart"></canvas></div>
+        <div class="chart-header"><span class="chart-title">&#128179; Fee Payment Breakdown</span></div>
+        <div class="chart-wrap" style="height:200px;"><canvas id="feeChart"></canvas></div>
+        <div class="fee-legend" id="feeLegend" style="margin-top:8px;"></div>
       </div>
       <div class="chart-card">
         <div class="chart-header"><span class="chart-title">&#128218; Stream Split</span></div>
         <div class="chart-wrap" style="min-height:200px;height:240px"><canvas id="streamChart"></canvas></div>
       </div>
+      <div class="chart-card">
+        <div class="chart-header">
+          <span class="chart-title">&#9989; Eligibility Status</span>
+          <span class="chart-badge" id="eligBadge">&#8212;</span>
+        </div>
+        <div class="chart-wrap" style="min-height:200px;height:240px"><canvas id="eligChart"></canvas></div>
+        <div style="font-size:10px;color:var(--text-muted);margin-top:4px;">Base: fees_paid &gt; 3498 &middot; free_admission = false &middot; status = active</div>
+      </div>
     </div>
+
+    <!-- Row 4: ARPU + Class Reg + Batch Alloted -->
     <div class="charts-row-3">
       <div class="chart-card">
         <div class="chart-header"><span class="chart-title">&#129693; Stream-wise ARPU</span></div>
@@ -430,6 +540,28 @@
           <span class="chart-badge" id="batchClassBadge">&#8212;</span>
         </div>
         <div class="chart-wrap" style="min-height:200px;height:240px"><canvas id="batchClassChart"></canvas></div>
+      </div>
+    </div>
+
+
+    <!-- Date-wise Center Pivot Table -->
+    <div class="table-section">
+      <div class="table-header">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <span class="table-title">&#128197; Date-wise Registration Pivot</span>
+          <span class="table-badge" id="pivotBadge">&#8212;</span>
+          <span class="table-base-info">Based on date range filter &middot; click city to expand/collapse</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <button class="clear-btn" onclick="expandAllCities(true)" style="font-size:10px;padding:4px 8px;">Expand All</button>
+          <button class="clear-btn" onclick="expandAllCities(false)" style="font-size:10px;padding:4px 8px;">Collapse All</button>
+        </div>
+      </div>
+      <div class="pivot-wrap">
+        <table class="pivot-table" id="pivotTable">
+          <thead id="pivotHead"></thead>
+          <tbody id="pivotBody"></tbody>
+        </table>
       </div>
     </div>
 
@@ -452,10 +584,12 @@
             <tr>
               <th class="rank-cell">#</th>
               <th onclick="sortTable('center')" id="th-center">Center Name <span class="sort-icon">&#8597;</span></th>
-              <th onclick="sortTable('count')" id="th-count" class="sorted">Overall Reg <span class="sort-icon">&#8595;</span></th>
+              <th onclick="sortTable('count')" id="th-count" class="sorted">Overall Reg / Target <span class="sort-icon">&#8595;</span></th>
               <th onclick="sortTable('dateCount')" id="th-dateCount">Reg in Range <span class="sort-icon">&#8597;</span></th>
               <th onclick="sortTable('eligibleCount')" id="th-eligibleCount">Eligible + EMI <span class="sort-icon">&#8597;</span></th>
               <th onclick="sortTable('batchCount')" id="th-batchCount">Batch Alloted <span class="sort-icon">&#8597;</span></th>
+              <th onclick="sortTable('avgArpu')" id="th-avgArpu">Avg ARPU <span class="sort-icon">&#8597;</span></th>
+              <th onclick="sortTable('avgDisc')" id="th-avgDisc">Avg % Discount <span class="sort-icon">&#8597;</span></th>
             </tr>
           </thead>
           <tbody id="tableBody"></tbody>
@@ -473,8 +607,10 @@
 
 <script>
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSIyfDHFpP7wqzoT3YoYM7y8lR8RBD-g9Pq-vgmb3v-yDZDdyUIS5DaCfysHvQBZVM80ny3LQBjVFSC/pub?gid=0&single=true&output=csv";
+const TARGET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSIyfDHFpP7wqzoT3YoYM7y8lR8RBD-g9Pq-vgmb3v-yDZDdyUIS5DaCfysHvQBZVM80ny3LQBjVFSC/pub?gid=1812402802&single=true&output=csv";
 let allRows=[], tableData=[], filteredData=[], sortKey="count", sortAsc=false;
-let dodC, feeC, centerC, streamC, arpuC, arpuPieC, classC, batchClassC;
+let targetMap = {}; // center name -> target number
+let dodC, feeC, centerC, streamC, arpuC, arpuPieC, classC, batchClassC, eligC;
 
 document.getElementById("userBadge").innerText = "👤 " + localStorage.getItem("loggedUser");
 
@@ -500,8 +636,26 @@ async function loadData(){
   document.getElementById("refreshBtn").classList.add("refreshing");
   document.getElementById("lastUpdatedText").innerText="Fetching...";
   try{
-    const res=await fetch(CSV_URL+"&t="+Date.now());
-    const text=await res.text();
+    // Fetch main CSV first (critical)
+    const res = await fetch(CSV_URL+"&t="+Date.now());
+    const text = await res.text();
+
+    // Fetch target CSV separately — don't break if it fails
+    targetMap = {};
+    try {
+      const targetRes = await fetch(TARGET_CSV_URL+"&t="+Date.now());
+      const targetText = await targetRes.text();
+      const targetLines = targetText.split("\n").slice(1);
+      targetLines.forEach(function(line){
+        if(!line.trim()) return;
+        const cols = parseCSVRow(line);
+        const center = cols[0]?.trim();
+        const target = parseInt((cols[1]?.trim()||"0").replace(/,/g,""));
+        if(center && !isNaN(target) && target > 0) targetMap[center] = target;
+      });
+    } catch(te) {
+      console.warn("Target CSV failed to load:", te);
+    }
     const lines=text.split("\n");
     const headers=parseCSVRow(lines[0]).map(function(h){return h.trim().toLowerCase().replace(/\s+/g,"_");});
     const iC=headers.indexOf("center"), iF=headers.indexOf("fees_paid"), iFa=headers.indexOf("free_admission"),
@@ -509,15 +663,16 @@ async function loadData(){
           iN=headers.indexOf("newpayment_checks"), iB=headers.indexOf("batch"), iSt=headers.indexOf("stream"),
           iCl=headers.indexOf("class_course"), iA=headers.indexOf("admission_mode"), iFa2=headers.indexOf("fees_amt"),
           iArpu=headers.indexOf("arpu_check"), iFormStatus=headers.indexOf("form_status"),
-          iArpuVal=headers.indexOf("arpu");
+          iArpuVal=headers.indexOf("arpu"), iDisc=headers.indexOf("%_discount");
     allRows=[];
     lines.slice(1).forEach(function(line){
       if(!line.trim())return;
       const cols=parseCSVRow(line);
-      const fp=parseFloat((cols[iF]?.trim()||"0").replace(/,/g,""));
-      const fa=(cols[iFa]?.trim()||"").toUpperCase();
-      const st=(cols[iS]?.trim()||"").toUpperCase();
-      if(!(fp>3498&&(fa==="FALSE"||fa==="NO"||fa==="0")&&st==="ACTIVE"))return;
+      const fp=parseFloat((cols[iF]?.trim()||"0").replace(/,/g,"").replace(/[^0-9.]/g,""));
+      const fa=(cols[iFa]?.trim()||"").toUpperCase().trim();
+      const st=(cols[iS]?.trim()||"").toUpperCase().trim();
+      const faOk = fa==="FALSE"||fa==="NO"||fa==="0"||fa==="";
+      if(!(fp>3498 && faOk && st==="ACTIVE"))return;
       allRows.push({
         center:cols[iC]?.trim()||"Unknown",
         joiningDate:parseDate(cols[iJ]?.trim()||""),
@@ -532,6 +687,7 @@ async function loadData(){
         arpuCheck:(cols[iArpu]?.trim()||"").toUpperCase(),
         formStatus:(cols[iFormStatus]?.trim()||"").toLowerCase(),
         arpuVal:parseFloat((cols[iArpuVal]?.trim()||"0").replace(/,/g,"")),
+        discount:parseFloat((cols[iDisc]?.trim()||"0").replace(/,/g,"").replace(/%/g,"")),
       });
     });
     buildCenterDropdown();
@@ -682,7 +838,9 @@ function updateCards(rows,dateRows,fv,tv){
   var dtc=dateRows.filter(function(r){return r.center.toLowerCase().includes("tuition");}).length;
   var elig=rows.filter(function(r){return !r.eligibility.includes("not")&&!r.newPayment.includes("token");}).length;
   var bat=rows.filter(function(r){return r.batch&&!r.batch.includes("no batch");}).length;
-  var avgFee=total>0?Math.round(rows.reduce(function(s,r){return s+r.feesPaid;},0)/total):0;
+  // ARPU: arpu_check=YES, form_status != admission cancel, no date filter (rows already has no date filter)
+  var arpuRows=rows.filter(function(r){ return r.arpuCheck==="YES" && !r.formStatus.includes("admission cancel"); });
+  var avgFee=arpuRows.length>0?Math.round(arpuRows.reduce(function(s,r){return s+r.arpuVal;},0)/arpuRows.length):0;
   var centers=new Set(rows.map(function(r){return r.center;})).size;
   var vpCenters=new Set(rows.filter(function(r){return !r.center.toLowerCase().includes("tuition");}).map(function(r){return r.center;})).size;
   var tcCenters=new Set(rows.filter(function(r){return r.center.toLowerCase().includes("tuition");}).map(function(r){return r.center;})).size;
@@ -696,32 +854,69 @@ function updateCards(rows,dateRows,fv,tv){
   document.getElementById("cBatch").innerText=bat.toLocaleString();
   document.getElementById("cBatchPct").innerText=elig>0?((bat/elig)*100).toFixed(1)+"% of eligible":"—";
   document.getElementById("cAvgFee").innerText="₹"+avgFee.toLocaleString();
+  if(document.getElementById("cArpuSub")) document.getElementById("cArpuSub").innerText=arpuRows.length.toLocaleString()+" eligible rows";
   document.getElementById("cCenters").innerText=centers;
   document.getElementById("cCentersSub").innerText=vpCenters+" Vidyapeeth · "+tcCenters+" Tuition";
 }
 
 function buildTable(rows,dateRows){
-  const cm={},dm={},em={},bm={};
+  const cm={},dm={},em={},bm={},arpuSum={},arpuCnt={},discSum={};
   rows.forEach(function(r){
     cm[r.center]=(cm[r.center]||0)+1;
     if(!r.eligibility.includes("not")&&!r.newPayment.includes("token"))em[r.center]=(em[r.center]||0)+1;
     if(r.batch&&!r.batch.includes("no batch"))bm[r.center]=(bm[r.center]||0)+1;
+    // ARPU eligible rows per center
+    if(r.arpuCheck==="YES"&&!r.formStatus.includes("admission cancel")){
+      arpuSum[r.center]=(arpuSum[r.center]||0)+r.arpuVal;
+      arpuCnt[r.center]=(arpuCnt[r.center]||0)+1;
+      discSum[r.center]=(discSum[r.center]||0)+(isNaN(r.discount)?0:r.discount);
+    }
   });
   dateRows.forEach(function(r){dm[r.center]=(dm[r.center]||0)+1;});
-  tableData=Object.entries(cm).map(function(e){return {center:e[0],count:e[1],dateCount:dm[e[0]]||0,eligibleCount:em[e[0]]||0,batchCount:bm[e[0]]||0};}).sort(function(a,b){return b.count-a.count;});
+  tableData=Object.entries(cm).map(function(e){
+    var cnt=arpuCnt[e[0]]||0;
+    return {
+      center:e[0],count:e[1],dateCount:dm[e[0]]||0,
+      eligibleCount:em[e[0]]||0,batchCount:bm[e[0]]||0,
+      avgArpu:cnt>0?Math.round((arpuSum[e[0]]||0)/cnt):null,
+      avgDisc:cnt>0?((discSum[e[0]]||0)/cnt).toFixed(1):null
+    };
+  }).sort(function(a,b){return b.count-a.count;});
   document.getElementById("rowCountBadge").innerText=tableData.length+" centers";
   filteredData=[...tableData]; renderTable(filteredData);
+  buildPivotTable(rows, dateRows);
 }
 
 function renderTable(data){
   const tb=document.getElementById("tableBody");
-  if(!data.length){tb.innerHTML='<tr><td colspan="6" style="padding:28px;text-align:center;color:var(--text-muted)">No data found.</td></tr>';return;}
+  if(!data.length){tb.innerHTML='<tr><td colspan="8" style="padding:28px;text-align:center;color:var(--text-muted)">No data found.</td></tr>';return;}
   tb.innerHTML=data.map(function(r,i){
     var ep=r.count>0?((r.eligibleCount/r.count)*100).toFixed(1):0;
     var bp=r.eligibleCount>0?((r.batchCount/r.eligibleCount)*100).toFixed(1):0;
-    return "<tr><td class=\"rank-cell\">"+( i+1)+"</td><td class=\"center-cell\">"+escH(r.center)+"</td><td><span class=\"cb cb-orange\">"+r.count+"</span></td><td><span class=\"cb cb-purple\">"+r.dateCount+"</span></td><td><span class=\"cb cb-green\">"+r.eligibleCount+"</span><span class=\"pct-text\">("+ep+"%)</span></td><td><span class=\"cb cb-yellow\">"+r.batchCount+"</span><span class=\"pct-text\">("+bp+"%)</span></td></tr>";
+
+    var target = targetMap[r.center];
+    var regCell;
+    if(target && target > 0){
+      var rawPct = (r.count/target)*100;
+      var pct = Math.min(rawPct,100).toFixed(1);
+      var cls = rawPct >= 80 ? "good" : rawPct >= 50 ? "mid" : "low";
+      var barW = Math.min(rawPct,100).toFixed(1);
+      regCell = '<div class="target-wrap">'
+        + '<div class="target-numbers">'
+        + '<span class="cb cb-orange">'+r.count+' / '+target+'</span>'
+        + '&nbsp;<span class="target-pct '+cls+'">'+pct+'%</span>'
+        + '</div>'
+        + '</div>';
+    } else {
+      regCell = '<span class="cb cb-orange">'+r.count+'</span><span class="no-target" style="margin-left:5px;">&mdash; no target</span>';
+    }
+
+    var arpuCell = r.avgArpu!==null ? '<span class="cb" style="background:rgba(20,184,166,0.12);color:#2dd4bf;border:1px solid rgba(20,184,166,0.25);">₹'+r.avgArpu.toLocaleString()+'</span>' : '<span style="color:var(--text-muted);font-size:11px;">—</span>';
+    var discCell = r.avgDisc!==null ? '<span class="cb" style="background:rgba(251,191,36,0.12);color:#fbbf24;border:1px solid rgba(251,191,36,0.25);">'+r.avgDisc+'%</span>' : '<span style="color:var(--text-muted);font-size:11px;">—</span>';
+    return "<tr><td class=\"rank-cell\">"+(i+1)+"</td><td class=\"center-cell\">"+escH(r.center)+"</td><td>"+regCell+"</td><td><span class=\"cb cb-purple\">"+r.dateCount+"</span></td><td><span class=\"cb cb-green\">"+r.eligibleCount+"</span><span class=\"pct-text\">("+ep+"%)</span></td><td><span class=\"cb cb-yellow\">"+r.batchCount+"</span><span class=\"pct-text\">("+bp+"%)</span></td><td>"+arpuCell+"</td><td>"+discCell+"</td></tr>";
   }).join("");
 }
+
 
 function filterTable(){
   const q=document.getElementById("tableSearch").value.toLowerCase().trim();
@@ -732,12 +927,52 @@ function filterTable(){
 
 function sortTable(key){
   sortAsc=sortKey===key?!sortAsc:(key==="center");sortKey=key;
-  ["center","count","dateCount","eligibleCount","batchCount"].forEach(function(k){
+  ["center","count","dateCount","eligibleCount","batchCount","avgArpu","avgDisc"].forEach(function(k){
     const th=document.getElementById("th-"+k);if(!th)return;
     th.classList.toggle("sorted",k===sortKey);
     th.querySelector(".sort-icon").innerText=k===sortKey?(sortAsc?"↑":"↓"):"↕";
   });
   filterTable();
+}
+
+function updateEligChart(rows, c) {
+  // Use actual eligibility_status column values directly
+  var groups = {};
+  rows.forEach(function(r){
+    var status = r.eligibility ? r.eligibility.trim() : "unknown";
+    if(!status) status = "unknown";
+    groups[status] = (groups[status] || 0) + 1;
+  });
+  // Sort by count desc
+  var eEntries = Object.entries(groups).sort(function(a,b){ return b[1]-a[1]; }).filter(function(e){ return e[1]>0; });
+  var eTotal = eEntries.reduce(function(s,e){ return s+e[1]; }, 0);
+  var eColors = ["#22c55e","#ef4444","#f59e0b","#6366f1","#14b8a6","#ec4899","#94a3b8","#fb923c"];
+
+  document.getElementById("eligBadge").innerText = eTotal.toLocaleString() + " students";
+
+  if(eligC) eligC.destroy();
+  eligC = new Chart(document.getElementById("eligChart"), {
+    type: "doughnut",
+    data: {
+      labels: eEntries.map(function(e){ return e[0]+" ("+e[1]+")"; }),
+      datasets:[{
+        data: eEntries.map(function(e){ return e[1]; }),
+        backgroundColor: eColors.slice(0, eEntries.length),
+        borderWidth: 0
+      }]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false, cutout:"40%",
+      plugins:{
+        legend:{ display:true, position:"bottom", labels:{ color:c.text, font:{size:9}, boxWidth:7, padding:5 }},
+        tooltip:{ callbacks:{ label:function(ctx){
+          var val=ctx.parsed;
+          var pct=eTotal>0?((val/eTotal)*100).toFixed(1):0;
+          return " "+val.toLocaleString()+" ("+pct+"%)";
+        }}}
+      }
+    }
+  });
 }
 
 function updateArpuChart(rows, c) {
@@ -761,61 +996,38 @@ function updateArpuChart(rows, c) {
 
   var aColors = ["#f97316","#818cf8","#22c55e","#fbbf24","#14b8a6","#f43f5e"];
 
-  if(arpuC) arpuC.destroy();
-  arpuC = new Chart(document.getElementById("arpuChart"),{
+  // Stream-wise ARPU bar chart
+  if(arpuPieC) arpuPieC.destroy();
+  arpuPieC = new Chart(document.getElementById("arpuPieChart"),{
     type:"bar",
     data:{
       labels: arpuEntries.map(function(e){ return e.stream+" ("+e.count+")"; }),
       datasets:[{
         data: arpuEntries.map(function(e){ return e.arpu; }),
-        backgroundColor: arpuEntries.map(function(e,i){ return aColors[i%aColors.length]+"99"; }),
-        borderColor: arpuEntries.map(function(e,i){ return aColors[i%aColors.length]; }),
+        backgroundColor: aColors.slice(0, arpuEntries.length).map(function(c){ return c+"99"; }),
+        borderColor: aColors.slice(0, arpuEntries.length),
         borderWidth:1, borderRadius:6
       }]
     },
     options:{
       responsive:true, maintainAspectRatio:false,
-      plugins:{legend:{display:false}, tooltip:{callbacks:{label:function(ctx){ return " ₹"+ctx.parsed.y.toLocaleString(); }}}},
+      plugins:{
+        legend:{display:false},
+        tooltip:{callbacks:{label:function(ctx){ return " ₹"+ctx.parsed.y.toLocaleString(); }}}
+      },
       scales:{
         x:{ticks:{color:c.muted,font:{size:10}}, grid:{display:false}},
         y:{ticks:{color:c.muted,font:{size:10},callback:function(v){ return "₹"+v.toLocaleString(); }}, grid:{color:c.border}, beginAtZero:true}
       },
       animation:{onComplete:function(){
-        var ch=this; var ctx=ch.ctx; var meta=ch.getDatasetMeta(0);
-        ctx.save(); ctx.font="bold 10px sans-serif"; ctx.fillStyle=c.text; ctx.textAlign="center"; ctx.textBaseline="bottom";
+        var ch=this; var ctx2=ch.ctx; var meta=ch.getDatasetMeta(0);
+        ctx2.save(); ctx2.font="bold 10px sans-serif"; ctx2.fillStyle=c.text; ctx2.textAlign="center"; ctx2.textBaseline="bottom";
         for(var i=0;i<meta.data.length;i++){
           var bar=meta.data[i]; var val=ch.data.datasets[0].data[i];
-          if(val>0) ctx.fillText("₹"+val.toLocaleString(), bar.x, bar.y-3);
+          if(val>0) ctx2.fillText("₹"+val.toLocaleString(), bar.x, bar.y-3);
         }
-        ctx.restore();
+        ctx2.restore();
       }}
-    }
-  });
-
-  // ARPU Pie chart
-  if(arpuPieC) arpuPieC.destroy();
-  var totalArpu = arpuEntries.reduce(function(s,e){ return s+e.arpu; }, 0);
-  arpuPieC = new Chart(document.getElementById("arpuPieChart"),{
-    type:"doughnut",
-    data:{
-      labels: arpuEntries.map(function(e){ return e.stream; }),
-      datasets:[{
-        data: arpuEntries.map(function(e){ return e.arpu; }),
-        backgroundColor: aColors.slice(0, arpuEntries.length),
-        borderWidth:0
-      }]
-    },
-    options:{
-      responsive:true, maintainAspectRatio:false,
-      cutout:"52%",
-      plugins:{
-        legend:{ display:true, position:"bottom", labels:{ color:c.text, font:{size:9}, boxWidth:7, padding:4 }},
-        tooltip:{ callbacks:{ label:function(ctx){
-          var val=ctx.parsed;
-          var pct=totalArpu>0?((val/totalArpu)*100).toFixed(1):0;
-          return " ₹"+val.toLocaleString()+" ("+pct+"%)";
-        }}}
-      }
     }
   });
 }
@@ -950,41 +1162,214 @@ function updateCharts(rows){
 
   // Center bar
   const cMap={};rows.forEach(function(r){cMap[r.center]=(cMap[r.center]||0)+1;});
-  const top10=Object.entries(cMap).sort(function(a,b){return b[1]-a[1];}).slice(0,10);
+  // Sort top 10 by % achievement if target exists, else by count
+  const top10=Object.entries(cMap).sort(function(a,b){
+    var ta=targetMap[a[0]]||0, tb=targetMap[b[0]]||0;
+    var pa=ta>0?(a[1]/ta):0, pb=tb>0?(b[1]/tb):0;
+    // If both have targets, sort by %; else targets first, then by count
+    if(ta>0&&tb>0) return pb-pa;
+    if(ta>0) return -1;
+    if(tb>0) return 1;
+    return b[1]-a[1];
+  }).slice(0,10);
   document.getElementById("centerBadge").innerText=Object.keys(cMap).length+" centers total";
-  if(centerC)centerC.destroy();
-  centerC=new Chart(document.getElementById("centerChart"),{type:"bar",data:{labels:top10.map(function(e){return e[0].replace(" Vidyapeeth","").replace(" Tuition Center","");}),datasets:[{data:top10.map(function(e){return e[1];}),backgroundColor:top10.map(function(e){return e[0].toLowerCase().includes("tuition")?"#818cf888":c.accent+"88";}),borderColor:top10.map(function(e){return e[0].toLowerCase().includes("tuition")?"#818cf8":c.accent;}),borderWidth:1,borderRadius:4}]},options:{indexAxis:"y",responsive:true,maintainAspectRatio:false,layout:{padding:{right:40}},plugins:{legend:{display:false}},scales:{x:{ticks:{color:c.muted,font:{size:9}},grid:{color:c.border}},y:{ticks:{color:c.text,font:{size:9}},grid:{display:false}}}}});
-  centerC.options.animation = {onComplete:function(){
-    var ch=this;var ctx2=ch.ctx;
-    ctx2.save();
-    ctx2.font="bold 10px sans-serif";
-    ctx2.fillStyle=c.text;
-    ctx2.textAlign="left";
-    ctx2.textBaseline="middle";
-    var meta=ch.getDatasetMeta(0);
-    for(var i=0;i<meta.data.length;i++){
-      var bar=meta.data[i];
-      var val=ch.data.datasets[0].data[i];
-      ctx2.fillText(val,bar.x+6,bar.y);
-    }
-    ctx2.restore();
-  }};
-  centerC.update();
+  // Render top 10 as table
+  var top10Body = document.getElementById("top10Body");
+  if(top10Body){
+    top10Body.innerHTML = top10.map(function(e, i){
+      var t = targetMap[e[0]] || 0;
+      var pct = t > 0 ? ((e[1]/t)*100).toFixed(1) : null;
+      var cls = pct !== null ? (parseFloat(pct)>=80?"#22c55e":parseFloat(pct)>=50?"#fbbf24":"#f43f5e") : "var(--text-muted)";
+      var targetCell = t > 0 ? t : '<span style="color:var(--text-muted)">—</span>';
+      var pctCell = pct !== null ? '<span style="font-weight:700;color:'+cls+'">'+pct+'%</span>' : '<span style="color:var(--text-muted)">—</span>';
+      return '<tr style="border-bottom:1px solid var(--border);">'
+        + '<td style="padding:7px 10px;font-size:11px;color:var(--text-muted);">'+(i+1)+'</td>'
+        + '<td style="padding:7px 10px;font-size:12px;font-weight:600;font-family:var(--font-display);">'+e[0]+'</td>'
+        + '<td style="padding:7px 10px;text-align:center;"><span class="cb cb-purple">'+targetCell+'</span></td>'
+        + '<td style="padding:7px 10px;text-align:center;"><span class="cb cb-orange">'+e[1]+'</span></td>'
+        + '<td style="padding:7px 10px;text-align:center;">'+pctCell+'</td>'
+        + '</tr>';
+    }).join("");
+  }
+
 
   // Stream donut
   const sMap={};rows.forEach(function(r){sMap[r.stream]=(sMap[r.stream]||0)+1;});
   const sEntries=Object.entries(sMap).sort(function(a,b){return b[1]-a[1];});
-  const sColors=["#f97316","#818cf8","#22c55e","#fbbf24","#14b8a6","#f43f5e"];
+  const sColors=["#6366f1","#f97316","#10b981","#f59e0b","#ec4899","#06b6d4","#84cc16","#a78bfa"];
   if(streamC)streamC.destroy();
   var sTotal=sEntries.reduce(function(s,e){return s+e[1];},0);
-  streamC=new Chart(document.getElementById("streamChart"),{type:"doughnut",data:{labels:sEntries.map(function(e){return e[0]+" ("+e[1]+")";}),datasets:[{data:sEntries.map(function(e){return e[1];}),backgroundColor:sColors,borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:"52%",plugins:{legend:{display:true,position:"right",labels:{color:c.text,font:{size:9},boxWidth:7,padding:5}},tooltip:{callbacks:{label:function(ctx){var val=ctx.parsed;var pct=sTotal>0?((val/sTotal)*100).toFixed(1):0;return " "+val+" ("+pct+"%);";}}}}}});
+  streamC=new Chart(document.getElementById("streamChart"),{type:"doughnut",data:{labels:sEntries.map(function(e){return e[0]+" ("+e[1]+")";}),datasets:[{data:sEntries.map(function(e){return e[1];}),backgroundColor:sColors,borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:"40%",plugins:{legend:{display:true,position:"right",labels:{color:c.text,font:{size:9},boxWidth:7,padding:5}},tooltip:{callbacks:{label:function(ctx){var val=ctx.parsed;var pct=sTotal>0?((val/sTotal)*100).toFixed(1):0;return " "+val+" ("+pct+"%);";}}}}}});
 
   // Stream-wise ARPU
+  updateEligChart(rows, c);
   updateArpuChart(rows, c);
   // Class-wise students
   updateClassChart(rows, c);
   // Class-wise batch alloted
   updateBatchClassChart(rows, c);
+}
+
+
+// ===== PIVOT TABLE =====
+var cityCollapseState = {}; // city -> true(expanded)/false(collapsed)
+
+function extractCity(centerName) {
+  var name = centerName.trim();
+  var dash = name.indexOf(" - ");
+  if(dash > 0) return name.substring(0, dash).trim();
+  return name.split(" ")[0];
+}
+
+function buildCityGroups(centerNames) {
+  // Group centers by city — only club those with 2+ centers sharing same city
+  // Unique centers (city appears only once) get their own group named after themselves
+  var cityCount = {};
+  centerNames.forEach(function(c){
+    var city = extractCity(c);
+    cityCount[city] = (cityCount[city] || 0) + 1;
+  });
+  var cityMap = {};
+  centerNames.forEach(function(c){
+    var city = extractCity(c);
+    // If city has only 1 center, use full center name as group key
+    var groupKey = cityCount[city] > 1 ? city : c;
+    if(!cityMap[groupKey]) cityMap[groupKey] = [];
+    if(!cityMap[groupKey].includes(c)) cityMap[groupKey].push(c);
+  });
+  return cityMap;
+}
+
+function buildPivotTable(rows, dateRows) {
+  var pivotRows = dateRows.length > 0 ? dateRows : rows.filter(function(r){ return r.joiningDate; });
+
+  var dateSet = {};
+  pivotRows.forEach(function(r){
+    if(!r.joiningDate) return;
+    dateSet[fmtDate(r.joiningDate)] = true;
+  });
+  var allDates = Object.keys(dateSet).sort();
+
+  if(allDates.length === 0) {
+    document.getElementById("pivotBadge").innerText = "No data";
+    document.getElementById("pivotHead").innerHTML = "";
+    document.getElementById("pivotBody").innerHTML = '<tr><td colspan="3" style="padding:20px;text-align:center;color:var(--text-muted);">Select a date range to see data</td></tr>';
+    return;
+  }
+
+  var centerDateMap = {};
+  pivotRows.forEach(function(r){
+    if(!r.joiningDate) return;
+    var d = fmtDate(r.joiningDate);
+    if(!centerDateMap[r.center]) centerDateMap[r.center] = {};
+    centerDateMap[r.center][d] = (centerDateMap[r.center][d] || 0) + 1;
+  });
+
+  var cityMap = buildCityGroups(Object.keys(centerDateMap));
+  var cities = Object.keys(cityMap).sort();
+  cities.forEach(function(city){ cityMap[city].sort(); });
+
+  document.getElementById("pivotBadge").innerText = allDates.length + " days \u00b7 " + Object.keys(centerDateMap).length + " centers";
+
+  var dateTotals = {};
+  allDates.forEach(function(d){
+    dateTotals[d] = 0;
+    Object.values(centerDateMap).forEach(function(dm){ dateTotals[d] += (dm[d]||0); });
+  });
+
+  function shortDate(d) {
+    var dt = new Date(d + "T00:00:00");
+    return dt.getDate() + " " + dt.toLocaleString("en", {month:"short"});
+  }
+
+  var headHtml = '<tr><th class="center-col">Center / City</th>';
+  allDates.forEach(function(d){ headHtml += '<th>' + shortDate(d) + '</th>'; });
+  headHtml += '<th style="background:rgba(249,115,22,0.1);color:var(--accent2);">Total</th></tr>';
+  document.getElementById("pivotHead").innerHTML = headHtml;
+
+  var bodyHtml = "";
+  var grandTotal = 0;
+  var grandRow = '<tr class="pivot-grand-row" style="border-bottom:2px solid var(--border);"><td class="center-col" style="font-weight:700;color:var(--accent2);font-size:11px;">\u03a3 Grand Total</td>';
+  allDates.forEach(function(d){
+    grandTotal += (dateTotals[d]||0);
+    grandRow += '<td class="pivot-date-total">' + (dateTotals[d]||"-") + '</td>';
+  });
+  grandRow += '<td class="pivot-total-cell pivot-date-total">' + grandTotal + '</td></tr>';
+  bodyHtml += grandRow;
+
+  cities.forEach(function(city){
+    var centers = cityMap[city];
+    if(cityCollapseState[city] === undefined) cityCollapseState[city] = true;
+    var isOpen = cityCollapseState[city];
+    var safeCity = city.replace(/[^a-zA-Z0-9]/g, "_");
+    var cityDateTotals = {};
+    var cityTotal = 0;
+    allDates.forEach(function(d){
+      cityDateTotals[d] = 0;
+      centers.forEach(function(c){ cityDateTotals[d] += (centerDateMap[c] ? centerDateMap[c][d]||0 : 0); });
+      cityTotal += cityDateTotals[d];
+    });
+
+    var cityRow = '<tr class="pivot-city-row" data-city-key="' + safeCity + '">';
+    cityRow += '<td class="center-col"><span class="city-toggle' + (isOpen ? " open" : "") + '" data-city-id="' + safeCity + '">\u25ba</span> ' + city + ' <span style="font-size:10px;opacity:0.6;">(' + centers.length + ' centers)</span></td>';
+    allDates.forEach(function(d){
+      cityRow += '<td>' + (cityDateTotals[d]||"-") + '</td>';
+    });
+    cityRow += '<td class="pivot-total-cell">' + cityTotal + '</td></tr>';
+    bodyHtml += cityRow;
+
+    centers.forEach(function(center){
+      var centerTotal = 0;
+      var centerRow = '<tr class="pivot-center-row' + (isOpen ? "" : " collapsed") + '" data-city-key="' + safeCity + '">';
+      centerRow += '<td class="center-col" style="padding-left:28px;font-size:11px;font-weight:500;">' + center + '</td>';
+      allDates.forEach(function(d){
+        var val = centerDateMap[center] ? (centerDateMap[center][d]||0) : 0;
+        centerTotal += val;
+        centerRow += '<td class="' + (val > 0 ? "has-data" : "") + '">' + (val||"-") + '</td>';
+      });
+      centerRow += '<td class="pivot-total-cell">' + centerTotal + '</td></tr>';
+      bodyHtml += centerRow;
+    });
+  });
+
+  document.getElementById("pivotBody").innerHTML = bodyHtml;
+
+  // Attach click handlers to city rows
+  document.querySelectorAll(".pivot-city-row").forEach(function(tr){
+    tr.onclick = function(){
+      var key = this.getAttribute("data-city-key");
+      toggleCityByKey(key);
+    };
+  });
+}
+
+function toggleCity(city) { toggleCityByKey(city.replace(/[^a-zA-Z0-9]/g,"_")); }
+function toggleCityByKey(safeKey) {
+  // Find original city from state — match by safe key
+  var cityKey = null;
+  Object.keys(cityCollapseState).forEach(function(c){
+    if(c.replace(/[^a-zA-Z0-9]/g,"_") === safeKey) cityKey = c;
+  });
+  if(!cityKey) cityKey = safeKey;
+  cityCollapseState[cityKey] = !cityCollapseState[cityKey];
+  var isOpen = cityCollapseState[cityKey];
+  document.querySelectorAll('#pivotBody tr[data-city-key="' + safeKey + '"].pivot-center-row').forEach(function(tr){
+    tr.classList.toggle("collapsed", !isOpen);
+  });
+  document.querySelectorAll('#pivotBody [data-city-id="' + safeKey + '"]').forEach(function(el){
+    el.classList.toggle("open", isOpen);
+  });
+}
+
+function expandAllCities(expand) {
+  Object.keys(cityCollapseState).forEach(function(city){ cityCollapseState[city] = expand; });
+  // Use data-city-key (correct attribute name)
+  document.querySelectorAll('#pivotBody tr.pivot-center-row').forEach(function(tr){
+    tr.classList.toggle("collapsed", !expand);
+  });
+  document.querySelectorAll('#pivotBody .city-toggle').forEach(function(el){
+    el.classList.toggle("open", expand);
+  });
 }
 
 function toggleSub(id){document.getElementById(id)?.classList.toggle("open");document.getElementById("chevron-"+id)?.classList.toggle("open");}
@@ -999,5 +1384,273 @@ function setDefaultDates(){const today=new Date();const first=new Date(today.get
   setDefaultDates(); loadData();
 })();
 </script>
+<!-- Embedded Summary Modal -->
+<div id="summaryModal" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);align-items:center;justify-content:center;">
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);width:min(96vw,820px);max-height:92vh;display:flex;flex-direction:column;box-shadow:0 24px 64px rgba(0,0,0,0.5);">
+
+    <!-- Header -->
+    <div style="padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+      <div>
+        <div style="font-family:var(--font-display);font-size:16px;font-weight:700;color:var(--text);">📋 Embedded Summary</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">Access any Google Sheet from your company account</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div id="gAuthStatus" style="font-size:11px;padding:4px 10px;border-radius:20px;background:rgba(239,68,68,0.1);color:#ef4444;border:1px solid rgba(239,68,68,0.2);">● Not connected</div>
+        <button onclick="closeSummaryModal()" style="background:transparent;border:1px solid var(--border);border-radius:8px;padding:6px 10px;color:var(--text-muted);cursor:pointer;font-size:14px;font-family:var(--font-body);">✕</button>
+      </div>
+    </div>
+
+    <!-- Auth Section -->
+    <div id="summaryAuthSection" style="padding:16px 24px;border-bottom:1px solid var(--border);background:rgba(249,115,22,0.04);flex-shrink:0;">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <button onclick="signInGoogle()" id="gSignInBtn"
+          style="display:flex;align-items:center;gap:8px;background:#fff;color:#3c4043;border:1px solid #dadce0;border-radius:8px;padding:8px 16px;font-family:var(--font-body);font-size:13px;font-weight:500;cursor:pointer;">
+          <svg width="16" height="16" viewBox="0 0 48 48"><path fill="#4285F4" d="M44.5 20H24v8.5h11.8C34.7 33.9 29.8 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-21 0-1.3-.2-2.7-.5-4z"/><path fill="#34A853" d="M6.3 14.7l7 5.1C15 16.1 19.2 13 24 13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 16.3 2 9.7 6.4 6.3 14.7z"/><path fill="#FBBC05" d="M24 46c5.5 0 10.5-1.9 14.4-5l-6.7-5.5C29.6 37 26.9 38 24 38c-5.7 0-10.6-3.1-13.1-7.5l-7 5.4C7.7 41.5 15.3 46 24 46z"/><path fill="#EA4335" d="M44.5 20H24v8.5h11.8c-1.1 3-3.3 5.5-6.1 7l6.7 5.5c3.9-3.6 6.1-8.9 6.1-15 0-1.3-.2-2.7-.5-4z"/></svg>
+          Sign in with Google (@pw.live)
+        </button>
+        <button onclick="signOutGoogle()" id="gSignOutBtn" style="display:none;background:transparent;border:1px solid var(--border);border-radius:8px;padding:8px 14px;color:var(--text-muted);font-family:var(--font-body);font-size:12px;cursor:pointer;">Sign Out</button>
+        <span id="gUserInfo" style="font-size:12px;color:var(--text-muted);"></span>
+        <span style="font-size:11px;color:var(--text-muted);margin-left:auto;">Uses your @pw.live Google account · read-only access</span>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <div style="padding:16px 24px;border-bottom:1px solid var(--border);flex-shrink:0;">
+      <div style="display:grid;grid-template-columns:1fr 160px 160px auto;gap:10px;align-items:end;">
+        <div>
+          <label style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.7px;color:var(--text-muted);display:block;margin-bottom:5px;">Google Sheet URL or Sheet ID</label>
+          <input id="summarySheetUrl" type="text" placeholder="Paste sheet URL or spreadsheet ID"
+            style="width:100%;box-sizing:border-box;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-family:var(--font-body);font-size:12px;outline:none;">
+        </div>
+        <div>
+          <label style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.7px;color:var(--text-muted);display:block;margin-bottom:5px;">Tab / Sheet Name</label>
+          <input id="summaryTabName" type="text" placeholder="e.g. Sheet1"
+            style="width:100%;box-sizing:border-box;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-family:var(--font-body);font-size:12px;outline:none;">
+        </div>
+        <div>
+          <label style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.7px;color:var(--text-muted);display:block;margin-bottom:5px;">Range (optional)</label>
+          <input id="summaryRange" type="text" placeholder="e.g. A1:H30"
+            style="width:100%;box-sizing:border-box;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-family:var(--font-body);font-size:12px;outline:none;">
+        </div>
+        <button onclick="fetchSummaryData()" id="summaryFetchBtn"
+          style="background:var(--accent);color:#fff;border:none;border-radius:8px;padding:8px 18px;font-family:var(--font-display);font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;height:36px;">
+          ⚡ Fetch
+        </button>
+      </div>
+      <div style="margin-top:8px;display:flex;align-items:center;gap:10px;">
+        <button onclick="clearSummary()" style="background:transparent;border:1px solid var(--border);border-radius:6px;padding:5px 12px;color:var(--text-muted);font-family:var(--font-body);font-size:11px;cursor:pointer;">Clear</button>
+        <span id="summaryStatus" style="font-size:12px;"></span>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div id="summaryTableWrap" style="overflow:auto;flex:1;">
+      <div id="summaryEmpty" style="padding:40px;text-align:center;color:var(--text-muted);font-size:13px;">
+        Sign in with your @pw.live Google account, then enter sheet details and fetch.
+      </div>
+      <table id="summaryTable" style="display:none;width:100%;border-collapse:collapse;font-size:12px;"></table>
+    </div>
+
+    <!-- Footer -->
+    <div style="padding:10px 24px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+      <span id="summaryInfo" style="font-size:11px;color:var(--text-muted);"></span>
+      <span style="font-size:11px;color:var(--text-muted);">Read-only · Sheets API v4 · OAuth 2.0</span>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Google Identity Services (OAuth 2.0 PKCE) ──────────────────────────────
+// Uses Google Sheets API v4 with user's own Google account token
+// Client ID: configured for pw.live domain
+
+const GAPI_CLIENT_ID = '597526470536-tm3kkh0p9360f17d6bi0m1savj9k62um.apps.googleusercontent.com'; // <-- Replace with your Google OAuth Client ID
+const GAPI_SCOPE = 'https://www.googleapis.com/auth/spreadsheets.readonly';
+let gAccessToken = null;
+let gTokenExpiry = 0;
+
+function openSummaryModal() {
+  document.getElementById('summaryModal').style.display = 'flex';
+  // Auto-restore token from login if available
+  var savedToken = localStorage.getItem('gAccessToken');
+  var savedExpiry = parseInt(localStorage.getItem('gTokenExpiry') || '0');
+  var savedName = localStorage.getItem('gUserName') || localStorage.getItem('loggedUser') || '';
+  if(savedToken && Date.now() < savedExpiry) {
+    gAccessToken = savedToken;
+    gTokenExpiry = savedExpiry;
+    updateAuthUI(true);
+    if(savedName) document.getElementById('gUserInfo').innerText = '👤 ' + savedName;
+  }
+}
+function closeSummaryModal() {
+  document.getElementById('summaryModal').style.display = 'none';
+}
+document.getElementById('summaryModal').addEventListener('click', function(e){
+  if(e.target === this) closeSummaryModal();
+});
+document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeSummaryModal(); });
+
+function signInGoogle() {
+  if(!GAPI_CLIENT_ID) {
+    alert('OAuth Client ID not configured. Please add your Google Cloud Client ID in the code.');
+    return;
+  }
+  const client = google.accounts.oauth2.initTokenClient({
+    client_id: GAPI_CLIENT_ID,
+    scope: GAPI_SCOPE,
+    hint: localStorage.getItem('loggedUser') || '',
+    callback: function(resp) {
+      if(resp.error) { console.error(resp); return; }
+      gAccessToken = resp.access_token;
+      gTokenExpiry = Date.now() + (resp.expires_in * 1000);
+      updateAuthUI(true);
+      fetchUserInfo();
+    }
+  });
+  client.requestAccessToken();
+}
+
+function signOutGoogle() {
+  if(gAccessToken) google.accounts.oauth2.revoke(gAccessToken);
+  gAccessToken = null;
+  updateAuthUI(false);
+  document.getElementById('gUserInfo').innerText = '';
+}
+
+function updateAuthUI(signedIn) {
+  const status = document.getElementById('gAuthStatus');
+  const signInBtn = document.getElementById('gSignInBtn');
+  const signOutBtn = document.getElementById('gSignOutBtn');
+  if(signedIn) {
+    status.style.background = 'rgba(34,197,94,0.1)';
+    status.style.color = '#22c55e';
+    status.style.borderColor = 'rgba(34,197,94,0.2)';
+    status.innerText = '● Connected';
+    signInBtn.style.display = 'none';
+    signOutBtn.style.display = 'inline-flex';
+  } else {
+    status.style.background = 'rgba(239,68,68,0.1)';
+    status.style.color = '#ef4444';
+    status.style.borderColor = 'rgba(239,68,68,0.2)';
+    status.innerText = '● Not connected';
+    signInBtn.style.display = 'flex';
+    signOutBtn.style.display = 'none';
+  }
+}
+
+async function fetchUserInfo() {
+  try {
+    var res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+      headers: { 'Authorization': 'Bearer ' + gAccessToken }
+    });
+    var info = await res.json();
+    document.getElementById('gUserInfo').innerText = '👤 ' + (info.name || info.email);
+  } catch(e) {}
+}
+
+function extractSheetId(input) {
+  input = input.trim();
+  var match = input.match(/\/spreadsheets\/d\/([a-zA-Z0-9_-]+)/);
+  if(match) return match[1];
+  // If it looks like a raw ID (no slashes, no spaces)
+  if(/^[a-zA-Z0-9_-]{20,}$/.test(input)) return input;
+  return null;
+}
+
+async function fetchSummaryData() {
+  if(!gAccessToken || Date.now() > gTokenExpiry) {
+    document.getElementById('summaryStatus').style.color = '#ef4444';
+    document.getElementById('summaryStatus').innerText = '❌ Please sign in with Google first';
+    return;
+  }
+
+  var rawUrl = document.getElementById('summarySheetUrl').value.trim();
+  var tab = document.getElementById('summaryTabName').value.trim();
+  var range = document.getElementById('summaryRange').value.trim();
+  var btn = document.getElementById('summaryFetchBtn');
+  var status = document.getElementById('summaryStatus');
+
+  var sheetId = extractSheetId(rawUrl);
+  if(!sheetId) {
+    status.style.color = '#ef4444';
+    status.innerText = '❌ Invalid Sheet URL or ID';
+    return;
+  }
+
+  // Build range string: "TabName!A1:H30" or just "TabName" or "A1:H30"
+  var rangeStr = '';
+  if(tab && range) rangeStr = encodeURIComponent(tab + '!' + range);
+  else if(tab) rangeStr = encodeURIComponent(tab);
+  else if(range) rangeStr = encodeURIComponent(range);
+  else rangeStr = 'A1:ZZ10000';
+
+  btn.innerText = '⏳';
+  btn.disabled = true;
+  status.style.color = 'var(--text-muted)';
+  status.innerText = 'Fetching...';
+
+  try {
+    var apiUrl = 'https://sheets.googleapis.com/v4/spreadsheets/' + sheetId + '/values/' + rangeStr;
+    var res = await fetch(apiUrl, {
+      headers: { 'Authorization': 'Bearer ' + gAccessToken }
+    });
+    var data = await res.json();
+
+    if(data.error) throw new Error(data.error.message);
+
+    var values = data.values || [];
+    if(!values.length) throw new Error('No data in range');
+
+    var headers = values[0];
+    var rows = values.slice(1);
+
+    // Build table
+    var html = '<thead style="position:sticky;top:0;z-index:2;"><tr>';
+    html += '<th style="padding:8px 12px;background:#1a1f35;color:#a5b4fc;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.7px;white-space:nowrap;text-align:center;border-bottom:1px solid rgba(165,180,252,0.2);border-right:1px solid rgba(165,180,252,0.1);">#</th>';
+    headers.forEach(function(h) {
+      html += '<th style="padding:8px 12px;background:#1a1f35;color:#a5b4fc;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.7px;white-space:nowrap;text-align:left;border-bottom:1px solid rgba(165,180,252,0.2);border-right:1px solid rgba(165,180,252,0.1);">' + (h||'&nbsp;') + '</th>';
+    });
+    html += '</tr></thead><tbody>';
+
+    rows.forEach(function(row, ri) {
+    html += '<tr class="summary-row" style="border-bottom:1px solid var(--border);">';
+      html += '<td style="padding:8px 12px;color:var(--text-muted);font-size:11px;text-align:center;border-right:1px solid var(--border);">' + (ri+1) + '</td>';
+      for(var ci=0; ci<headers.length; ci++) {
+        var val = row[ci] !== undefined ? row[ci] : '';
+        html += '<td style="padding:8px 12px;color:var(--text);white-space:nowrap;font-size:12px;border-right:1px solid var(--border);">' + (val || '<span style="color:var(--text-muted)">—</span>') + '</td>';
+      }
+      html += '</tr>';
+    });
+    html += '</tbody>';
+
+    document.getElementById('summaryTable').innerHTML = html;
+    document.getElementById('summaryTable').style.display = 'table';
+    document.getElementById('summaryEmpty').style.display = 'none';
+    status.style.color = '#22c55e';
+    status.innerText = '✅ Loaded';
+    document.getElementById('summaryInfo').innerText = rows.length + ' rows · ' + headers.length + ' columns · ' + (tab || 'default sheet') + (range ? ' · ' + range : '');
+
+  } catch(err) {
+    status.style.color = '#ef4444';
+    status.innerText = '❌ ' + err.message;
+  }
+
+  btn.innerText = '⚡ Fetch';
+  btn.disabled = false;
+}
+
+function clearSummary() {
+  ['summarySheetUrl','summaryTabName','summaryRange'].forEach(function(id){ document.getElementById(id).value=''; });
+  document.getElementById('summaryTable').style.display = 'none';
+  document.getElementById('summaryTable').innerHTML = '';
+  document.getElementById('summaryEmpty').style.display = 'block';
+  document.getElementById('summaryStatus').innerText = '';
+  document.getElementById('summaryInfo').innerText = '';
+}
+</script>
+
+<!-- Google Identity Services -->
+<script src="https://accounts.google.com/gsi/client" async></script>
+
 </body>
 </html>

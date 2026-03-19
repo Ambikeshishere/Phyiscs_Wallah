@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Physics Wallah Vidyapeeth Maharashtra — Login</title>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body class="auth-body">
@@ -53,7 +53,25 @@
         <a href="forgot.html" style="color:var(--accent2); text-decoration:none; font-weight:500;">Forgot Password?</a>
       </p>
 
-      <p style="text-align:center; font-size:13px; color:var(--text-muted); margin-top:-8px;">
+      <!-- Divider -->
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0;">
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+        <span style="font-size:11px;color:var(--text-muted);white-space:nowrap;">or continue with</span>
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+      </div>
+
+      <!-- Google Sign-In Button -->
+      <button id="googleSignInBtn" onclick="signInWithGoogle()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;color:#3c4043;border:1px solid #dadce0;border-radius:12px;padding:11px 16px;font-family:var(--font-body);font-size:14px;font-weight:500;cursor:pointer;transition:box-shadow 0.2s,background 0.2s;">
+        <svg width="18" height="18" viewBox="0 0 48 48">
+          <path fill="#4285F4" d="M44.5 20H24v8.5h11.8C34.7 33.9 29.8 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-21 0-1.3-.2-2.7-.5-4z"/>
+          <path fill="#34A853" d="M6.3 14.7l7 5.1C15 16.1 19.2 13 24 13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 16.3 2 9.7 6.4 6.3 14.7z"/>
+          <path fill="#FBBC05" d="M24 46c5.5 0 10.5-1.9 14.4-5l-6.7-5.5C29.6 37 26.9 38 24 38c-5.7 0-10.6-3.1-13.1-7.5l-7 5.4C7.7 41.5 15.3 46 24 46z"/>
+          <path fill="#EA4335" d="M44.5 20H24v8.5h11.8c-1.1 3-3.3 5.5-6.1 7l6.7 5.5c3.9-3.6 6.1-8.9 6.1-15 0-1.3-.2-2.7-.5-4z"/>
+        </svg>
+        Sign in with Google (@pw.live)
+      </button>
+
+      <p style="text-align:center; font-size:13px; color:var(--text-muted); margin-top:4px;">
         New user? <a href="signup.html" style="color:var(--accent2); text-decoration:none; font-weight:500;">Create Account</a>
       </p>
 
@@ -61,10 +79,76 @@
   </div>
 
   <script>
-    // Apply saved theme on login page too
     const t = localStorage.getItem('pwTheme') || 'dark';
     document.documentElement.setAttribute('data-theme', t);
+
+    const GAPI_CLIENT_ID = '597526470536-tm3kkh0p9360f17d6bi0m1savj9k62um.apps.googleusercontent.com';
+
+    function signInWithGoogle() {
+      const btn = document.getElementById('googleSignInBtn');
+      const msg = document.getElementById('authMessage');
+      msg.innerText = '';
+      btn.disabled = true;
+      btn.style.opacity = '0.7';
+      btn.innerHTML = '<span style="font-size:13px;">Connecting...</span>';
+
+      const client = google.accounts.oauth2.initTokenClient({
+        client_id: GAPI_CLIENT_ID,
+        scope: 'email profile',
+        callback: async function(resp) {
+          if (resp.error) {
+            msg.style.color = 'var(--danger, #ef4444)';
+            msg.innerText = '❌ Google sign-in failed. Try again.';
+            resetGoogleBtn();
+            return;
+          }
+
+          try {
+            // Get user info from Google
+            const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+              headers: { Authorization: 'Bearer ' + resp.access_token }
+            });
+            const user = await res.json();
+            const email = user.email || '';
+
+            // Enforce @pw.live domain
+            if (!email.endsWith('@pw.live')) {
+              msg.style.color = 'var(--danger, #ef4444)';
+              msg.innerText = '❌ Only @pw.live accounts are allowed.';
+              // Revoke token immediately
+              google.accounts.oauth2.revoke(resp.access_token);
+              resetGoogleBtn();
+              return;
+            }
+
+            // Store token + user info for Embedded Summary (Sheets API)
+            localStorage.setItem('loggedUser', email);
+            localStorage.setItem('gAccessToken', resp.access_token);
+            localStorage.setItem('gTokenExpiry', Date.now() + (resp.expires_in * 1000));
+            localStorage.setItem('gUserName', user.name || email);
+
+            // Redirect to dashboard
+            window.location.href = 'index.html';
+
+          } catch(err) {
+            msg.style.color = 'var(--danger, #ef4444)';
+            msg.innerText = '❌ Error verifying account. Try again.';
+            resetGoogleBtn();
+          }
+        }
+      });
+
+      client.requestAccessToken({ prompt: 'select_account' });
+    }
+
+    function resetGoogleBtn() {
+      const btn = document.getElementById('googleSignInBtn');
+      btn.disabled = false;
+      btn.style.opacity = '1';
+      btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 48 48"><path fill="#4285F4" d="M44.5 20H24v8.5h11.8C34.7 33.9 29.8 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-21 0-1.3-.2-2.7-.5-4z"/><path fill="#34A853" d="M6.3 14.7l7 5.1C15 16.1 19.2 13 24 13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 16.3 2 9.7 6.4 6.3 14.7z"/><path fill="#FBBC05" d="M24 46c5.5 0 10.5-1.9 14.4-5l-6.7-5.5C29.6 37 26.9 38 24 38c-5.7 0-10.6-3.1-13.1-7.5l-7 5.4C7.7 41.5 15.3 46 24 46z"/><path fill="#EA4335" d="M44.5 20H24v8.5h11.8c-1.1 3-3.3 5.5-6.1 7l6.7 5.5c3.9-3.6 6.1-8.9 6.1-15 0-1.3-.2-2.7-.5-4z"/></svg> Sign in with Google (@pw.live)';
+    }
   </script>
   <script src="auth.js"></script>
+  <script src="https://accounts.google.com/gsi/client" async></script>
 </body>
 </html>
