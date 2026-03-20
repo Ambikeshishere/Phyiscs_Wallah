@@ -681,7 +681,8 @@ async function loadData(){
           iN=headers.indexOf("newpayment_checks"), iB=headers.indexOf("batch"), iSt=headers.indexOf("stream"),
           iCl=headers.indexOf("class_course"), iA=headers.indexOf("admission_mode"), iFa2=headers.indexOf("fees_amt"),
           iArpu=headers.indexOf("arpu_check"), iFormStatus=headers.indexOf("form_status"),
-          iArpuVal=headers.indexOf("arpu"), iDisc=headers.indexOf("%_discount");
+          iArpuVal=headers.indexOf("arpu"), iDisc=headers.indexOf("%_discount"),
+          iAy26=headers.indexOf("ay26_enrollment_status");
     allRows=[];
     lines.slice(1).forEach(function(line){
       if(!line.trim())return;
@@ -706,6 +707,7 @@ async function loadData(){
         formStatus:(cols[iFormStatus]?.trim()||"").toLowerCase(),
         arpuVal:parseFloat((cols[iArpuVal]?.trim()||"0").replace(/,/g,"")),
         discount:parseFloat((cols[iDisc]?.trim()||"0").replace(/,/g,"").replace(/%/g,"")),
+        ay26:(cols[iAy26]?.trim()||"").toLowerCase(),
       });
     });
     buildCenterDropdown();
@@ -857,7 +859,7 @@ function updateCards(rows,dateRows,fv,tv){
   var elig=rows.filter(function(r){return !r.eligibility.includes("not")&&!r.newPayment.includes("token");}).length;
   var bat=rows.filter(function(r){return r.batch&&!r.batch.includes("no batch");}).length;
   // ARPU: arpu_check=YES, form_status != admission cancel, no date filter (rows already has no date filter)
-  var arpuRows=rows.filter(function(r){ return r.arpuCheck==="YES" && !r.formStatus.includes("admission cancel"); });
+  var arpuRows=rows.filter(function(r){ return r.arpuCheck==="YES" && !r.formStatus.includes("admission cancel") && r.ay26.includes("admission"); });
   var avgFee=arpuRows.length>0?Math.round(arpuRows.reduce(function(s,r){return s+r.arpuVal;},0)/arpuRows.length):0;
   var centers=new Set(rows.map(function(r){return r.center;})).size;
   var vpCenters=new Set(rows.filter(function(r){return !r.center.toLowerCase().includes("tuition");}).map(function(r){return r.center;})).size;
@@ -884,7 +886,7 @@ function buildTable(rows,dateRows){
     if(!r.eligibility.includes("not")&&!r.newPayment.includes("token"))em[r.center]=(em[r.center]||0)+1;
     if(r.batch&&!r.batch.includes("no batch"))bm[r.center]=(bm[r.center]||0)+1;
     // ARPU eligible rows per center
-    if(r.arpuCheck==="YES"&&!r.formStatus.includes("admission cancel")){
+    if(r.arpuCheck==="YES"&&!r.formStatus.includes("admission cancel")&&r.ay26.includes("admission")){
       arpuSum[r.center]=(arpuSum[r.center]||0)+r.arpuVal;
       arpuCnt[r.center]=(arpuCnt[r.center]||0)+1;
       discSum[r.center]=(discSum[r.center]||0)+(isNaN(r.discount)?0:r.discount);
@@ -996,7 +998,7 @@ function updateEligChart(rows, c) {
 function updateArpuChart(rows, c) {
   // Filter: arpu_check = YES, form_status != admission cancel
   var arpuRows = rows.filter(function(r){
-    return r.arpuCheck === "YES" && !r.formStatus.includes("admission cancel");
+    return r.arpuCheck === "YES" && !r.formStatus.includes("admission cancel") && r.ay26.includes("admission");
   });
 
   // Group by stream

@@ -6,6 +6,7 @@
   <title>PW Vidyapeeth Maharashtra — Executive Wise Reg</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
   <style>
     .exec-wrap { flex:1; padding:24px 28px; overflow-y:auto; display:flex; flex-direction:column; gap:16px; }
 
@@ -175,7 +176,7 @@
     </div>
 
     <!-- Search Bar -->
-    <div class="exec-search-bar">
+    <div class="exec-search-bar" style="flex-wrap:wrap;align-items:flex-end;">
       <div class="exec-field">
         <span class="exec-label">Source Name / Executive Code</span>
         <input type="text" id="sourceInput" class="exec-input" placeholder="e.g. EMP001 or Rahul" oninput="onSourceInput()">
@@ -190,6 +191,30 @@
         <span class="exec-label">Class / Course</span>
         <select id="classSelect" class="exec-select" onchange="applyFilters()" disabled>
           <option value="all">All Classes</option>
+        </select>
+      </div>
+      <div class="exec-field">
+        <span class="exec-label">From Date</span>
+        <input type="date" id="fromDate" class="exec-input" style="min-width:140px;" onchange="applyFilters()">
+      </div>
+      <div class="exec-field">
+        <span class="exec-label">To Date</span>
+        <input type="date" id="toDate" class="exec-input" style="min-width:140px;" onchange="applyFilters()">
+      </div>
+      <div class="exec-field">
+        <span class="exec-label">Payment Status</span>
+        <select id="paymentSelect" class="exec-select" onchange="applyFilters()">
+          <option value="all">All</option>
+          <option value="1st emi">1st EMI</option>
+          <option value="token only">Token Only</option>
+          <option value="less than token">Less than Token</option>
+          <option value="total paid">Total Paid</option>
+        </select>
+      </div>
+      <div class="exec-field">
+        <span class="exec-label">Eligibility</span>
+        <select id="eligSelect" class="exec-select" onchange="applyFilters()">
+          <option value="all">All</option>
         </select>
       </div>
       <button class="exec-btn" onclick="applyFilters()">🔍 Search</button>
@@ -214,15 +239,52 @@
         <div class="exec-card-sub" id="cBatchPct">—% of eligible</div>
       </div>
       <div class="exec-card" style="--card-accent:#fbbf24">
-        <div class="exec-card-label">Avg Fees Paid</div>
+        <div class="exec-card-label">Avg ARPU</div>
         <div class="exec-card-value" id="cAvgFee">—</div>
-        <div class="exec-card-sub">per student</div>
+        <div class="exec-card-sub" id="cArpuSub">arpu_check = YES</div>
+      </div>
+      <div class="exec-card" style="--card-accent:#f43f5e">
+        <div class="exec-card-label">Avg % Discount</div>
+        <div class="exec-card-value" id="cAvgDisc">—</div>
+        <div class="exec-card-sub">same ARPU base</div>
       </div>
       <div class="exec-card" style="--card-accent:#14b8a6">
         <div class="exec-card-label">Centers</div>
         <div class="exec-card-value" id="cCenters">—</div>
         <div class="exec-card-sub">unique centers</div>
       </div>
+    </div>
+
+    <!-- Charts Row 2x2 -->
+    <div id="execChartsRow" style="display:none;grid-template-columns:1fr 1fr 1fr;gap:16px;">
+
+      <!-- Class-wise Pie Chart -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+          <span style="font-family:var(--font-display);font-size:14px;font-weight:700;">🎓 Class Split</span>
+          <span id="classPieBadge" style="font-size:11px;font-weight:600;background:rgba(249,115,22,0.12);color:var(--accent2);border:1px solid rgba(249,115,22,0.2);border-radius:20px;padding:2px 8px;">—</span>
+        </div>
+        <div style="height:220px;"><canvas id="classPieChart"></canvas></div>
+      </div>
+
+      <!-- Eligibility Pie Chart -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+          <span style="font-family:var(--font-display);font-size:14px;font-weight:700;">✅ Eligibility Status</span>
+          <span id="eligChartBadge" style="font-size:11px;font-weight:600;background:rgba(249,115,22,0.12);color:var(--accent2);border:1px solid rgba(249,115,22,0.2);border-radius:20px;padding:2px 8px;">—</span>
+        </div>
+        <div style="height:220px;"><canvas id="eligPieChart"></canvas></div>
+      </div>
+
+      <!-- Payment Status Pie Chart -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+          <span style="font-family:var(--font-display);font-size:14px;font-weight:700;">💰 Payment Breakdown</span>
+          <span id="payChartBadge" style="font-size:11px;font-weight:600;background:rgba(249,115,22,0.12);color:var(--accent2);border:1px solid rgba(249,115,22,0.2);border-radius:20px;padding:2px 8px;">—</span>
+        </div>
+        <div style="height:220px;"><canvas id="payPieChart"></canvas></div>
+      </div>
+
     </div>
 
     <!-- Students Table -->
@@ -293,6 +355,15 @@ function parseCSVRow(row) {
 }
 
 // ── Load all data ─────────────────────────────────────
+function parseJoinDate(s) {
+  if (!s) return null;
+  const a = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+  if (a) return new Date(+a[3], +a[2]-1, +a[1]);
+  const b = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (b) return new Date(+b[1], +b[2]-1, +b[3]);
+  const d = new Date(s); return isNaN(d) ? null : d;
+}
+
 async function loadAllData() {
   document.getElementById("refreshIcon").style.animation = "spin 0.8s linear infinite";
   try {
@@ -310,8 +381,14 @@ async function loadAllData() {
     const iFreeAdm= headers.indexOf("free_admission");
     const iStatus = headers.indexOf("status");
     const iPayment= headers.indexOf("newpayment_checks");
-    const iBatch  = headers.indexOf("batch");
-    const iElig   = headers.indexOf("eligibility_status");
+    const iBatch   = headers.indexOf("batch");
+    const iElig    = headers.indexOf("eligibility_status");
+    const iArpu    = headers.indexOf("arpu");
+    const iArpuChk = headers.indexOf("arpu_check");
+    const iDisc    = headers.indexOf("%_discount");
+    const iFormSt  = headers.indexOf("form_status");
+    const iJoin    = headers.indexOf("joining_date");
+    const iAy26    = headers.indexOf("ay26_enrollment_status");
 
     allRows = [];
     lines.slice(1).forEach(line => {
@@ -331,6 +408,12 @@ async function loadAllData() {
         payment: (cols[iPayment]?.trim() || "").toLowerCase(),
         batch:   cols[iBatch]?.trim()  || "—",
         eligibility: (cols[iElig]?.trim() || "").toLowerCase(),
+        arpuVal:     parseFloat((cols[iArpu]?.trim() || "0").replace(/,/g,"")),
+        arpuCheck:   (cols[iArpuChk]?.trim() || "").toUpperCase(),
+        discount:    parseFloat((cols[iDisc]?.trim() || "0").replace(/,/g,"").replace(/%/g,"")),
+        formStatus:  (cols[iFormSt]?.trim() || "").toLowerCase(),
+        joiningDate: parseJoinDate(cols[iJoin]?.trim() || ""),
+        ay26:        (cols[iAy26]?.trim() || "").toLowerCase(),
       });
     });
 
@@ -357,9 +440,16 @@ function onSourceInput() {
   // Filter rows matching source name
   const matched = allRows.filter(r => r.source.toLowerCase().includes(query));
 
-  // Unique centers and classes
+  // Unique centers, classes and eligibility statuses
   const centers = [...new Set(matched.map(r => r.center))].sort();
   const classes  = [...new Set(matched.map(r => r.classCourse))].sort();
+  const eligs    = [...new Set(matched.map(r => r.eligibility).filter(Boolean))].sort();
+
+  const eSel = document.getElementById("eligSelect");
+  const curElig = eSel.value;
+  eSel.innerHTML = '<option value="all">All</option>';
+  eligs.forEach(e => { const o = document.createElement("option"); o.value = e; o.textContent = e; eSel.appendChild(o); });
+  if ([...eSel.options].some(o => o.value === curElig)) eSel.value = curElig;
 
   const cSel = document.getElementById("centerSelect");
   const clSel = document.getElementById("classSelect");
@@ -396,40 +486,61 @@ function onCenterChange() {
 // ── Apply all filters → render table ─────────────────
 function applyFilters() {
   if (!dataLoaded) return;
-  const query  = document.getElementById("sourceInput").value.trim().toLowerCase();
-  const center = document.getElementById("centerSelect").value;
-  const cls    = document.getElementById("classSelect").value;
+  const query   = document.getElementById("sourceInput").value.trim().toLowerCase();
+  const center  = document.getElementById("centerSelect").value;
+  const cls     = document.getElementById("classSelect").value;
+  const fv      = document.getElementById("fromDate").value;
+  const tv      = document.getElementById("toDate").value;
+  const payment = document.getElementById("paymentSelect").value;
+  const elig    = document.getElementById("eligSelect").value;
+  const fd      = fv ? new Date(fv + "T00:00:00") : null;
+  const td2     = tv ? new Date(tv + "T23:59:59") : null;
 
   if (!query) { renderEmpty(); return; }
 
   filteredRows = allRows.filter(r => {
     if (!r.source.toLowerCase().includes(query)) return false;
-    if (center !== "all" && r.center !== center)   return false;
-    if (cls    !== "all" && r.classCourse !== cls)  return false;
+    if (center  !== "all" && r.center !== center)       return false;
+    if (cls     !== "all" && r.classCourse !== cls)      return false;
+    if (payment !== "all" && !r.payment.includes(payment)) return false;
+    if (elig    !== "all" && r.eligibility !== elig)    return false;
+    if (fd || td2) {
+      if (!r.joiningDate) return false;
+      const d = new Date(r.joiningDate.getFullYear(), r.joiningDate.getMonth(), r.joiningDate.getDate());
+      if (fd  && d < new Date(fd.getFullYear(), fd.getMonth(), fd.getDate()))    return false;
+      if (td2 && d > new Date(td2.getFullYear(), td2.getMonth(), td2.getDate())) return false;
+    }
     return true;
   });
 
   tableData = [...filteredRows];
   updateSummary(filteredRows);
+  updateCharts(filteredRows);
   renderTable(filteredRows);
 }
 
 // ── Summary cards ─────────────────────────────────────
 function updateSummary(rows) {
-  const total  = rows.length;
-  const elig   = rows.filter(r => !r.eligibility.includes("not") && !r.payment.includes("token only")).length;
-  const batch  = rows.filter(r => r.batch && r.batch !== "—" && !r.batch.toLowerCase().includes("no batch")).length;
-  const avgFee = total > 0 ? Math.round(rows.reduce((s,r) => s + r.feesPaid, 0) / total) : 0;
-  const centers= new Set(rows.map(r => r.center)).size;
+  const total   = rows.length;
+  const elig    = rows.filter(r => !r.eligibility.includes("not") && !r.payment.includes("token only")).length;
+  const batch   = rows.filter(r => r.batch && r.batch !== "—" && !r.batch.toLowerCase().includes("no batch")).length;
+  const centers = new Set(rows.map(r => r.center)).size;
 
-  document.getElementById("cTotal").innerText   = total.toLocaleString();
-  document.getElementById("cTotalSub").innerText= "matching filters";
-  document.getElementById("cElig").innerText    = elig.toLocaleString();
-  document.getElementById("cEligPct").innerText = total > 0 ? ((elig/total)*100).toFixed(1)+"% of total" : "—";
-  document.getElementById("cBatch").innerText   = batch.toLocaleString();
-  document.getElementById("cBatchPct").innerText= elig > 0 ? ((batch/elig)*100).toFixed(1)+"% of eligible" : "—";
-  document.getElementById("cAvgFee").innerText  = "₹" + avgFee.toLocaleString();
-  document.getElementById("cCenters").innerText = centers;
+  // ARPU: arpu_check=YES, form_status != admission cancel
+  const arpuRows = rows.filter(r => r.arpuCheck === "YES" && !r.formStatus.includes("admission cancel") && r.ay26.includes("admission"));
+  const avgArpu  = arpuRows.length > 0 ? Math.round(arpuRows.reduce((s,r) => s + r.arpuVal, 0) / arpuRows.length) : 0;
+  const avgDisc  = arpuRows.length > 0 ? (arpuRows.reduce((s,r) => s + (isNaN(r.discount)?0:r.discount), 0) / arpuRows.length).toFixed(1) : 0;
+
+  document.getElementById("cTotal").innerText    = total.toLocaleString();
+  document.getElementById("cTotalSub").innerText = "matching filters";
+  document.getElementById("cElig").innerText     = elig.toLocaleString();
+  document.getElementById("cEligPct").innerText  = total > 0 ? ((elig/total)*100).toFixed(1)+"% of total" : "—";
+  document.getElementById("cBatch").innerText    = batch.toLocaleString();
+  document.getElementById("cBatchPct").innerText = elig > 0 ? ((batch/elig)*100).toFixed(1)+"% of eligible" : "—";
+  document.getElementById("cAvgFee").innerText   = "₹" + avgArpu.toLocaleString();
+  document.getElementById("cArpuSub").innerText  = arpuRows.length + " eligible rows";
+  document.getElementById("cAvgDisc").innerText  = avgDisc + "%";
+  document.getElementById("cCenters").innerText  = centers;
   document.getElementById("execSummary").style.display = "grid";
 }
 
@@ -442,6 +553,145 @@ function payBadge(p) {
   if (p.includes("less than token")) return '<span class="pay-badge pay-less">Less Token</span>';
   if (p.includes("token") && p.includes("emi")) return '<span class="pay-badge pay-emi">Token+EMI</span>';
   return '<span class="pay-badge pay-other">' + p.slice(0,12) + '</span>';
+}
+
+// ── Charts ────────────────────────────────────────────
+let eligPieC = null;
+
+function gc() {
+  const s = getComputedStyle(document.documentElement);
+  return {
+    text:  s.getPropertyValue("--text").trim()   || "#f1f5f9",
+    muted: s.getPropertyValue("--text-muted").trim() || "#64748b",
+    border:s.getPropertyValue("--border").trim() || "rgba(255,255,255,0.08)",
+    accent:s.getPropertyValue("--accent").trim() || "#f97316",
+  };
+}
+
+function updateCharts(rows) {
+  document.getElementById("execChartsRow").style.display = "grid";
+  const c = gc();
+
+  // Class-wise bar chart
+  const classMap = {};
+  rows.forEach(r => { classMap[r.classCourse] = (classMap[r.classCourse]||0)+1; });
+  const classEntries = Object.entries(classMap).sort((a,b)=>b[1]-a[1]);
+  const cColors = ["#f97316","#6366f1","#22c55e","#ec4899","#14b8a6","#f59e0b","#3b82f6","#a855f7","#ef4444","#10b981"];
+
+  // Class pie chart — self explanatory
+  const classTotal = classEntries.reduce((s,e)=>s+e[1],0);
+  document.getElementById("classPieBadge").innerText = classTotal + " students · " + classEntries.length + " classes";
+  if (window.classPieC) window.classPieC.destroy();
+  window.classPieC = new Chart(document.getElementById("classPieChart"), {
+    type:"doughnut",
+    data:{
+      labels: classEntries.map(e => e[0] + "  " + e[1] + " (" + (classTotal>0?((e[1]/classTotal)*100).toFixed(1):0) + "%)"),
+      datasets:[{ data: classEntries.map(e=>e[1]), backgroundColor: cColors.slice(0,classEntries.length), borderWidth:2, borderColor:"var(--surface)" }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false, cutout:"50%",
+      plugins:{
+        legend:{ display:true, position:"right", labels:{color:c.text, font:{size:10}, boxWidth:10, padding:6} },
+        tooltip:{callbacks:{label:ctx=>{ const pct=classTotal>0?((ctx.parsed/classTotal)*100).toFixed(1):0; return "  "+ctx.parsed+" students ("+pct+"%)"; }}},
+        beforeDraw: function(chart) {
+          const {ctx: c2, chartArea:{top,bottom,left,right}} = chart;
+          c2.save(); c2.textAlign="center"; c2.textBaseline="middle";
+          const cx=(left+right)/2, cy=(top+bottom)/2;
+          c2.font="bold 20px Plus Jakarta Sans"; c2.fillStyle=c.text; c2.fillText(classTotal, cx, cy-8);
+          c2.font="11px DM Sans"; c2.fillStyle=c.muted; c2.fillText("Total", cx, cy+12);
+          c2.restore();
+        }
+      }
+    },
+    plugins:[{
+      id:"centerText",
+      beforeDraw(chart){
+        const {ctx:c2,chartArea:{top,bottom,left,right}}=chart;
+        c2.save(); c2.textAlign="center"; c2.textBaseline="middle";
+        const cx=(left+right)/2, cy=(top+bottom)/2;
+        c2.font="bold 18px sans-serif"; c2.fillStyle=c.text; c2.fillText(classTotal,cx,cy-7);
+        c2.font="10px sans-serif"; c2.fillStyle=c.muted; c2.fillText("students",cx,cy+9);
+        c2.restore();
+      }
+    }]
+  });
+
+  // Eligibility pie
+  const eligMap = {};
+  rows.forEach(r => { const s = r.eligibility ? r.eligibility.trim() : "unknown"; eligMap[s] = (eligMap[s]||0)+1; });
+  const eligEntries = Object.entries(eligMap).sort((a,b)=>b[1]-a[1]);
+  const eTotal = eligEntries.reduce((s,e)=>s+e[1],0);
+  const eColors = ["#22c55e","#ef4444","#f59e0b","#6366f1","#14b8a6","#ec4899","#94a3b8"];
+  document.getElementById("eligChartBadge").innerText = eTotal.toLocaleString() + " students";
+  if (eligPieC) eligPieC.destroy();
+  eligPieC = new Chart(document.getElementById("eligPieChart"), {
+    type:"doughnut",
+    data:{
+      labels: eligEntries.map(e => e[0] + "  " + e[1] + " (" + (eTotal>0?((e[1]/eTotal)*100).toFixed(1):0) + "%)"),
+      datasets:[{ data: eligEntries.map(e=>e[1]), backgroundColor: eColors.slice(0,eligEntries.length), borderWidth:2, borderColor:"var(--surface)" }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false, cutout:"50%",
+      plugins:{
+        legend:{ display:true, position:"right", labels:{color:c.text, font:{size:10}, boxWidth:10, padding:6} },
+        tooltip:{callbacks:{label:ctx=>{ const pct=eTotal>0?((ctx.parsed/eTotal)*100).toFixed(1):0; return "  "+ctx.parsed.toLocaleString()+" ("+pct+"%)"; }}}
+      }
+    },
+    plugins:[{
+      id:"centerTextElig",
+      beforeDraw(chart){
+        const {ctx:c2,chartArea:{top,bottom,left,right}}=chart;
+        c2.save(); c2.textAlign="center"; c2.textBaseline="middle";
+        const cx=(left+right)/2, cy=(top+bottom)/2;
+        c2.font="bold 18px sans-serif"; c2.fillStyle=c.text; c2.fillText(eTotal.toLocaleString(),cx,cy-7);
+        c2.font="10px sans-serif"; c2.fillStyle=c.muted; c2.fillText("students",cx,cy+9);
+        c2.restore();
+      }
+    }]
+  });
+
+  // Payment breakdown pie
+  const payMap = {};
+  rows.forEach(r => {
+    const p = r.payment;
+    let label = "Other";
+    if (p.includes("total paid"))       label = "Total Paid";
+    else if (p.includes("1st emi") || p.includes("1st_emi")) label = "1st EMI";
+    else if (p.includes("less than token")) label = "Less than Token";
+    else if (p.includes("token only"))  label = "Token Only";
+    else if (p.includes("token") && p.includes("emi")) label = "Token+EMI";
+    payMap[label] = (payMap[label]||0)+1;
+  });
+  const payEntries = Object.entries(payMap).sort((a,b)=>b[1]-a[1]);
+  const pTotal = payEntries.reduce((s,e)=>s+e[1],0);
+  const pColors = ["#22c55e","#f97316","#ef4444","#6366f1","#fbbf24","#94a3b8"];
+  document.getElementById("payChartBadge").innerText = pTotal.toLocaleString() + " students";
+  if (window.payPieC) window.payPieC.destroy();
+  window.payPieC = new Chart(document.getElementById("payPieChart"), {
+    type:"doughnut",
+    data:{
+      labels: payEntries.map(e => e[0] + "  " + e[1] + " (" + (pTotal>0?((e[1]/pTotal)*100).toFixed(1):0) + "%)"),
+      datasets:[{ data: payEntries.map(e=>e[1]), backgroundColor: pColors.slice(0,payEntries.length), borderWidth:2, borderColor:"var(--surface)" }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false, cutout:"50%",
+      plugins:{
+        legend:{ display:true, position:"right", labels:{color:c.text, font:{size:10}, boxWidth:10, padding:6} },
+        tooltip:{callbacks:{label:ctx=>{ const pct=pTotal>0?((ctx.parsed/pTotal)*100).toFixed(1):0; return "  "+ctx.parsed.toLocaleString()+" ("+pct+"%)"; }}}
+      }
+    },
+    plugins:[{
+      id:"centerTextPay",
+      beforeDraw(chart){
+        const {ctx:c2,chartArea:{top,bottom,left,right}}=chart;
+        c2.save(); c2.textAlign="center"; c2.textBaseline="middle";
+        const cx=(left+right)/2, cy=(top+bottom)/2;
+        c2.font="bold 18px sans-serif"; c2.fillStyle=c.text; c2.fillText(pTotal.toLocaleString(),cx,cy-7);
+        c2.font="10px sans-serif"; c2.fillStyle=c.muted; c2.fillText("students",cx,cy+9);
+        c2.restore();
+      }
+    }]
+  });
 }
 
 // ── Render table ──────────────────────────────────────
@@ -489,6 +739,11 @@ function filterTable() {
 function clearAll() {
   document.getElementById("sourceInput").value = "";
   document.getElementById("tableSearch").value = "";
+  document.getElementById("fromDate").value = "";
+  document.getElementById("toDate").value = "";
+  document.getElementById("execChartsRow").style.display = "none";
+  if (classBarC) { classBarC.destroy(); classBarC = null; }
+  if (eligPieC)  { eligPieC.destroy();  eligPieC  = null; }
   resetDropdowns();
   renderEmpty();
 }
