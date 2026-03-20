@@ -235,17 +235,17 @@
     .pivot-table thead th { background:var(--bg2) !important; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:var(--text) !important; text-align:center; border-right:1px solid var(--border); box-shadow: 0 1px 0 var(--border); }
     .pivot-table thead th.center-col { text-align:left; min-width:220px; position:sticky; left:0; z-index:5; background:var(--bg2) !important; }
     .pivot-table tbody td { text-align:center; color:#94a3b8; background:var(--surface); }
-    .pivot-center-row td { color:var(--text-dim); font-weight:400; }
+    .pivot-center-row td { color:var(--text-dim); font-weight:400; background:#161e2d !important; }
     /* center-col handled inline */
     .pivot-center-row:nth-child(even) td { background:var(--bg2) !important; }
     .pivot-center-row:nth-child(even) td.center-col { background:var(--bg2) !important; }
     .pivot-center-row:hover td { filter:brightness(1.15); }
     .pivot-center-row td.has-data { color:var(--text); font-weight:500; }
     .pivot-table tbody td.has-data { color:#e2e8f0; font-weight:600; }
-    .pivot-table tbody td.center-col { position:sticky; left:0; z-index:10; font-family:var(--font-display); font-size:13px; border-right:3px solid var(--border); box-shadow:4px 0 8px -2px rgba(0,0,0,0.4); clip-path:none; }
+    .pivot-table tbody td.center-col { position:sticky; left:0; z-index:10; font-family:var(--font-display); font-size:13px; border-right:3px solid rgba(255,255,255,0.1); }
     .pivot-table tbody tr:hover td { background:#132030; }
     .pivot-table tbody tr:hover td.center-col { background:var(--surface-hover) !important; }
-    .pivot-city-row td { font-weight:600; color:var(--text); font-family:var(--font-display); cursor:pointer; }
+    .pivot-city-row td { font-weight:600; color:var(--text); font-family:var(--font-display); cursor:pointer; background:#1e2535 !important; }
 
     .pivot-city-row:hover td { filter:brightness(1.1); }
 
@@ -254,7 +254,7 @@
     .city-toggle.open { transform:rotate(90deg); }
     .pivot-total-cell { font-weight:700; color:var(--text); font-size:13px; }
     .pivot-date-total { background:var(--surface-hover) !important; font-weight:700; color:var(--text); }
-    .pivot-grand-row td { background:var(--bg2) !important; color:var(--text) !important; font-weight:700; border-bottom:2px solid rgba(249,115,22,0.3) !important; }
+    .pivot-grand-row td { background:#0f1624 !important; color:var(--text) !important; font-weight:700; border-bottom:2px solid rgba(249,115,22,0.3) !important; }
     .pivot-grand-row td.center-col { background:var(--bg2) !important; color:#fb923c !important; }
 
     .target-wrap { display:inline-flex; flex-direction:column; gap:3px; min-width:120px; align-items:center; }
@@ -1315,8 +1315,8 @@ function buildPivotTable(rows, dateRows) {
     });
 
     var cityColor = CITY_COLORS[cities.indexOf(city) % CITY_COLORS.length];
-    var cityRow = '<tr class="pivot-city-row" data-city-key="' + safeCity + '" style="background:'+cityColor+'22;">';
-    cityRow += '<td class="center-col" style="position:sticky;left:0;z-index:10;border-left:5px solid '+cityColor+';background:'+cityColor+'22;color:#ffffff;font-weight:700;font-size:14px;box-shadow:6px 0 10px 0px rgba(0,0,0,0.5);"><span class="city-toggle" data-city-id="' + safeCity + '">&#9658;</span>&nbsp;&nbsp;' + city + '&nbsp;<span style="font-size:11px;font-weight:400;opacity:0.6;">('+centers.length+' centers)</span></td>';
+    var cityRow = '<tr class="pivot-city-row" data-city-key="' + safeCity + '">';
+    cityRow += '<td class="center-col" style="position:sticky;left:0;z-index:10;border-left:5px solid '+cityColor+';background:#1e2535;color:#ffffff;font-weight:700;font-size:14px;box-shadow:6px 0 8px rgba(0,0,0,0.6);"><span class="city-toggle" data-city-id="' + safeCity + '">&#9658;</span>&nbsp;&nbsp;' + city + '&nbsp;<span style="font-size:11px;font-weight:400;opacity:0.6;">('+centers.length+' centers)</span></td>';
     allDates.forEach(function(d){
       cityRow += '<td>' + (cityDateTotals[d]||"-") + '</td>';
     });
@@ -1325,8 +1325,8 @@ function buildPivotTable(rows, dateRows) {
 
     centers.forEach(function(center){
       var centerTotal = 0;
-      var centerRow = '<tr class="pivot-center-row collapsed" data-city-key="' + safeCity + '" style="background:'+cityColor+'0e;">';
-      centerRow += '<td class="center-col" style="position:sticky;left:0;z-index:10;border-left:4px solid '+cityColor+'66;background:'+cityColor+'0e;padding-left:28px;font-size:12px;font-weight:400;color:var(--text);box-shadow:6px 0 10px 0px rgba(0,0,0,0.5);">' + center + '</td>';
+      var centerRow = '<tr class="pivot-center-row collapsed" data-city-key="' + safeCity + '">';
+      centerRow += '<td class="center-col" style="position:sticky;left:0;z-index:10;border-left:4px solid '+cityColor+';background:#161e2d;padding-left:28px;font-size:12px;font-weight:400;color:#e2e8f0;box-shadow:6px 0 8px rgba(0,0,0,0.6);">' + center + '</td>';
       allDates.forEach(function(d){
         var val = centerDateMap[center] ? (centerDateMap[center][d]||0) : 0;
         centerTotal += val;
