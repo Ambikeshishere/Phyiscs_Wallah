@@ -178,15 +178,18 @@
     <!-- Search Bar -->
     <div class="exec-search-bar" style="flex-wrap:wrap;align-items:flex-end;">
       <div class="exec-field">
-        <span class="exec-label">Source Name / Executive Code</span>
-        <input type="text" id="sourceInput" class="exec-input" placeholder="e.g. EMP001 or Rahul" oninput="onSourceInput()">
+        <span class="exec-label">Executive / Source Name</span>
+        <select id="sourceSelect" class="exec-select" onchange="onSourceSelect()" style="min-width:200px;">
+          <option value="">-- Select Executive --</option>
+        </select>
       </div>
       <div class="exec-field">
         <span class="exec-label">Center</span>
-        <select id="centerSelect" class="exec-select" onchange="onCenterChange()" disabled>
-          <option value="all">All Centers</option>
+        <select id="centerSelect" class="exec-select" onchange="onCenterChange()">
+          <option value="all">-- Select Center --</option>
         </select>
       </div>
+
       <div class="exec-field">
         <span class="exec-label">Class / Course</span>
         <select id="classSelect" class="exec-select" onchange="applyFilters()" disabled>
@@ -355,6 +358,14 @@ function parseCSVRow(row) {
 }
 
 // ── Load all data ─────────────────────────────────────
+function populateAllCenters() {
+  const cSel = document.getElementById("centerSelect");
+  const centers = [...new Set(allRows.map(r => r.center))].sort();
+  cSel.innerHTML = '<option value="all">All Centers</option>';
+  centers.forEach(c => { const o = document.createElement("option"); o.value = c; o.textContent = c; cSel.appendChild(o); });
+  cSel.disabled = false;
+}
+
 function parseJoinDate(s) {
   if (!s) return null;
   const a = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
@@ -418,9 +429,12 @@ async function loadAllData() {
     });
 
     dataLoaded = true;
+    populateAllDropdowns();
     showToast("✅ " + allRows.length + " records loaded");
+    // Populate centers dropdown with all centers on load
+    populateAllCenters();
     // Re-apply if source already entered
-    if (document.getElementById("sourceInput").value.trim()) onSourceInput();
+    applyFilters();
 
   } catch (e) {
     showToast("❌ Error loading data");
@@ -430,63 +444,71 @@ async function loadAllData() {
 }
 
 // ── Source input → populate dropdowns ────────────────
-function onSourceInput() {
-  const query = document.getElementById("sourceInput").value.trim().toLowerCase();
-  if (!query || !dataLoaded) {
-    resetDropdowns();
-    return;
-  }
+function populateAllDropdowns() {
+  if (!dataLoaded) return;
+  const selSource = document.getElementById("sourceSelect").value;
+  const selCenter = document.getElementById("centerSelect").value;
 
-  // Filter rows matching source name
-  const matched = allRows.filter(r => r.source.toLowerCase().includes(query));
+  // Source dropdown — filtered by selected center
+  const baseForSource = (selCenter && selCenter !== "all")
+    ? allRows.filter(r => r.center === selCenter)
+    : allRows;
+  const sSel = document.getElementById("sourceSelect");
+  const curS = sSel.value;
+  const sources = [...new Set(baseForSource.map(r => r.source))].filter(Boolean).sort();
+  sSel.innerHTML = '<option value="">-- Select Executive --</option>';
+  sources.forEach(s => { const o = document.createElement("option"); o.value = s; o.textContent = s; sSel.appendChild(o); });
+  if (sources.includes(curS)) sSel.value = curS;
 
-  // Unique centers, classes and eligibility statuses
-  const centers = [...new Set(matched.map(r => r.center))].sort();
-  const classes  = [...new Set(matched.map(r => r.classCourse))].sort();
-  const eligs    = [...new Set(matched.map(r => r.eligibility).filter(Boolean))].sort();
-
-  const eSel = document.getElementById("eligSelect");
-  const curElig = eSel.value;
-  eSel.innerHTML = '<option value="all">All</option>';
-  eligs.forEach(e => { const o = document.createElement("option"); o.value = e; o.textContent = e; eSel.appendChild(o); });
-  if ([...eSel.options].some(o => o.value === curElig)) eSel.value = curElig;
-
+  // Center dropdown — filtered by selected source
+  const baseForCenter = selSource
+    ? allRows.filter(r => r.source === selSource)
+    : allRows;
   const cSel = document.getElementById("centerSelect");
-  const clSel = document.getElementById("classSelect");
-
-  cSel.innerHTML = '<option value="all">All Centers</option>';
+  const curC = cSel.value;
+  const centers = [...new Set(baseForCenter.map(r => r.center))].filter(Boolean).sort();
+  cSel.innerHTML = '<option value="all">-- Select Center --</option>';
   centers.forEach(c => { const o = document.createElement("option"); o.value = c; o.textContent = c; cSel.appendChild(o); });
-  cSel.disabled = false;
+  if (centers.includes(curC)) cSel.value = curC;
+
+  // Class + Elig dropdowns
+  let matched = allRows;
+  if (selSource) matched = matched.filter(r => r.source === selSource);
+  if (selCenter && selCenter !== "all") matched = matched.filter(r => r.center === selCenter);
+
+  const classes = [...new Set(matched.map(r => r.classCourse))].filter(Boolean).sort();
+  const eligs   = [...new Set(matched.map(r => r.eligibility))].filter(Boolean).sort();
+
+  const clSel = document.getElementById("classSelect");
+  const eSel  = document.getElementById("eligSelect");
+  const curCl = clSel.value, curE = eSel.value;
 
   clSel.innerHTML = '<option value="all">All Classes</option>';
   classes.forEach(c => { const o = document.createElement("option"); o.value = c; o.textContent = c; clSel.appendChild(o); });
+  if ([...clSel.options].some(o => o.value === curCl)) clSel.value = curCl;
   clSel.disabled = false;
 
+  eSel.innerHTML = '<option value="all">All</option>';
+  eligs.forEach(e => { const o = document.createElement("option"); o.value = e; o.textContent = e; eSel.appendChild(o); });
+  if ([...eSel.options].some(o => o.value === curE)) eSel.value = curE;
+}
+
+function onSourceSelect() {
+  populateAllDropdowns();
   applyFilters();
 }
 
-// ── Center change → update class dropdown ────────────
 function onCenterChange() {
-  const query  = document.getElementById("sourceInput").value.trim().toLowerCase();
-  const center = document.getElementById("centerSelect").value;
-
-  let matched = allRows.filter(r => r.source.toLowerCase().includes(query));
-  if (center !== "all") matched = matched.filter(r => r.center === center);
-
-  const classes = [...new Set(matched.map(r => r.classCourse))].sort();
-  const clSel = document.getElementById("classSelect");
-  const curVal = clSel.value;
-  clSel.innerHTML = '<option value="all">All Classes</option>';
-  classes.forEach(c => { const o = document.createElement("option"); o.value = c; o.textContent = c; clSel.appendChild(o); });
-  if ([...clSel.options].some(o => o.value === curVal)) clSel.value = curVal;
-
+  populateAllDropdowns();
   applyFilters();
 }
+
+function onSourceInput() {}
 
 // ── Apply all filters → render table ─────────────────
 function applyFilters() {
   if (!dataLoaded) return;
-  const query   = document.getElementById("sourceInput").value.trim().toLowerCase();
+  const query   = document.getElementById("sourceSelect").value;
   const center  = document.getElementById("centerSelect").value;
   const cls     = document.getElementById("classSelect").value;
   const fv      = document.getElementById("fromDate").value;
@@ -496,11 +518,12 @@ function applyFilters() {
   const fd      = fv ? new Date(fv + "T00:00:00") : null;
   const td2     = tv ? new Date(tv + "T23:59:59") : null;
 
-  if (!query) { renderEmpty(); return; }
+  // Allow filter by center alone even without source query
+  if (!query && center === "all") { renderEmpty(); return; }
 
   filteredRows = allRows.filter(r => {
-    if (!r.source.toLowerCase().includes(query)) return false;
-    if (center  !== "all" && r.center !== center)       return false;
+    if (query && r.source !== query) return false;
+    if (center  !== "all" && r.center !== center)         return false;
     if (cls     !== "all" && r.classCourse !== cls)      return false;
     if (payment !== "all" && !r.payment.includes(payment)) return false;
     if (elig    !== "all" && r.eligibility !== elig)    return false;
@@ -527,7 +550,7 @@ function updateSummary(rows) {
   const centers = new Set(rows.map(r => r.center)).size;
 
   // ARPU: arpu_check=YES, form_status != admission cancel
-  const arpuRows = rows.filter(r => r.arpuCheck === "YES" && !r.formStatus.includes("admission cancel") && r.ay26.includes("admission"));
+  const arpuRows = rows.filter(r => r.arpuCheck === "YES" && !r.formStatus.includes("admission cancel") && r.ay26.includes("admission") /* base: status=active, free_admission=false already applied */);
   const avgArpu  = arpuRows.length > 0 ? Math.round(arpuRows.reduce((s,r) => s + r.arpuVal, 0) / arpuRows.length) : 0;
   const avgDisc  = arpuRows.length > 0 ? (arpuRows.reduce((s,r) => s + (isNaN(r.discount)?0:r.discount), 0) / arpuRows.length).toFixed(1) : 0;
 
@@ -749,12 +772,11 @@ function clearAll() {
 }
 
 function resetDropdowns() {
-  const cSel = document.getElementById("centerSelect");
   const clSel = document.getElementById("classSelect");
-  cSel.innerHTML  = '<option value="all">All Centers</option>';
   clSel.innerHTML = '<option value="all">All Classes</option>';
-  cSel.disabled   = true;
   clSel.disabled  = true;
+  document.getElementById("sourceSelect").innerHTML = '<option value="">-- All Executives --</option>';
+  if (dataLoaded) populateAllCenters();
 }
 
 // ── Utils ──────────────────────────────────────────────
