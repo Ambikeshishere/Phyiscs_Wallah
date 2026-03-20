@@ -230,6 +230,8 @@
     /* Pivot Table */
     .pivot-wrap { overflow-x:auto; isolation:isolate; }
     .pivot-table { border-collapse:collapse; font-size:13px; }
+    .pivot-table tr { height:44px; }
+    .pivot-table td, .pivot-table th { box-sizing:border-box; vertical-align:middle; }
     .pivot-table th, .pivot-table td { padding:9px 14px; white-space:nowrap; border-bottom:1px solid rgba(255,255,255,0.06); background:var(--surface); }
     .pivot-table thead tr { position:sticky; top:0; z-index:3; }
     .pivot-table thead th { background:var(--bg2) !important; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:var(--text) !important; text-align:center; border-right:1px solid var(--border); box-shadow: 0 1px 0 var(--border); }
@@ -239,22 +241,22 @@
     /* center-col handled inline */
     .pivot-center-row:nth-child(even) td { background:var(--bg2) !important; }
     .pivot-center-row:nth-child(even) td.center-col { background:var(--bg2) !important; }
-    .pivot-center-row:hover td { filter:brightness(1.15); }
-    .pivot-center-row td.has-data { color:var(--text); font-weight:500; }
+    .pivot-center-row:hover td { background:#1a2233 !important; }
+    .pivot-center-row td.has-data { color:#ffffff; font-weight:500; }
     .pivot-table tbody td.has-data { color:#e2e8f0; font-weight:600; }
     .pivot-table tbody td.center-col { position:sticky; left:0; z-index:10; font-family:var(--font-display); font-size:13px; border-right:3px solid rgba(255,255,255,0.1); }
     .pivot-table tbody tr:hover td { background:#132030; }
     .pivot-table tbody tr:hover td.center-col { background:var(--surface-hover) !important; }
     .pivot-city-row td { font-weight:600; color:var(--text); font-family:var(--font-display); cursor:pointer; background:#1e2535 !important; }
 
-    .pivot-city-row:hover td { filter:brightness(1.1); }
+    .pivot-city-row:hover td { background:#1f2840 !important; }
 
     .pivot-center-row.collapsed { display:none; }
     .city-toggle { font-size:10px; margin-right:6px; display:inline-block; transition:transform 0.2s; }
     .city-toggle.open { transform:rotate(90deg); }
     .pivot-total-cell { font-weight:700; color:var(--text); font-size:13px; }
     .pivot-date-total { background:var(--surface-hover) !important; font-weight:700; color:var(--text); }
-    .pivot-grand-row td { background:#0f1624 !important; color:var(--text) !important; font-weight:700; border-bottom:2px solid rgba(249,115,22,0.3) !important; }
+    .pivot-grand-row td { background:#0d1117 !important; color:#ffffff !important; font-weight:700; border-bottom:2px solid #f97316 !important; }
     .pivot-grand-row td.center-col { background:var(--bg2) !important; color:#fb923c !important; }
 
     .target-wrap { display:inline-flex; flex-direction:column; gap:3px; min-width:120px; align-items:center; }
@@ -559,11 +561,21 @@
           <button class="clear-btn" onclick="expandAllCities(false)" style="font-size:10px;padding:4px 8px;">Collapse All</button>
         </div>
       </div>
-      <div class="pivot-wrap">
-        <table class="pivot-table" id="pivotTable">
-          <thead id="pivotHead"></thead>
-          <tbody id="pivotBody"></tbody>
-        </table>
+      <div style="display:flex;overflow:hidden;">
+        <!-- LEFT: Fixed center/city column -->
+        <div id="pivotLeft" style="flex-shrink:0;z-index:5;position:relative;">
+          <table class="pivot-table" id="pivotLeftTable" style="width:100%;">
+            <thead id="pivotLeftHead"></thead>
+            <tbody id="pivotLeftBody"></tbody>
+          </table>
+        </div>
+        <!-- RIGHT: Scrollable date columns -->
+        <div id="pivotRight" style="overflow-x:auto;flex:1;scrollbar-width:none;">
+          <table class="pivot-table" id="pivotRightTable" style="width:100%;">
+            <thead id="pivotRightHead"></thead>
+            <tbody id="pivotRightBody"></tbody>
+          </table>
+        </div>
       </div>
     </div>
 
@@ -1256,8 +1268,10 @@ function buildPivotTable(rows, dateRows) {
 
   if(allDates.length === 0) {
     document.getElementById("pivotBadge").innerText = "No data";
-    document.getElementById("pivotHead").innerHTML = "";
-    document.getElementById("pivotBody").innerHTML = '<tr><td colspan="3" style="padding:20px;text-align:center;color:var(--text-muted);">Select a date range to see data</td></tr>';
+    document.getElementById("pivotLeftHead").innerHTML = "";
+    document.getElementById("pivotLeftBody").innerHTML = '<tr><td style="padding:20px;color:var(--text-muted);">Select a date range</td></tr>';
+    document.getElementById("pivotRightHead").innerHTML = "";
+    document.getElementById("pivotRightBody").innerHTML = "";
     return;
   }
 
@@ -1273,7 +1287,7 @@ function buildPivotTable(rows, dateRows) {
   var cities = Object.keys(cityMap).sort();
   cities.forEach(function(city){ cityMap[city].sort(); });
 
-  document.getElementById("pivotBadge").innerText = allDates.length + " days \u00b7 " + Object.keys(centerDateMap).length + " centers";
+  document.getElementById("pivotBadge").innerText = allDates.length + " days · " + Object.keys(centerDateMap).length + " centers";
 
   var dateTotals = {};
   allDates.forEach(function(d){
@@ -1286,26 +1300,51 @@ function buildPivotTable(rows, dateRows) {
     return dt.getDate() + " " + dt.toLocaleString("en", {month:"short"});
   }
 
-  var headHtml = '<tr><th class="center-col">Center / City</th>';
-  allDates.forEach(function(d){ headHtml += '<th>' + shortDate(d) + '</th>'; });
-  headHtml += '<th style="background:var(--surface-hover);color:var(--text);">Total</th></tr>';
-  document.getElementById("pivotHead").innerHTML = headHtml;
+  var ROW_H = 42; // px — must match CSS padding
 
-  var bodyHtml = "";
-  var grandTotal = 0;
-  var grandRow = '<tr class="pivot-grand-row" style="border-bottom:2px solid var(--border);"><td class="center-col" style="font-weight:700;color:var(--accent2);font-size:11px;">\u03a3 Grand Total</td>';
-  allDates.forEach(function(d){
-    grandTotal += (dateTotals[d]||0);
-    grandRow += '<td class="pivot-date-total">' + (dateTotals[d]||"-") + '</td>';
-  });
-  grandRow += '<td class="pivot-total-cell pivot-date-total">' + grandTotal + '</td></tr>';
-  bodyHtml += grandRow;
+  // ── LEFT TABLE: only center/city column ──
+  var leftHead = '<tr><th style="padding:10px 16px;text-align:left;background:#0d1117;color:#fff;font-size:12px;font-weight:700;text-transform:uppercase;white-space:nowrap;">Center / City</th></tr>';
 
-  cities.forEach(function(city){
+  var leftBody = "";
+  // Grand total row
+  leftBody += '<tr class="pivot-grand-row"><td style="padding:10px 16px;background:#0d1117;color:#f97316;font-weight:700;font-size:13px;white-space:nowrap;">Σ Grand Total</td></tr>';
+
+  cities.forEach(function(city, ci){
     var centers = cityMap[city];
     if(cityCollapseState[city] === undefined) cityCollapseState[city] = false;
     var isOpen = cityCollapseState[city];
+    var cityColor = CITY_COLORS[ci % CITY_COLORS.length];
     var safeCity = city.replace(/[^a-zA-Z0-9]/g, "_");
+
+    leftBody += '<tr class="pivot-city-row" data-city-key="' + safeCity + '" style="cursor:pointer;">';
+    leftBody += '<td style="padding:10px 16px;background:#1a2233;color:#fff;font-weight:700;font-size:14px;border-left:4px solid ' + cityColor + ';white-space:nowrap;">';
+    leftBody += '<span class="city-toggle' + (isOpen ? ' open' : '') + '" data-city-id="' + safeCity + '">►</span>&nbsp;&nbsp;' + city + '&nbsp;<span style="font-size:11px;font-weight:400;opacity:0.55;">(' + centers.length + ')</span>';
+    leftBody += '</td></tr>';
+
+    centers.forEach(function(center){
+      leftBody += '<tr class="pivot-center-row' + (isOpen ? '' : ' collapsed') + '" data-city-key="' + safeCity + '">';
+      leftBody += '<td style="padding:10px 16px 10px 32px;background:#111827;color:#e2e8f0;font-size:12px;font-weight:400;border-left:4px solid ' + cityColor + '44;white-space:nowrap;">' + center + '</td>';
+      leftBody += '</tr>';
+    });
+  });
+
+  // ── RIGHT TABLE: dates + total only ──
+  var rightHead = '<tr>';
+  allDates.forEach(function(d){ rightHead += '<th style="padding:10px 14px;background:#0d1117;color:#fff;font-size:12px;font-weight:700;text-align:center;white-space:nowrap;text-transform:uppercase;">' + shortDate(d) + '</th>'; });
+  rightHead += '<th style="padding:9px 14px;background:#0d1117;color:#fff;font-size:12px;font-weight:700;text-align:center;white-space:nowrap;">TOTAL</th></tr>';
+
+  var rightBody = "";
+  var grandTotal = 0;
+  allDates.forEach(function(d){ grandTotal += (dateTotals[d]||0); });
+  rightBody += '<tr class="pivot-grand-row">';
+  allDates.forEach(function(d){ rightBody += '<td style="padding:10px 14px;background:#0d1117;color:#fff;font-weight:700;text-align:center;">' + (dateTotals[d]||"-") + '</td>'; });
+  rightBody += '<td style="padding:10px 14px;background:#0d1117;color:#f97316;font-weight:700;text-align:center;">' + grandTotal + '</td></tr>';
+
+  cities.forEach(function(city, ci){
+    var centers = cityMap[city];
+    var isOpen = cityCollapseState[city] || false;
+    var safeCity = city.replace(/[^a-zA-Z0-9]/g, "_");
+
     var cityDateTotals = {};
     var cityTotal = 0;
     allDates.forEach(function(d){
@@ -1314,43 +1353,35 @@ function buildPivotTable(rows, dateRows) {
       cityTotal += cityDateTotals[d];
     });
 
-    var cityColor = CITY_COLORS[cities.indexOf(city) % CITY_COLORS.length];
-    var cityRow = '<tr class="pivot-city-row" data-city-key="' + safeCity + '">';
-    cityRow += '<td class="center-col" style="position:sticky;left:0;z-index:10;border-left:5px solid '+cityColor+';background:#1e2535;color:#ffffff;font-weight:700;font-size:14px;box-shadow:6px 0 8px rgba(0,0,0,0.6);"><span class="city-toggle" data-city-id="' + safeCity + '">&#9658;</span>&nbsp;&nbsp;' + city + '&nbsp;<span style="font-size:11px;font-weight:400;opacity:0.6;">('+centers.length+' centers)</span></td>';
-    allDates.forEach(function(d){
-      cityRow += '<td>' + (cityDateTotals[d]||"-") + '</td>';
-    });
-    cityRow += '<td class="pivot-total-cell">' + cityTotal + '</td></tr>';
-    bodyHtml += cityRow;
+    rightBody += '<tr class="pivot-city-row" data-city-key="' + safeCity + '">';
+    allDates.forEach(function(d){ rightBody += '<td style="padding:10px 14px;background:#1a2233;color:#e2e8f0;font-weight:600;text-align:center;">' + (cityDateTotals[d]||"-") + '</td>'; });
+    rightBody += '<td style="padding:10px 14px;background:#1a2233;color:#fff;font-weight:700;text-align:center;">' + cityTotal + '</td></tr>';
 
     centers.forEach(function(center){
       var centerTotal = 0;
-      var centerRow = '<tr class="pivot-center-row collapsed" data-city-key="' + safeCity + '">';
-      centerRow += '<td class="center-col" style="position:sticky;left:0;z-index:10;border-left:4px solid '+cityColor+';background:#161e2d;padding-left:28px;font-size:12px;font-weight:400;color:#e2e8f0;box-shadow:6px 0 8px rgba(0,0,0,0.6);">' + center + '</td>';
+      rightBody += '<tr class="pivot-center-row' + (isOpen ? '' : ' collapsed') + '" data-city-key="' + safeCity + '">';
       allDates.forEach(function(d){
         var val = centerDateMap[center] ? (centerDateMap[center][d]||0) : 0;
         centerTotal += val;
-        centerRow += '<td class="' + (val > 0 ? "has-data" : "") + '">' + (val||"-") + '</td>';
+        rightBody += '<td style="padding:10px 14px;background:#111827;color:' + (val>0?'#fff':'#475569') + ';font-weight:'+(val>0?'500':'400')+';text-align:center;">' + (val||"-") + '</td>';
       });
-      centerRow += '<td class="pivot-total-cell">' + centerTotal + '</td></tr>';
-      bodyHtml += centerRow;
+      rightBody += '<td style="padding:10px 14px;background:#111827;color:#e2e8f0;font-weight:500;text-align:center;">' + centerTotal + '</td></tr>';
     });
   });
 
-  document.getElementById("pivotBody").innerHTML = bodyHtml;
+  document.getElementById("pivotLeftHead").innerHTML = leftHead;
+  document.getElementById("pivotLeftBody").innerHTML = leftBody;
+  document.getElementById("pivotRightHead").innerHTML = rightHead;
+  document.getElementById("pivotRightBody").innerHTML = rightBody;
 
-  // Attach click handlers to city rows
-  document.querySelectorAll(".pivot-city-row").forEach(function(tr){
-    tr.onclick = function(){
-      var key = this.getAttribute("data-city-key");
-      toggleCityByKey(key);
-    };
+  // Attach click handlers to city rows in LEFT table
+  document.querySelectorAll("#pivotLeftBody .pivot-city-row").forEach(function(tr){
+    tr.onclick = function(){ toggleCityByKey(this.getAttribute("data-city-key")); };
   });
 }
 
 function toggleCity(city) { toggleCityByKey(city.replace(/[^a-zA-Z0-9]/g,"_")); }
 function toggleCityByKey(safeKey) {
-  // Find original city from state — match by safe key
   var cityKey = null;
   Object.keys(cityCollapseState).forEach(function(c){
     if(c.replace(/[^a-zA-Z0-9]/g,"_") === safeKey) cityKey = c;
@@ -1358,21 +1389,26 @@ function toggleCityByKey(safeKey) {
   if(!cityKey) cityKey = safeKey;
   cityCollapseState[cityKey] = !cityCollapseState[cityKey];
   var isOpen = cityCollapseState[cityKey];
-  document.querySelectorAll('#pivotBody tr[data-city-key="' + safeKey + '"].pivot-center-row').forEach(function(tr){
-    tr.classList.toggle("collapsed", !isOpen);
+  // Toggle center rows in BOTH left and right tables
+  ['pivotLeftBody','pivotRightBody'].forEach(function(tbodyId){
+    document.querySelectorAll('#' + tbodyId + ' tr.pivot-center-row[data-city-key="' + safeKey + '"]').forEach(function(tr){
+      tr.classList.toggle("collapsed", !isOpen);
+    });
   });
-  document.querySelectorAll('#pivotBody [data-city-id="' + safeKey + '"]').forEach(function(el){
+  // Toggle chevron
+  document.querySelectorAll('[data-city-id="' + safeKey + '"]').forEach(function(el){
     el.classList.toggle("open", isOpen);
   });
 }
 
 function expandAllCities(expand) {
   Object.keys(cityCollapseState).forEach(function(city){ cityCollapseState[city] = expand; });
-  // Use data-city-key (correct attribute name)
-  document.querySelectorAll('#pivotBody tr.pivot-center-row').forEach(function(tr){
-    tr.classList.toggle("collapsed", !expand);
+  ['pivotLeftBody','pivotRightBody'].forEach(function(tbodyId){
+    document.querySelectorAll('#' + tbodyId + ' tr.pivot-center-row').forEach(function(tr){
+      tr.classList.toggle("collapsed", !expand);
+    });
   });
-  document.querySelectorAll('#pivotBody .city-toggle').forEach(function(el){
+  document.querySelectorAll('.city-toggle').forEach(function(el){
     el.classList.toggle("open", expand);
   });
 }
