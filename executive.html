@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PW Vidyapeeth Maharashtra — Executive Wise Reg</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <style>
+    .exec-wrap { flex:1; padding:24px 28px; overflow-y:auto; display:flex; flex-direction:column; gap:16px; }
+
+    /* Search bar */
+    .exec-search-bar { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:20px 24px; display:flex; align-items:flex-end; gap:12px; flex-wrap:wrap; }
+    .exec-field { display:flex; flex-direction:column; gap:6px; }
+    .exec-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.7px; color:var(--text-muted); }
+    .exec-input { background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:9px 14px; color:var(--text); font-family:var(--font-body); font-size:13px; outline:none; transition:var(--transition); min-width:200px; }
+    .exec-input:focus { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent-glow); }
+    .exec-select { background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:9px 14px; color:var(--text); font-family:var(--font-body); font-size:13px; outline:none; cursor:pointer; min-width:160px; transition:var(--transition); }
+    .exec-select:focus { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent-glow); }
+    .exec-select:disabled { opacity:0.4; cursor:not-allowed; }
+    .exec-btn { background:var(--accent); color:#fff; border:none; border-radius:8px; padding:9px 20px; font-family:var(--font-display); font-size:13px; font-weight:700; cursor:pointer; white-space:nowrap; transition:var(--transition); }
+    .exec-btn:hover { background:var(--accent2); }
+    .exec-btn:disabled { opacity:0.4; cursor:not-allowed; }
+    .clear-btn-exec { background:transparent; border:1px solid var(--border); border-radius:8px; padding:9px 14px; color:var(--text-muted); font-family:var(--font-body); font-size:13px; cursor:pointer; transition:var(--transition); }
+    .clear-btn-exec:hover { color:var(--danger,#ef4444); border-color:var(--danger,#ef4444); }
+
+    /* Autocomplete */
+    .autocomplete-wrap { position:relative; }
+    .autocomplete-wrap input { min-width:220px; }
+    .autocomplete-dropdown {
+      position:absolute; top:calc(100% + 4px); left:0; right:0;
+      background:var(--bg2); border:1px solid var(--border-bright);
+      border-radius:var(--radius-sm); max-height:240px; overflow-y:auto;
+      z-index:999; box-shadow:0 8px 24px rgba(0,0,0,0.3); display:none;
+    }
+    .autocomplete-dropdown.open { display:block; }
+    .autocomplete-item {
+      padding:9px 14px; font-size:13px; color:var(--text);
+      cursor:pointer; transition:var(--transition);
+      border-bottom:1px solid var(--border);
+    }
+    .autocomplete-item:last-child { border-bottom:none; }
+    .autocomplete-item:hover, .autocomplete-item.active { background:var(--surface-hover); color:var(--accent2); }
+    .autocomplete-item mark { background:transparent; color:var(--accent2); font-weight:700; }
+    .autocomplete-empty { padding:10px 14px; font-size:12px; color:var(--text-muted); text-align:center; }
+
+    /* Summary cards */
+    .exec-summary { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:12px; }
+    .exec-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:14px 16px; display:flex; flex-direction:column; gap:3px; position:relative; overflow:hidden; }
+    .exec-card::before { content:""; position:absolute; top:0; left:0; right:0; height:2px; background:var(--card-accent,var(--accent)); }
+    .exec-card-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; color:var(--text-muted); }
+    .exec-card-value { font-family:var(--font-display); font-size:24px; font-weight:800; letter-spacing:-1px; line-height:1; color:var(--card-accent,var(--accent2)); }
+    .exec-card-sub { font-size:10px; color:var(--text-muted); margin-top:1px; }
+
+    /* Table */
+    .exec-table-section { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; }
+    .exec-table-header { display:flex; align-items:center; justify-content:space-between; padding:14px 18px; border-bottom:1px solid var(--border); flex-wrap:wrap; gap:10px; }
+    .exec-table-title { font-family:var(--font-display); font-size:15px; font-weight:700; color:var(--text); }
+    .exec-badge { font-size:11px; font-weight:600; background:rgba(249,115,22,0.12); color:var(--accent2); border:1px solid rgba(249,115,22,0.2); border-radius:20px; padding:2px 8px; }
+    .exec-table-wrap { overflow-x:auto; }
+    table.exec-table { width:100%; border-collapse:collapse; font-size:13px; }
+    table.exec-table thead tr { background:#160f2e; border-bottom:1px solid rgba(129,140,248,0.2); }
+    table.exec-table thead th { padding:11px 14px; text-align:center; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; color:#a5b4fc; white-space:nowrap; }
+    table.exec-table thead th:first-child { text-align:left; }
+    table.exec-table thead th:nth-child(2) { text-align:left; }
+    table.exec-table thead th:nth-child(3) { text-align:left; }
+    table.exec-table tbody tr { border-bottom:1px solid var(--border); transition:var(--transition); }
+    table.exec-table tbody tr:last-child { border-bottom:none; }
+    table.exec-table tbody tr:hover { background:var(--surface-hover); }
+    table.exec-table tbody td { padding:10px 14px; color:var(--text); white-space:nowrap; text-align:center; }
+    table.exec-table tbody td:first-child { text-align:center; color:var(--text-muted); font-size:11px; }
+    table.exec-table tbody td:nth-child(2) { text-align:left; font-weight:600; font-family:var(--font-display); font-size:12px; }
+    table.exec-table tbody td:nth-child(3) { text-align:left; }
+
+    /* Search in table */
+    .exec-search-wrap { position:relative; }
+    .exec-search-wrap input { background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:7px 10px 7px 30px; color:var(--text); font-family:var(--font-body); font-size:12px; outline:none; width:180px; transition:var(--transition); }
+    .exec-search-wrap input:focus { border-color:var(--accent); }
+    .exec-search-wrap .si { position:absolute; left:9px; top:50%; transform:translateY(-50%); font-size:12px; opacity:0.4; pointer-events:none; }
+
+    .empty-exec { padding:48px; text-align:center; color:var(--text-muted); font-size:14px; }
+    .empty-exec .empty-icon { font-size:40px; margin-bottom:12px; }
+
+    /* Payment badge */
+    .pay-badge { display:inline-flex; align-items:center; justify-content:center; min-width:28px; height:20px; border-radius:6px; font-weight:700; font-size:11px; padding:0 6px; border:1px solid; }
+    .pay-emi    { background:rgba(34,197,94,0.12);  color:#22c55e; border-color:rgba(34,197,94,0.25); }
+    .pay-token  { background:rgba(249,115,22,0.12); color:var(--accent2); border-color:rgba(249,115,22,0.2); }
+    .pay-less   { background:rgba(239,68,68,0.12);  color:#ef4444; border-color:rgba(239,68,68,0.25); }
+    .pay-total  { background:rgba(99,102,241,0.12); color:#818cf8; border-color:rgba(99,102,241,0.25); }
+    .pay-other  { background:rgba(148,163,184,0.12);color:#94a3b8; border-color:rgba(148,163,184,0.25); }
+
+    @media(max-width:900px) { .exec-wrap { padding:16px; } .exec-search-bar { gap:8px; } }
+  </style>
+</head>
+<body>
+
+<script>
+  const user = localStorage.getItem("loggedUser");
+  if (!user) window.location.href = "login.html";
+  const t = localStorage.getItem("pwTheme") || "dark";
+  document.documentElement.setAttribute("data-theme", t);
+</script>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <div class="logo">
+        <span class="logo-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/d/dd/Physics_wallah_logo.svg" alt="PW Vidyapeeth Logo"></span>
+        <div>
+          <div class="logo-text">PW Vidyapeeth</div>
+          <div class="logo-sub">Maharashtra</div>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="menu-item" onclick="window.location.href='index.html'">
+          <span class="menu-icon">🗂️</span> All Sheets
+        </div>
+        <div class="menu-item" onclick="window.location.href='index.html#pinned'">
+          <span class="menu-icon">📌</span> Pinned
+        </div>
+        <div class="nav-divider"></div>
+        <div class="nav-section-label">Categories</div>
+        <div class="menu-item" onclick="window.location.href='analysis.html'">
+          <span class="menu-icon">📈</span> CRP Dashboard
+        </div>
+        <div class="menu-item active" onclick="window.location.href='executive.html'">
+          <span class="menu-icon">👤</span> Executive Wise Reg
+        </div>
+        <div class="menu-item" onclick="window.location.href='index.html?filter=analysis'">
+          <span class="menu-icon">📊</span> Analysis
+        </div>
+        <div class="menu-item" onclick="window.location.href='index.html?filter=b2b'">
+          <span class="menu-icon">📝</span> B2B
+        </div>
+        <div class="menu-item" onclick="window.location.href='index.html?filter=acad'">
+          <span class="menu-icon">🎓</span> Acad
+        </div>
+        <div class="menu-item" onclick="window.location.href='index.html?filter=bws'">
+          <span class="menu-icon">🚨</span> BWS
+        </div>
+        <div class="menu-item has-sub" onclick="toggleSub('comms-sub')">
+          <span class="menu-icon">📣</span>
+          <span>Comms</span>
+          <span class="chevron" id="chevron-comms-sub">▸</span>
+        </div>
+        <div class="sub-menu" id="comms-sub">
+          <div class="sub-item" onclick="window.location.href='index.html?filter=gen'">Gen</div>
+          <div class="sub-item" onclick="window.location.href='index.html?filter=ptm'">PTM</div>
+          <div class="sub-item" onclick="window.location.href='index.html?filter=orientation'">Orientation</div>
+          <div class="sub-item" onclick="window.location.href='index.html?filter=batch+start'">Batch Start</div>
+        </div>
+        <div class="menu-item has-sub" onclick="toggleSub('mh-sub')">
+          <span class="menu-icon">📈</span>
+          <span>MH</span>
+          <span class="chevron" id="chevron-mh-sub">▸</span>
+        </div>
+        <div class="sub-menu" id="mh-sub">
+          <div class="sub-item" onclick="window.location.href='index.html?filter=maharashtra'">Maharashtra</div>
+        </div>
+        <div class="nav-divider"></div>
+        <div class="nav-section-label">Quick Links</div>
+        <div class="menu-item" onclick="window.open('https://erp.pw.live/home','_blank')">
+          <span class="menu-icon">🏢</span> ERP PW <span class="ext-icon">↗</span>
+        </div>
+        <div class="menu-item" onclick="window.open('https://ambikeshishere.github.io/PW-Web/','_blank')">
+          <span class="menu-icon">📋</span> PW Web Report <span class="ext-icon">↗</span>
+        </div>
+      </nav>
+    </div>
+    <div class="sidebar-bottom">
+      <div class="theme-switcher">
+        <button class="theme-btn active" data-theme="dark" onclick="setTheme('dark')">🌙 Dark</button>
+        <button class="theme-btn" data-theme="light" onclick="setTheme('light')">☀️ Light</button>
+        <button class="theme-btn" data-theme="eve" onclick="setTheme('eve')">🌿 Eve</button>
+      </div>
+      <div class="user-badge" id="userBadge"></div>
+      <button class="logout-btn" onclick="logout()"><span>↩</span> Logout</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="exec-wrap">
+
+    <!-- Topbar -->
+    <div class="dash-topbar">
+      <div>
+        <h2 class="dash-title">Executive Wise <span>Registration</span></h2>
+        <p class="dash-sub">Search by Source Name code · Base: fees_paid &gt; 3498, free_admission = false, status = active</p>
+      </div>
+      <button class="refresh-btn" onclick="loadAllData()">
+        <span class="refresh-icon" id="refreshIcon">⟳</span> Refresh Data
+      </button>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="exec-search-bar" style="flex-wrap:wrap;align-items:flex-end;">
+      <div class="exec-field">
+        <span class="exec-label">Executive / Source Name</span>
+        <div class="autocomplete-wrap">
+          <input type="text" id="sourceInput" class="exec-input" placeholder="e.g. PW Rahul Sharma"
+            autocomplete="off" oninput="onSourceType()" onfocus="onSourceType()" style="min-width:220px;">
+          <div class="autocomplete-dropdown" id="sourceDropdown"></div>
+        </div>
+      </div>
+      <div class="exec-field">
+        <span class="exec-label">Center</span>
+        <select id="centerSelect" class="exec-select" onchange="onCenterChange()">
+          <option value="all">-- Select Center --</option>
+        </select>
+      </div>
+
+      <div class="exec-field">
+        <span class="exec-label">Class / Course</span>
+        <select id="classSelect" class="exec-select" onchange="applyFilters()" disabled>
+          <option value="all">All Classes</option>
+        </select>
+      </div>
+      <div class="exec-field">
+        <span class="exec-label">From Date</span>
+        <input type="date" id="fromDate" class="exec-input" style="min-width:140px;" onchange="applyFilters()">
+      </div>
+      <div class="exec-field">
+        <span class="exec-label">To Date</span>
+        <input type="date" id="toDate" class="exec-input" style="min-width:140px;" onchange="applyFilters()">
+      </div>
+      <div class="exec-field">
+        <span class="exec-label">Payment Status</span>
+        <select id="paymentSelect" class="exec-select" onchange="applyFilters()">
+          <option value="all">All</option>
+          <option value="1st emi">1st EMI</option>
+          <option value="token only">Token Only</option>
+          <option value="less than token">Less than Token</option>
+          <option value="total paid">Total Paid</option>
+        </select>
+      </div>
+      <div class="exec-field">
+        <span class="exec-label">Eligibility</span>
+        <select id="eligSelect" class="exec-select" onchange="applyFilters()">
+          <option value="all">All</option>
+        </select>
+      </div>
+      <button class="exec-btn" onclick="applyFilters()">🔍 Search</button>
+      <button class="clear-btn-exec" onclick="clearAll()">✕ Clear</button>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="exec-summary" id="execSummary" style="display:none;">
+      <div class="exec-card" style="--card-accent:var(--accent2)">
+        <div class="exec-card-label">Total Students</div>
+        <div class="exec-card-value" id="cTotal">—</div>
+        <div class="exec-card-sub" id="cTotalSub">matching filters</div>
+      </div>
+      <div class="exec-card" style="--card-accent:#22c55e">
+        <div class="exec-card-label">Eligible + EMI</div>
+        <div class="exec-card-value" id="cElig">—</div>
+        <div class="exec-card-sub" id="cEligPct">—% of total</div>
+      </div>
+      <div class="exec-card" style="--card-accent:#818cf8">
+        <div class="exec-card-label">Batch Alloted</div>
+        <div class="exec-card-value" id="cBatch">—</div>
+        <div class="exec-card-sub" id="cBatchPct">—% of eligible</div>
+      </div>
+      <div class="exec-card" style="--card-accent:#fbbf24">
+        <div class="exec-card-label">Avg ARPU</div>
+        <div class="exec-card-value" id="cAvgFee">—</div>
+        <div class="exec-card-sub" id="cArpuSub">arpu_check = YES</div>
+      </div>
+      <div class="exec-card" style="--card-accent:#f43f5e">
+        <div class="exec-card-label">Avg % Discount</div>
+        <div class="exec-card-value" id="cAvgDisc">—</div>
+        <div class="exec-card-sub">same ARPU base</div>
+      </div>
+      <div class="exec-card" style="--card-accent:#14b8a6">
+        <div class="exec-card-label">Centers</div>
+        <div class="exec-card-value" id="cCenters">—</div>
+        <div class="exec-card-sub">unique centers</div>
+      </div>
+    </div>
+
+    <!-- Charts Row 2x2 -->
+    <div id="execChartsRow" style="display:none;grid-template-columns:1fr 1fr 1fr;gap:16px;">
+
+      <!-- Class-wise Pie Chart -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+          <span style="font-family:var(--font-display);font-size:14px;font-weight:700;">🎓 Class Split</span>
+          <span id="classPieBadge" style="font-size:11px;font-weight:600;background:rgba(249,115,22,0.12);color:var(--accent2);border:1px solid rgba(249,115,22,0.2);border-radius:20px;padding:2px 8px;">—</span>
+        </div>
+        <div style="height:220px;"><canvas id="classPieChart"></canvas></div>
+      </div>
+
+      <!-- Eligibility Pie Chart -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+          <span style="font-family:var(--font-display);font-size:14px;font-weight:700;">✅ Eligibility Status</span>
+          <span id="eligChartBadge" style="font-size:11px;font-weight:600;background:rgba(249,115,22,0.12);color:var(--accent2);border:1px solid rgba(249,115,22,0.2);border-radius:20px;padding:2px 8px;">—</span>
+        </div>
+        <div style="height:220px;"><canvas id="eligPieChart"></canvas></div>
+      </div>
+
+      <!-- Payment Status Pie Chart -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+          <span style="font-family:var(--font-display);font-size:14px;font-weight:700;">💰 Payment Breakdown</span>
+          <span id="payChartBadge" style="font-size:11px;font-weight:600;background:rgba(249,115,22,0.12);color:var(--accent2);border:1px solid rgba(249,115,22,0.2);border-radius:20px;padding:2px 8px;">—</span>
+        </div>
+        <div style="height:220px;"><canvas id="payPieChart"></canvas></div>
+      </div>
+
+    </div>
+
+    <!-- Students Table -->
+    <div class="exec-table-section">
+      <div class="exec-table-header">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <span class="exec-table-title">👤 Student List</span>
+          <span class="exec-badge" id="rowBadge">—</span>
+        </div>
+        <div class="exec-search-wrap">
+          <span class="si">🔍</span>
+          <input type="text" id="tableSearch" placeholder="Search student..." oninput="filterTable()">
+        </div>
+      </div>
+      <div class="exec-table-wrap">
+        <table class="exec-table" id="execTable">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Reg No</th>
+              <th>Student Name</th>
+              <th>Center</th>
+              <th>Class / Course</th>
+              <th>Payment Status</th>
+              <th>Fees Paid</th>
+              <th>Batch</th>
+            </tr>
+          </thead>
+          <tbody id="execTableBody">
+            <tr>
+              <td colspan="8">
+                <div class="empty-exec">
+                  <div class="empty-icon">🔍</div>
+                  <div>Enter a Source Name / Executive code above to see students</div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSIyfDHFpP7wqzoT3YoYM7y8lR8RBD-g9Pq-vgmb3v-yDZDdyUIS5DaCfysHvQBZVM80ny3LQBjVFSC/pub?gid=0&single=true&output=csv";
+
+document.getElementById("userBadge").innerText = "👤 " + localStorage.getItem("loggedUser");
+
+let allRows = [];
+let filteredRows = [];
+let tableData = [];
+let dataLoaded = false;
+
+// ── Parse CSV ────────────────────────────────────────
+function parseCSVRow(row) {
+  const res = []; let cur = "", inQ = false;
+  for (let i = 0; i < row.length; i++) {
+    const c = row[i];
+    if (c === '"') { inQ = !inQ; }
+    else if (c === ',' && !inQ) { res.push(cur); cur = ""; }
+    else cur += c;
+  }
+  res.push(cur); return res;
+}
+
+// ── Load all data ─────────────────────────────────────
+function populateAllCenters() {
+  const cSel = document.getElementById("centerSelect");
+  const centers = [...new Set(allRows.map(r => r.center))].sort();
+  cSel.innerHTML = '<option value="all">All Centers</option>';
+  centers.forEach(c => { const o = document.createElement("option"); o.value = c; o.textContent = c; cSel.appendChild(o); });
+  cSel.disabled = false;
+}
+
+function parseJoinDate(s) {
+  if (!s) return null;
+  const a = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+  if (a) return new Date(+a[3], +a[2]-1, +a[1]);
+  const b = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (b) return new Date(+b[1], +b[2]-1, +b[3]);
+  const d = new Date(s); return isNaN(d) ? null : d;
+}
+
+async function loadAllData() {
+  document.getElementById("refreshIcon").style.animation = "spin 0.8s linear infinite";
+  try {
+    const res = await fetch(CSV_URL + "&t=" + Date.now());
+    const text = await res.text();
+    const lines = text.split("\n");
+    const headers = parseCSVRow(lines[0]).map(h => h.trim().toLowerCase().replace(/\s+/g,"_"));
+
+    const iRegno  = headers.indexOf("regno");
+    const iName   = headers.indexOf("student_name");
+    const iSource = headers.indexOf("source_name");
+    const iCenter = headers.indexOf("center");
+    const iClass  = headers.indexOf("class_course");
+    const iFees   = headers.indexOf("fees_paid");
+    const iFreeAdm= headers.indexOf("free_admission");
+    const iStatus = headers.indexOf("status");
+    const iPayment= headers.indexOf("newpayment_checks");
+    const iBatch   = headers.indexOf("batch");
+    const iElig    = headers.indexOf("eligibility_status");
+    const iArpu    = headers.indexOf("arpu");
+    const iArpuChk = headers.indexOf("arpu_check");
+    const iDisc    = headers.indexOf("%_discount");
+    const iFormSt  = headers.indexOf("form_status");
+    const iJoin    = headers.indexOf("joining_date");
+    const iAy26    = headers.indexOf("ay26_enrollment_status");
+
+    allRows = [];
+    lines.slice(1).forEach(line => {
+      if (!line.trim()) return;
+      const cols = parseCSVRow(line);
+      const fp  = parseFloat((cols[iFees]?.trim() || "0").replace(/,/g,""));
+      const fa  = (cols[iFreeAdm]?.trim() || "").toUpperCase();
+      const st  = (cols[iStatus]?.trim()  || "").toUpperCase();
+      if (!(fp > 3498 && (fa === "FALSE" || fa === "NO" || fa === "0") && st === "ACTIVE")) return;
+      allRows.push({
+        regno:   cols[iRegno]?.trim()  || "—",
+        name:    cols[iName]?.trim()   || "—",
+        source:  cols[iSource]?.trim() || "—",
+        center:  cols[iCenter]?.trim() || "—",
+        classCourse: cols[iClass]?.trim() || "—",
+        feesPaid: fp,
+        payment: (cols[iPayment]?.trim() || "").toLowerCase(),
+        batch:   cols[iBatch]?.trim()  || "—",
+        eligibility: (cols[iElig]?.trim() || "").toLowerCase(),
+        arpuVal:     parseFloat((cols[iArpu]?.trim() || "0").replace(/,/g,"")),
+        arpuCheck:   (cols[iArpuChk]?.trim() || "").toUpperCase(),
+        discount:    parseFloat((cols[iDisc]?.trim() || "0").replace(/,/g,"").replace(/%/g,"")),
+        formStatus:  (cols[iFormSt]?.trim() || "").toLowerCase(),
+        joiningDate: parseJoinDate(cols[iJoin]?.trim() || ""),
+        ay26:        (cols[iAy26]?.trim() || "").toLowerCase(),
+      });
+    });
+
+    dataLoaded = true;
+    populateAllDropdowns();
+    showToast("✅ " + allRows.length + " records loaded");
+    // Populate centers dropdown with all centers on load
+    populateAllCenters();
+    // Re-apply if source already entered
+    applyFilters();
+
+  } catch (e) {
+    showToast("❌ Error loading data");
+    console.error(e);
+  }
+  document.getElementById("refreshIcon").style.animation = "";
+}
+
+// ── Autocomplete ──────────────────────────────────────
+var allSources = [];
+
+function buildSourceList() {
+  allSources = [...new Set(allRows.map(r => r.source))].filter(Boolean).sort();
+}
+
+function onSourceType() {
+  const q = document.getElementById("sourceInput").value.trim().toLowerCase();
+  const dd = document.getElementById("sourceDropdown");
+  const center = document.getElementById("centerSelect").value;
+
+  let filtered = allSources;
+  // Filter by center if selected
+  if (center && center !== "all") {
+    const cenSources = [...new Set(allRows.filter(r => r.center === center).map(r => r.source))];
+    filtered = filtered.filter(s => cenSources.includes(s));
+  }
+  // Filter by typed text
+  if (q) filtered = filtered.filter(s => s.toLowerCase().includes(q));
+
+  if (!filtered.length) {
+    dd.innerHTML = '<div class="autocomplete-empty">No executives found</div>';
+    dd.classList.add("open");
+    return;
+  }
+
+  dd.innerHTML = filtered.slice(0, 50).map((s,i) => {
+    const safe = q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const hl = q ? s.replace(new RegExp("(" + safe + ")", "gi"), "<mark>$1</mark>") : s;
+    return '<div class="autocomplete-item" data-val="' + s.replace(/"/g,'&quot;') + '" onmousedown="selectSource(this.dataset.val)">' + hl + '</div>';
+  }).join("");
+  dd.classList.add("open");
+}
+
+function selectSource(val) {
+  document.getElementById("sourceInput").value = val;
+  document.getElementById("sourceDropdown").classList.remove("open");
+  onSourceSelect();
+}
+
+// Close dropdown on outside click
+document.addEventListener("click", function(e) {
+  const inp = document.getElementById("sourceInput");
+  const dd  = document.getElementById("sourceDropdown");
+  if (inp && dd && e.target !== inp && !dd.contains(e.target)) dd.classList.remove("open");
+});
+
+// ── Populate dropdowns ────────────────────────────────
+function populateAllDropdowns() {
+  if (!dataLoaded) return;
+  buildSourceList();
+  const selSource = document.getElementById("sourceInput").value.trim();
+  const selCenter = document.getElementById("centerSelect").value;
+
+  // Center dropdown — filtered by selected source
+  const baseForCenter = selSource
+    ? allRows.filter(r => r.source === selSource)
+    : allRows;
+  const cSel = document.getElementById("centerSelect");
+  const curC = cSel.value;
+  const centers = [...new Set(baseForCenter.map(r => r.center))].filter(Boolean).sort();
+  cSel.innerHTML = '<option value="all">-- Select Center --</option>';
+  centers.forEach(c => { const o = document.createElement("option"); o.value = c; o.textContent = c; cSel.appendChild(o); });
+  if (centers.includes(curC)) cSel.value = curC;
+
+  // Class + Elig dropdowns
+  let matched = allRows;
+  if (selSource) matched = matched.filter(r => r.source === selSource);
+  if (selCenter && selCenter !== "all") matched = matched.filter(r => r.center === selCenter);
+
+  const classes = [...new Set(matched.map(r => r.classCourse))].filter(Boolean).sort();
+  const eligs   = [...new Set(matched.map(r => r.eligibility))].filter(Boolean).sort();
+
+  const clSel = document.getElementById("classSelect");
+  const eSel  = document.getElementById("eligSelect");
+  const curCl = clSel.value, curE = eSel.value;
+
+  clSel.innerHTML = '<option value="all">All Classes</option>';
+  classes.forEach(c => { const o = document.createElement("option"); o.value = c; o.textContent = c; clSel.appendChild(o); });
+  if ([...clSel.options].some(o => o.value === curCl)) clSel.value = curCl;
+  clSel.disabled = false;
+
+  eSel.innerHTML = '<option value="all">All</option>';
+  eligs.forEach(e => { const o = document.createElement("option"); o.value = e; o.textContent = e; eSel.appendChild(o); });
+  if ([...eSel.options].some(o => o.value === curE)) eSel.value = curE;
+}
+
+function onSourceSelect() {
+  populateAllDropdowns();
+  applyFilters();
+}
+
+function onCenterChange() {
+  populateAllDropdowns();
+  applyFilters();
+}
+
+function onSourceInput() {}
+
+// ── Apply all filters → render table ─────────────────
+function applyFilters() {
+  if (!dataLoaded) return;
+  const query   = document.getElementById("sourceInput").value.trim();
+  const center  = document.getElementById("centerSelect").value;
+  const cls     = document.getElementById("classSelect").value;
+  const fv      = document.getElementById("fromDate").value;
+  const tv      = document.getElementById("toDate").value;
+  const payment = document.getElementById("paymentSelect").value;
+  const elig    = document.getElementById("eligSelect").value;
+  const fd      = fv ? new Date(fv + "T00:00:00") : null;
+  const td2     = tv ? new Date(tv + "T23:59:59") : null;
+
+  // Allow filter by center alone even without source query
+  if (!query && center === "all") { renderEmpty(); return; }
+
+  filteredRows = allRows.filter(r => {
+    if (query && r.source !== query) return false;
+    if (center  !== "all" && r.center !== center)         return false;
+    if (cls     !== "all" && r.classCourse !== cls)      return false;
+    if (payment !== "all" && !r.payment.includes(payment)) return false;
+    if (elig    !== "all" && r.eligibility !== elig)    return false;
+    if (fd || td2) {
+      if (!r.joiningDate) return false;
+      const d = new Date(r.joiningDate.getFullYear(), r.joiningDate.getMonth(), r.joiningDate.getDate());
+      if (fd  && d < new Date(fd.getFullYear(), fd.getMonth(), fd.getDate()))    return false;
+      if (td2 && d > new Date(td2.getFullYear(), td2.getMonth(), td2.getDate())) return false;
+    }
+    return true;
+  });
+
+  tableData = [...filteredRows];
+  updateSummary(filteredRows);
+  updateCharts(filteredRows);
+  renderTable(filteredRows);
+}
+
+// ── Summary cards ─────────────────────────────────────
+function updateSummary(rows) {
+  const total   = rows.length;
+  const elig    = rows.filter(r => !r.eligibility.includes("not") && !r.payment.includes("token only")).length;
+  const batch   = rows.filter(r => r.batch && r.batch !== "—" && !r.batch.toLowerCase().includes("no batch")).length;
+  const centers = new Set(rows.map(r => r.center)).size;
+
+  // ARPU: arpu_check=YES, form_status != admission cancel
+  const arpuRows = rows.filter(r => r.arpuCheck === "YES" && !r.formStatus.includes("admission cancel") && r.ay26.includes("admission") /* base: status=active, free_admission=false already applied */);
+  const avgArpu  = arpuRows.length > 0 ? Math.round(arpuRows.reduce((s,r) => s + r.arpuVal, 0) / arpuRows.length) : 0;
+  const avgDisc  = arpuRows.length > 0 ? (arpuRows.reduce((s,r) => s + (isNaN(r.discount)?0:r.discount), 0) / arpuRows.length).toFixed(1) : 0;
+
+  document.getElementById("cTotal").innerText    = total.toLocaleString();
+  document.getElementById("cTotalSub").innerText = "matching filters";
+  document.getElementById("cElig").innerText     = elig.toLocaleString();
+  document.getElementById("cEligPct").innerText  = total > 0 ? ((elig/total)*100).toFixed(1)+"% of total" : "—";
+  document.getElementById("cBatch").innerText    = batch.toLocaleString();
+  document.getElementById("cBatchPct").innerText = elig > 0 ? ((batch/elig)*100).toFixed(1)+"% of eligible" : "—";
+  document.getElementById("cAvgFee").innerText   = "₹" + avgArpu.toLocaleString();
+  document.getElementById("cArpuSub").innerText  = arpuRows.length + " eligible rows";
+  document.getElementById("cAvgDisc").innerText  = avgDisc + "%";
+  document.getElementById("cCenters").innerText  = centers;
+  document.getElementById("execSummary").style.display = "grid";
+}
+
+// ── Payment badge ──────────────────────────────────────
+function payBadge(p) {
+  if (!p) return '<span class="pay-badge pay-other">—</span>';
+  if (p.includes("total paid"))    return '<span class="pay-badge pay-total">Total Paid</span>';
+  if (p.includes("1st emi") || p.includes("1st_emi")) return '<span class="pay-badge pay-emi">1st EMI</span>';
+  if (p.includes("token only"))    return '<span class="pay-badge pay-token">Token Only</span>';
+  if (p.includes("less than token")) return '<span class="pay-badge pay-less">Less Token</span>';
+  if (p.includes("token") && p.includes("emi")) return '<span class="pay-badge pay-emi">Token+EMI</span>';
+  return '<span class="pay-badge pay-other">' + p.slice(0,12) + '</span>';
+}
+
+// ── Charts ────────────────────────────────────────────
+let eligPieC = null;
+
+function gc() {
+  const s = getComputedStyle(document.documentElement);
+  return {
+    text:  s.getPropertyValue("--text").trim()   || "#f1f5f9",
+    muted: s.getPropertyValue("--text-muted").trim() || "#64748b",
+    border:s.getPropertyValue("--border").trim() || "rgba(255,255,255,0.08)",
+    accent:s.getPropertyValue("--accent").trim() || "#f97316",
+  };
+}
+
+function updateCharts(rows) {
+  document.getElementById("execChartsRow").style.display = "grid";
+  const c = gc();
+
+  // Class-wise bar chart
+  const classMap = {};
+  rows.forEach(r => { classMap[r.classCourse] = (classMap[r.classCourse]||0)+1; });
+  const classEntries = Object.entries(classMap).sort((a,b)=>b[1]-a[1]);
+  const cColors = ["#f97316","#6366f1","#22c55e","#ec4899","#14b8a6","#f59e0b","#3b82f6","#a855f7","#ef4444","#10b981"];
+
+  // Class pie chart — self explanatory
+  const classTotal = classEntries.reduce((s,e)=>s+e[1],0);
+  document.getElementById("classPieBadge").innerText = classTotal + " students · " + classEntries.length + " classes";
+  if (window.classPieC) window.classPieC.destroy();
+  window.classPieC = new Chart(document.getElementById("classPieChart"), {
+    type:"doughnut",
+    data:{
+      labels: classEntries.map(e => e[0] + "  " + e[1] + " (" + (classTotal>0?((e[1]/classTotal)*100).toFixed(1):0) + "%)"),
+      datasets:[{ data: classEntries.map(e=>e[1]), backgroundColor: cColors.slice(0,classEntries.length), borderWidth:2, borderColor:"var(--surface)" }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false, cutout:"50%",
+      plugins:{
+        legend:{ display:true, position:"right", labels:{color:c.text, font:{size:10}, boxWidth:10, padding:6} },
+        tooltip:{callbacks:{label:ctx=>{ const pct=classTotal>0?((ctx.parsed/classTotal)*100).toFixed(1):0; return "  "+ctx.parsed+" students ("+pct+"%)"; }}},
+        beforeDraw: function(chart) {
+          const {ctx: c2, chartArea:{top,bottom,left,right}} = chart;
+          c2.save(); c2.textAlign="center"; c2.textBaseline="middle";
+          const cx=(left+right)/2, cy=(top+bottom)/2;
+          c2.font="bold 20px Plus Jakarta Sans"; c2.fillStyle=c.text; c2.fillText(classTotal, cx, cy-8);
+          c2.font="11px DM Sans"; c2.fillStyle=c.muted; c2.fillText("Total", cx, cy+12);
+          c2.restore();
+        }
+      }
+    },
+    plugins:[{
+      id:"centerText",
+      beforeDraw(chart){
+        const {ctx:c2,chartArea:{top,bottom,left,right}}=chart;
+        c2.save(); c2.textAlign="center"; c2.textBaseline="middle";
+        const cx=(left+right)/2, cy=(top+bottom)/2;
+        c2.font="bold 18px sans-serif"; c2.fillStyle=c.text; c2.fillText(classTotal,cx,cy-7);
+        c2.font="10px sans-serif"; c2.fillStyle=c.muted; c2.fillText("students",cx,cy+9);
+        c2.restore();
+      }
+    }]
+  });
+
+  // Eligibility pie
+  const eligMap = {};
+  rows.forEach(r => { const s = r.eligibility ? r.eligibility.trim() : "unknown"; eligMap[s] = (eligMap[s]||0)+1; });
+  const eligEntries = Object.entries(eligMap).sort((a,b)=>b[1]-a[1]);
+  const eTotal = eligEntries.reduce((s,e)=>s+e[1],0);
+  const eColors = ["#22c55e","#ef4444","#f59e0b","#6366f1","#14b8a6","#ec4899","#94a3b8"];
+  document.getElementById("eligChartBadge").innerText = eTotal.toLocaleString() + " students";
+  if (eligPieC) eligPieC.destroy();
+  eligPieC = new Chart(document.getElementById("eligPieChart"), {
+    type:"doughnut",
+    data:{
+      labels: eligEntries.map(e => e[0] + "  " + e[1] + " (" + (eTotal>0?((e[1]/eTotal)*100).toFixed(1):0) + "%)"),
+      datasets:[{ data: eligEntries.map(e=>e[1]), backgroundColor: eColors.slice(0,eligEntries.length), borderWidth:2, borderColor:"var(--surface)" }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false, cutout:"50%",
+      plugins:{
+        legend:{ display:true, position:"right", labels:{color:c.text, font:{size:10}, boxWidth:10, padding:6} },
+        tooltip:{callbacks:{label:ctx=>{ const pct=eTotal>0?((ctx.parsed/eTotal)*100).toFixed(1):0; return "  "+ctx.parsed.toLocaleString()+" ("+pct+"%)"; }}}
+      }
+    },
+    plugins:[{
+      id:"centerTextElig",
+      beforeDraw(chart){
+        const {ctx:c2,chartArea:{top,bottom,left,right}}=chart;
+        c2.save(); c2.textAlign="center"; c2.textBaseline="middle";
+        const cx=(left+right)/2, cy=(top+bottom)/2;
+        c2.font="bold 18px sans-serif"; c2.fillStyle=c.text; c2.fillText(eTotal.toLocaleString(),cx,cy-7);
+        c2.font="10px sans-serif"; c2.fillStyle=c.muted; c2.fillText("students",cx,cy+9);
+        c2.restore();
+      }
+    }]
+  });
+
+
+  // Payment breakdown pie
+  const payMap = {};
+  rows.forEach(r => {
+    const p = r.payment;
+    let label = "Other";
+    if (p.includes("total paid"))       label = "Total Paid";
+    else if (p.includes("1st emi") || p.includes("1st_emi")) label = "1st EMI";
+    else if (p.includes("less than token")) label = "Less than Token";
+    else if (p.includes("token only"))  label = "Token Only";
+    else if (p.includes("token") && p.includes("emi")) label = "Token+EMI";
+    payMap[label] = (payMap[label]||0)+1;
+  });
+  
+  const payEntries = Object.entries(payMap).sort((a,b)=>b[1]-a[1]);
+  const pTotal = payEntries.reduce((s,e)=>s+e[1],0);
+  const pColors = ["#22c55e","#f97316","#ef4444","#6366f1","#fbbf24","#94a3b8"];
+  document.getElementById("payChartBadge").innerText = pTotal.toLocaleString() + " students";
+  if (window.payPieC) window.payPieC.destroy();
+  window.payPieC = new Chart(document.getElementById("payPieChart"), {
+    type:"doughnut",
+    data:{
+      labels: payEntries.map(e => e[0] + "  " + e[1] + " (" + (pTotal>0?((e[1]/pTotal)*100).toFixed(1):0) + "%)"),
+      datasets:[{ data: payEntries.map(e=>e[1]), backgroundColor: pColors.slice(0,payEntries.length), borderWidth:2, borderColor:"var(--surface)" }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false, cutout:"50%",
+      plugins:{
+        legend:{ display:true, position:"right", labels:{color:c.text, font:{size:10}, boxWidth:10, padding:6} },
+        tooltip:{callbacks:{label:ctx=>{ const pct=pTotal>0?((ctx.parsed/pTotal)*100).toFixed(1):0; return "  "+ctx.parsed.toLocaleString()+" ("+pct+"%)"; }}}
+      }
+    },
+    plugins:[{
+      id:"centerTextPay",
+      beforeDraw(chart){
+        const {ctx:c2,chartArea:{top,bottom,left,right}}=chart;
+        c2.save(); c2.textAlign="center"; c2.textBaseline="middle";
+        const cx=(left+right)/2, cy=(top+bottom)/2;
+        c2.font="bold 18px sans-serif"; c2.fillStyle=c.text; c2.fillText(pTotal.toLocaleString(),cx,cy-7);
+        c2.font="10px sans-serif"; c2.fillStyle=c.muted; c2.fillText("students",cx,cy+9);
+        c2.restore();
+      }
+    }]
+  });
+}
+
+// ── Render table ──────────────────────────────────────
+function renderTable(rows) {
+  const tbody = document.getElementById("execTableBody");
+  document.getElementById("rowBadge").innerText = rows.length + " students";
+
+  if (!rows.length) {
+    tbody.innerHTML = '<tr><td colspan="8"><div class="empty-exec"><div class="empty-icon">😶</div><div>No students found for this filter</div></div></td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = rows.map((r, i) => `
+    <tr>
+      <td>${i+1}</td>
+      <td style="font-family:var(--font-display);font-size:12px;color:var(--accent2);">${r.regno}</td>
+      <td>${r.name}</td>
+      <td style="color:var(--text-muted);font-size:12px;">${r.center}</td>
+      <td>${r.classCourse}</td>
+      <td>${payBadge(r.payment)}</td>
+      <td style="font-weight:600;color:var(--accent2);">₹${r.feesPaid.toLocaleString()}</td>
+      <td style="font-size:12px;color:${r.batch && r.batch !== "—" && !r.batch.toLowerCase().includes("no batch") ? "#22c55e" : "var(--text-muted)"};">${r.batch}</td>
+    </tr>
+  `).join("");
+}
+
+function renderEmpty() {
+  document.getElementById("execSummary").style.display = "none";
+  document.getElementById("rowBadge").innerText = "—";
+  document.getElementById("execTableBody").innerHTML = '<tr><td colspan="8"><div class="empty-exec"><div class="empty-icon">🔍</div><div>Enter a Source Name / Executive code to see students</div></div></td></tr>';
+}
+
+// ── Table search ──────────────────────────────────────
+function filterTable() {
+  const q = document.getElementById("tableSearch").value.toLowerCase().trim();
+  const rows = q ? tableData.filter(r =>
+    r.name.toLowerCase().includes(q) ||
+    r.regno.toLowerCase().includes(q) ||
+    r.center.toLowerCase().includes(q)
+  ) : tableData;
+  renderTable(rows);
+}
+
+// ── Clear ─────────────────────────────────────────────
+function clearAll() {
+  document.getElementById("sourceInput").value = "";
+  document.getElementById("tableSearch").value = "";
+  document.getElementById("fromDate").value = "";
+  document.getElementById("toDate").value = "";
+  document.getElementById("execChartsRow").style.display = "none";
+  if (classBarC) { classBarC.destroy(); classBarC = null; }
+  if (eligPieC)  { eligPieC.destroy();  eligPieC  = null; }
+  resetDropdowns();
+  renderEmpty();
+}
+
+function resetDropdowns() {
+  const clSel = document.getElementById("classSelect");
+  clSel.innerHTML = '<option value="all">All Classes</option>';
+  clSel.disabled  = true;
+  document.getElementById("sourceInput").value = "";
+  document.getElementById("sourceDropdown").classList.remove("open");
+  if (dataLoaded) populateAllCenters();
+}
+
+// ── Utils ──────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.innerText = msg; t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 2500);
+}
+function toggleSub(id) {
+  document.getElementById(id)?.classList.toggle("open");
+  document.getElementById("chevron-"+id)?.classList.toggle("open");
+}
+function setTheme(theme) {
+  document.documentElement.setAttribute("data-theme", theme);
+  localStorage.setItem("pwTheme", theme);
+  document.querySelectorAll(".theme-btn").forEach(b => b.classList.toggle("active", b.dataset.theme === theme));
+}
+function logout() {
+  localStorage.removeItem("loggedUser");
+  window.location.href = "login.html";
+}
+
+// Apply saved theme
+(function(){
+  const saved = localStorage.getItem("pwTheme") || "dark";
+  document.documentElement.setAttribute("data-theme", saved);
+  window.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".theme-btn").forEach(b => b.classList.toggle("active", b.dataset.theme === saved));
+  });
+})();
+
+// Load data on page load
+loadAllData();
+
+// Enter key on source input
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("sourceInput").addEventListener("keydown", e => {
+    if (e.key === "Enter") applyFilters();
+  });
+});
+</script>
+
+</body>
+</html>
