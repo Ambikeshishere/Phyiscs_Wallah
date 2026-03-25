@@ -361,3 +361,99 @@ function setTheme(theme) {
     });
   });
 })();
+
+// ================= CACHE SYSTEM =================
+
+// Load from cache
+function loadFromCache() {
+  const cache = localStorage.getItem("pwSheetsCache");
+  const cacheTime = localStorage.getItem("pwSheetsCacheTime");
+
+  if (!cache || !cacheTime) return null;
+
+  const age = Date.now() - Number(cacheTime);
+
+  // 5 min cache validity
+  if (age > 5 * 60 * 1000) return null;
+
+  return JSON.parse(cache);
+}
+
+// Save cache
+function saveToCache(data) {
+  localStorage.setItem("pwSheetsCache", JSON.stringify(data));
+  localStorage.setItem("pwSheetsCacheTime", Date.now());
+}
+
+
+// ================= UPDATED FETCH =================
+
+async function fetchSheets() {
+
+  // 🔥 STEP 1: Try cache first
+  const cached = loadFromCache();
+
+  if (cached) {
+    allSheets = cached;
+
+    // Update count
+    const countEl = document.getElementById("sheetCount");
+    if (countEl) countEl.innerText = allSheets.length + " sheets";
+
+    renderSheets(allSheets);
+
+    console.log("⚡ Loaded from cache");
+
+    // 🔁 Background refresh (silent)
+    setTimeout(fetchSheetsFromAPI, 2000);
+
+    return;
+  }
+
+  // ⏳ No cache → normal fetch
+  showSkeletons();
+  await fetchSheetsFromAPI();
+}
+
+
+// ================= API FETCH =================
+
+async function fetchSheetsFromAPI() {
+  try {
+    const res = await fetch(CSV_URL);
+    const text = await res.text();
+
+    const rows = text.split("\n").slice(1).filter(r => r.trim());
+
+    allSheets = rows.map(row => {
+      const cols = parseCSVRow(row);
+      return {
+        name: cols[0]?.trim() || "Untitled",
+        openLink: cols[1]?.trim() || "",
+        owner: cols[2]?.trim() || "",
+        lastModified: cols[3]?.trim() || "",
+        lastModifiedDate: cols[4]?.trim() || "",
+        webLink: cols[5]?.trim() || cols[1]?.trim() || ""
+      };
+    }).filter(s => s.name && s.webLink);
+
+    // ✅ SAVE CACHE
+    saveToCache(allSheets);
+
+    // Update count
+    const countEl = document.getElementById("sheetCount");
+    if (countEl) countEl.innerText = allSheets.length + " sheets";
+
+    renderSheets(allSheets);
+
+    console.log("🌐 Fetched from API");
+
+  } catch (err) {
+    console.error("Error fetching sheets:", err);
+
+    document.getElementById("sheetList").innerHTML = `
+      <div class="empty-state">
+        <p>Failed to load sheets. Please refresh.</p>
+      </div>`;
+  }
+}

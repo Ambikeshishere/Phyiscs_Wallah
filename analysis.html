@@ -1431,6 +1431,30 @@ function setDefaultDates(){const today=new Date();const first=new Date(today.get
   setDefaultDates(); loadData();
 })();
 </script>
+<script>
+  function loadCachedDataAndRender() {
+    const cache = localStorage.getItem("pwSheetsCache");
 
+    if (cache) {
+      const data = JSON.parse(cache);
+      console.log("⚡ Using cached data");
+
+      // ⚠️ IMPORTANT:
+      // Yaha apna existing render function call karo
+      if (typeof renderExecutive === "function") {
+        renderExecutive(data);
+      }
+      if (typeof renderAnalysis === "function") {
+        renderAnalysis(data);
+      }
+
+    } else {
+      console.log("⏳ No cache, fetching...");
+      if (typeof fetchSheets === "function") fetchSheets();
+    }
+  }
+
+  loadCachedDataAndRender();
+</script>
 </body>
 </html>
