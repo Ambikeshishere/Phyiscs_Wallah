@@ -161,70 +161,194 @@
 
 /* ===== DOODLE THEMES (3) ===== */
 
-/* Doodle 1: Cream */
+/* Doodle 1: Cream - Warm doodle style */
 [data-theme="cream"] {
   --bg: #fefce8;
   --bg2: #fef9c3;
-  --surface: rgba(0,0,0,0.03);
-  --surface-hover: rgba(234,179,8,0.1);
-  --border: rgba(0,0,0,0.08);
-  --border-bright: rgba(0,0,0,0.15);
-  --accent: #ca8a04;
-  --accent2: #a16207;
-  --accent-glow: rgba(234,179,8,0.15);
-  --text: #713f12;
-  --text-muted: #92400e;
-  --text-dim: #a16207;
-  --success: #16a34a;
-  --danger: #dc2626;
-  --info: #2563eb;
+  --surface: rgba(139,90,43,0.06);
+  --surface-hover: rgba(139,90,43,0.12);
+  --border: rgba(139,90,43,0.15);
+  --border-bright: rgba(139,90,43,0.3);
+  --accent: #b45309;
+  --accent2: #92400e;
+  --accent-glow: rgba(180,83,9,0.1);
+  --text: #78350f;
+  --text-muted: #a16207;
+  --text-dim: #ca8a04;
+  --success: #15803d;
+  --danger: #b91c1c;
+  --info: #1d4ed8;
   --warning: #d97706;
   --sidebar-bg: rgba(254,252,232,0.98);
   --auth-card-bg: rgba(255,251,235,0.98);
+  --font-display: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+  --radius: 4px;
+  --radius-sm: 3px;
 }
 
-/* Doodle 2: Paper */
+/* Doodle 2: Paper - Notebook style */
 [data-theme="paper"] {
-  --bg: #f5f5f0;
-  --bg2: #e8e8e0;
-  --surface: rgba(0,0,0,0.03);
-  --surface-hover: rgba(0,0,0,0.06);
-  --border: rgba(0,0,0,0.08);
-  --border-bright: rgba(0,0,0,0.15);
-  --accent: #57534e;
-  --accent2: #78716c;
-  --accent-glow: rgba(0,0,0,0.1);
-  --text: #292524;
-  --text-muted: #57534e;
-  --text-dim: #78716c;
-  --success: #16a34a;
+  --bg: #fdfcf8;
+  --bg2: #f5f0e6;
+  --surface: rgba(0,0,0,0.04);
+  --surface-hover: rgba(0,0,0,0.08);
+  --border: rgba(0,0,0,0.1);
+  --border-bright: rgba(0,0,0,0.2);
+  --accent: #374151;
+  --accent2: #6b7280;
+  --accent-glow: rgba(0,0,0,0.08);
+  --text: #1f2937;
+  --text-muted: #6b7280;
+  --text-dim: #9ca3af;
+  --success: #059669;
   --danger: #dc2626;
   --info: #2563eb;
   --warning: #d97706;
-  --sidebar-bg: rgba(245,245,240,0.98);
-  --auth-card-bg: rgba(250,250,245,0.98);
+  --sidebar-bg: rgba(253,252,248,0.98);
+  --auth-card-bg: rgba(255,255,250,0.98);
+  --font-display: 'Bradley Hand', 'Comic Sans MS', cursive;
+  --radius: 0px;
+  --radius-sm: 0px;
 }
 
-/* Doodle 3: Sketch */
+/* Doodle 3: Sketch - Pencil drawing style */
 [data-theme="sketch"] {
-  --bg: #1c1c1c;
-  --bg2: #2a2a2a;
-  --surface: rgba(255,255,255,0.03);
-  --surface-hover: rgba(255,255,255,0.08);
-  --border: rgba(255,255,255,0.08);
-  --border-bright: rgba(255,255,255,0.15);
-  --accent: #d4d4d4;
-  --accent2: #a3a3a3;
-  --accent-glow: rgba(255,255,255,0.1);
-  --text: #e5e5e5;
-  --text-muted: #737373;
-  --text-dim: #a3a3a3;
-  --success: #4ade80;
-  --danger: #f87171;
-  --info: #60a5fa;
-  --warning: #fbbf24;
-  --sidebar-bg: rgba(28,28,28,0.98);
-  --auth-card-bg: rgba(35,35,35,0.98);
+  --bg: #fafaf9;
+  --bg2: #f0efed;
+  --surface: rgba(0,0,0,0.05);
+  --surface-hover: rgba(0,0,0,0.1);
+  --border: 2px dashed rgba(0,0,0,0.15);
+  --border-bright: 2px dashed rgba(0,0,0,0.3);
+  --accent: #374151;
+  --accent2: #6b7280;
+  --accent-glow: rgba(0,0,0,0.05);
+  --text: #1f2937;
+  --text-muted: #6b7280;
+  --text-dim: #9ca3af;
+  --success: #059669;
+  --danger: #dc2626;
+  --info: #2563eb;
+  --warning: #d97706;
+  --sidebar-bg: rgba(250,250,248,0.98);
+  --auth-card-bg: rgba(255,255,252,0.98);
+  --font-display: 'Segoe Script', cursive;
+  --radius: 0px;
+  --radius-sm: 0px;
+}
+
+/* ===== DOODLE BACKGROUND PATTERNS ===== */
+
+/* Cream doodle dots pattern */
+[data-theme="cream"] body {
+  background-image: 
+    radial-gradient(circle at 20px 20px, rgba(180,83,9,0.08) 2px, transparent 2px),
+    radial-gradient(circle at 60px 60px, rgba(180,83,9,0.05) 1.5px, transparent 1.5px),
+    radial-gradient(circle at 100px 100px, rgba(180,83,9,0.06) 2px, transparent 2px);
+  background-size: 120px 120px, 80px 80px, 100px 100px;
+}
+
+/* Paper notebook lines pattern */
+[data-theme="paper"] body {
+  background-image: 
+    repeating-linear-gradient(
+      transparent,
+      transparent 27px,
+      #d1d5db 27px,
+      #d1d5db 28px
+    );
+  background-position: 0 20px;
+}
+
+/* Paper margin line */
+[data-theme="paper"] .content {
+  border-left: 2px solid #fca5a5;
+  padding-left: 20px;
+  margin-left: 40px;
+}
+
+/* Sketch rough edges effect */
+[data-theme="sketch"] body {
+  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+}
+
+/* Sketch hand-drawn borders */
+[data-theme="sketch"] .sidebar,
+[data-theme="sketch"] .dash-wrap,
+[data-theme="sketch"] .exec-wrap,
+[data-theme="sketch"] .content,
+[data-theme="sketch"] .auth-card {
+  border: 2px dashed rgba(0,0,0,0.15) !important;
+  border-radius: 3px !important;
+  box-shadow: none !important;
+}
+
+/* Sketch underline effect for headings */
+[data-theme="sketch"] h1,
+[data-theme="sketch"] h2,
+[data-theme="sketch"] h3 {
+  text-decoration: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: var(--accent);
+  text-underline-offset: 4px;
+}
+
+/* Cream rounded playful cards */
+[data-theme="cream"] .sidebar,
+[data-theme="cream"] .dash-wrap,
+[data-theme="cream"] .exec-wrap,
+[data-theme="cream"] .content {
+  border-radius: 20px !important;
+  border: 2px solid rgba(139,90,43,0.2) !important;
+}
+
+/* Cream playful shadows */
+[data-theme="cream"] .sidebar {
+  box-shadow: 4px 4px 0px rgba(139,90,43,0.15) !important;
+}
+
+[data-theme="cream"] .dash-card,
+[data-theme="cream"] .sheet-tile,
+[data-theme="cream"] .exec-card {
+  box-shadow: 3px 3px 0px rgba(139,90,43,0.1) !important;
+  border-radius: 12px !important;
+}
+
+[data-theme="cream"] .dash-card:hover,
+[data-theme="cream"] .sheet-tile:hover,
+[data-theme="cream"] .exec-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0px rgba(139,90,43,0.15) !important;
+}
+
+/* Paper clean lined cards */
+[data-theme="paper"] .sidebar {
+  border-left: 3px solid var(--accent) !important;
+  border-top: none !important;
+  border-right: none !important;
+  border-bottom: none !important;
+  border-radius: 0 !important;
+}
+
+[data-theme="paper"] .dash-card,
+[data-theme="paper"] .sheet-tile {
+  border-radius: 0 !important;
+  border: 1px solid rgba(0,0,0,0.1) !important;
+  border-left: 3px solid var(--accent) !important;
+}
+
+/* Paper heading styles */
+[data-theme="paper"] h1,
+[data-theme="paper"] h2,
+[data-theme="paper"] h3 {
+  font-weight: bold;
+  letter-spacing: -0.5px;
+}
+
+/* Paper badge styling */
+[data-theme="paper"] .cat-badge,
+[data-theme="paper"] .dash-stat-card {
+  border-radius: 0 !important;
+  border: 1px solid rgba(0,0,0,0.1) !important;
 }
 
 /* ===== EYE SOOTHING COLOR THEMES (5) ===== */
