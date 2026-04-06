@@ -601,31 +601,28 @@
           <span class="chart-badge" id="dodBadge">Last 30 days</span>
         </div>
         <!-- DoD Info Box -->
-        <div id="dodInfoBox" style="margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
-          <div style="display:flex;align-items:center;gap:8px;">
-              <span style="font-size:18px;font-weight:700;color:var(--accent);" id="dodInfoDate">📅 Today</span>
-              <div class="dod-row" style="display:flex;gap:16px;align-items:flex-end;margin-top:6px;">
-                <div>
-                  <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Current Year</div>
-                  <div style="font-size:20px;font-weight:700;color:var(--success);" id="dodInfoCurr">—</div>
-                </div>
-                <div>
-                  <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Last Year</div>
-                  <div style="font-size:20px;font-weight:700;color:var(--accent);" id="dodInfoPrev">—</div>
-                </div>
-                <div>
-                  <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Change</div>
-                  <div style="font-size:20px;font-weight:700;" id="dodInfoChange">—</div>
-                </div>
-              </div>
-            <div style="text-align:center;">
-              <div style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;">Last Year</div>
-              <div style="font-size:20px;font-weight:700;color:#818cf8;" id="dodInfoPrev">—</div>
+        <div id="dodInfoBox" style="margin-bottom:12px;display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+          <div style="display:flex;align-items:flex-end;gap:24px;flex-wrap:wrap;">
+            <div>
+              <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px;">Selected Date</div>
+              <span style="font-size:16px;font-weight:700;color:var(--text);" id="dodInfoDate">📅 Today</span>
             </div>
-            <div style="text-align:center;">
-              <div style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;">Change</div>
-              <div style="font-size:20px;font-weight:700;" id="dodInfoChange">—</div>
+            <div>
+              <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px;">Current Year</div>
+              <div style="font-size:22px;font-weight:700;color:var(--success);" id="dodInfoCurr">—</div>
             </div>
+            <div>
+              <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px;">Last Year</div>
+              <div style="font-size:22px;font-weight:700;color:var(--accent);" id="dodInfoPrev">—</div>
+            </div>
+            <div>
+              <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px;">Change</div>
+              <div style="font-size:22px;font-weight:700;" id="dodInfoChange">—</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:16px;font-size:11px;color:var(--text-muted);">
+            <span>● Current Year</span>
+            <span style="color:var(--accent);">● Last Year</span>
           </div>
         </div>
         <div style="overflow-x:auto;overflow-y:hidden;width:100%;scrollbar-width:thin;" id="dodScrollContainer">
@@ -1695,7 +1692,7 @@ function updateCharts(rows){
             var val=vals[i];
             var diff=changes[i];
             var arrow=diff>=0?" ▲":" ▼";
-            var color=diff>=0?"#22c55e":"#ef4444";
+            var color=diff>=0?"var(--success)":"var(--danger)";
             if(val>0){
               ctx.fillStyle=c.text;
               ctx.fillText(val,bar.x,bar.y-3);
@@ -1724,7 +1721,7 @@ function updateCharts(rows){
           var diff=currVal-prevVal;
           var diffSign=diff>=0?"+":"";
           var arrow=diff>=0?"▲":"▼";
-          var diffColor=diff>=0?"#22c55e":"#ef4444";
+          var diffColor=diff>=0?"var(--success)":"var(--danger)";
           
           var dtParts=currDate.split("-");
           var dt=new Date(parseInt(dtParts[0]),parseInt(dtParts[1])-1,parseInt(dtParts[2]));
@@ -1754,7 +1751,7 @@ function updateCharts(rows){
     var diff=currVal-prevVal;
     var diffSign=diff>=0?"+":"";
     var arrow=diff>=0?"▲":"▼";
-    var diffColor=diff>=0?"#22c55e":"#ef4444";
+    var diffColor=diff>=0?"var(--success)":"var(--danger)";
     
     var dtParts=currDate.split("-");
     var dt=new Date(parseInt(dtParts[0]),parseInt(dtParts[1])-1,parseInt(dtParts[2]));
