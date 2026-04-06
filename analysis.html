@@ -1625,13 +1625,14 @@ function updateCharts(rows){
       plugins:{
         legend:{display:false},
         tooltip:{
-          backgroundColor:"#1e293b",
+          backgroundColor:"rgba(15,23,42,0.98)",
           titleColor:"#f8fafc",
           bodyColor:"#e2e8f0",
           borderColor:"#475569",
           borderWidth:1,
           padding:12,
           cornerRadius:8,
+          itemSort:function(a,b){return b.raw-a.raw;},
           callbacks:{
             title:function(ctx){
               return dateKeys[ctx[0].dataIndex];
@@ -1661,10 +1662,17 @@ function updateCharts(rows){
       },
       scales:{
         x:{
-          ticks:{color:c.muted,font:{size:9},maxRotation:0,autoSkip:true,maxTicksLimit:15},
+          ticks:{
+            color:c.muted,
+            font:{size:7},
+            maxRotation:45,
+            callback:function(val,index){
+              return labels[index];
+            }
+          },
           grid:{color:c.border,display:false},
-          categoryPercentage:0.6,
-          barPercentage:0.7
+          categoryPercentage:0.8,
+          barPercentage:0.9
         },
         y:{
           ticks:{color:c.muted,font:{size:10}},
