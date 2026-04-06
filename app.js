@@ -271,6 +271,7 @@ function escapeAttr(str) {
 
 // ===== SIDEBAR NAV & FILTER =====
 let currentFilter = "all";
+let pendingFilter = null; // Store filter to apply after data loads
 
 function toggleSub(id) {
   const sub = document.getElementById(id);
@@ -305,6 +306,12 @@ function setFilter(filter) {
 }
 
 function applyFilter() {
+  // If data not loaded yet, save filter and apply later
+  if (allSheets.length === 0) {
+    pendingFilter = currentFilter;
+    return;
+  }
+
   let sheets = [...allSheets];
 
   if (currentFilter === "all") {
@@ -401,6 +408,12 @@ async function fetchSheets() {
     if (countEl) countEl.innerText = allSheets.length + " sheets";
 
     renderSheets(allSheets);
+    
+    // Apply pending filter if any
+    if (pendingFilter) {
+      setFilter(pendingFilter);
+      pendingFilter = null;
+    }
 
     console.log("⚡ Loaded from cache");
 
@@ -445,6 +458,12 @@ async function fetchSheetsFromAPI() {
     if (countEl) countEl.innerText = allSheets.length + " sheets";
 
     renderSheets(allSheets);
+    
+    // Apply pending filter if any
+    if (pendingFilter) {
+      setFilter(pendingFilter);
+      pendingFilter = null;
+    }
 
     console.log("🌐 Fetched from API");
 
