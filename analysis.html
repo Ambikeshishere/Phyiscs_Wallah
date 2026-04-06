@@ -1621,18 +1621,71 @@ function updateCharts(rows){
   if(dodC)dodC.destroy();
   const dodCanvas = document.getElementById("dodChart");
   if(dodC)dodC.destroy();
-  dodC=new Chart(dodCanvas,{type:"bar",data:{labels:labels,datasets:[{data:vals,backgroundColor:c.accent+"99",borderColor:c.accent,borderWidth:1,borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(ctx){
-    const i=ctx.dataIndex;
-    const currDate=dateKeys[i];
-    const currYear=currDate.split("-")[0];
-    const prevYear=parseInt(currYear)-1;
-    const prevDate=currDate.replace(currYear,prevYear);
-    const currVal=vals[i];
-    const prevVal=prevDayMap[prevDate]||0;
-    const diff=currVal-prevVal;
-    const diffSign=diff>=0?"+":"";
-    return ["Current: "+currVal,"Last Year: "+prevVal,"Change: "+diffSign+diff];
-  }}},scales:{x:{ticks:{color:c.muted,font:{size:10},maxRotation:45,autoSkip:false},grid:{color:c.border,display:false}},y:{ticks:{color:c.muted,font:{size:10}},grid:{color:c.border},beginAtZero:true}},animation:{onComplete:function(){var ch=this;var ctx=ch.ctx;var meta=ch.getDatasetMeta(0);ctx.save();ctx.font="bold 10px sans-serif";ctx.fillStyle=c.text;ctx.textAlign="center";ctx.textBaseline="bottom";for(var i=0;i<meta.data.length;i++){var bar=meta.data[i];var val=ch.data.datasets[0].data[i];if(val>0)ctx.fillText(val,bar.x,bar.y-3);}ctx.restore();}}}});
+  dodC=new Chart(dodCanvas,{
+    type:"bar",
+    data:{
+      labels:labels,
+      datasets:[{
+        data:vals,
+        backgroundColor:c.accent+"99",
+        borderColor:c.accent,
+        borderWidth:1,
+        borderRadius:6
+      }]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          callbacks:{
+            label:function(ctx){
+              var i=ctx.dataIndex;
+              var currDate=dateKeys[i];
+              var currYear=currDate.split("-")[0];
+              var prevYear=parseInt(currYear)-1;
+              var prevDate=currDate.replace(currYear,prevYear);
+              var currVal=vals[i];
+              var prevVal=prevDayMap[prevDate]||0;
+              var diff=currVal-prevVal;
+              var diffSign=diff>=0?"+":"";
+              return ["Current: "+currVal,"Last Year: "+prevVal,"Change: "+diffSign+diff];
+            }
+          }
+        }
+      },
+      scales:{
+        x:{
+          ticks:{color:c.muted,font:{size:10},maxRotation:45,autoSkip:false},
+          grid:{color:c.border,display:false}
+        },
+        y:{
+          ticks:{color:c.muted,font:{size:10}},
+          grid:{color:c.border},
+          beginAtZero:true
+        }
+      },
+      animation:{
+        onComplete:function(){
+          var ch=this;
+          var ctx=ch.ctx;
+          var meta=ch.getDatasetMeta(0);
+          ctx.save();
+          ctx.font="bold 10px sans-serif";
+          ctx.fillStyle=c.text;
+          ctx.textAlign="center";
+          ctx.textBaseline="bottom";
+          for(var i=0;i<meta.data.length;i++){
+            var bar=meta.data[i];
+            var val=ch.data.datasets[0].data[i];
+            if(val>0)ctx.fillText(val,bar.x,bar.y-3);
+          }
+          ctx.restore();
+        }
+      }
+    }
+  });
 
   // Fee
   const feeG={"Token Only":0,"Less than Token":0,"1st EMI Paid":0,"Token & EMI":0,"Total Paid":0,"Other":0};
