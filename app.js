@@ -68,13 +68,19 @@ function parseCSVRow(row) {
 // ===== RENDER =====
 function renderSheets(sheets) {
   const pinned = getPinned();
-
   const pinnedSheets = sheets.filter(s => pinned.includes(s.name));
   const unpinnedSheets = sheets.filter(s => !pinned.includes(s.name));
 
-  renderPinned(pinnedSheets);
-  renderList(unpinnedSheets);
+  // Hide pinned section when filter is active (except "all" and "pinned")
+  const pinnedSection = document.getElementById("pinnedSection");
+  if (currentFilter !== "all" && currentFilter !== "pinned") {
+    pinnedSection.style.display = "none";
+  } else {
+    pinnedSection.style.display = "block";
+    renderPinned(pinnedSheets);
+  }
 
+  renderList(unpinnedSheets);
   document.getElementById("allCount").innerText = unpinnedSheets.length + " sheets";
 }
 
@@ -136,8 +142,16 @@ function detectCategory(name) {
 function renderList(sheets) {
   const list = document.getElementById("sheetList");
   const empty = document.getElementById("listEmpty");
+  const allSection = document.querySelector(".section:not(#pinnedSection)"); // All Sheets section
 
   list.innerHTML = "";
+
+  // Hide "All Sheets" section when showing pinned only
+  if (currentFilter === "pinned") {
+    allSection.style.display = "none";
+    return;
+  }
+  allSection.style.display = "block";
 
   if (sheets.length === 0) {
     empty.style.display = "block";
