@@ -884,26 +884,26 @@ async function loadPrevYearData() {
     lines.slice(1).forEach(function(line) {
       if (!line.trim()) return;
       const cols = parseCSVRow(line);
-      const fp = parseFloat((cols[iF]?.trim() || "0").replace(/,/g, "").replace(/[^0-9.]/g, ""));
-      const fa = (cols[iFa]?.trim() || "").toUpperCase().trim();
-      const st = (cols[iS]?.trim() || "").toUpperCase().trim();
+      const fp = parseFloat(((cols[iF]||"").trim() || "0").replace(/,/g, "").replace(/[^0-9.]/g, ""));
+      const fa = ((cols[iFa]||"").trim() || "").toUpperCase().trim();
+      const st = ((cols[iS]||"").trim() || "").toUpperCase().trim();
       const faOk = fa === "FALSE" || fa === "NO" || fa === "0" || fa === "";
       
       // Same filter as main data: fees_paid > 3498, free_admission = false, status = active
       if (!(fp > 3498 && faOk && st === "ACTIVE")) return;
       
       prevYearRows.push({
-        center: cols[iC]?.trim() || "Unknown",
-        joiningDate: parseDate(cols[iJ]?.trim() || ""),
-        eligibility: (cols[iE]?.trim() || "").toLowerCase(),
-        newPayment: (cols[iN]?.trim() || "").toLowerCase(),
-        batch: (cols[iB]?.trim() || "").toLowerCase(),
-        stream: cols[iSt]?.trim() || "Unknown",
-        classCourse: cols[iCl]?.trim() || "Unknown",
-        arpuCheck: (cols[iArpu]?.trim() || "").toUpperCase(),
-        formStatus: (cols[iFormStatus]?.trim() || "").toLowerCase(),
-        arpuVal: parseFloat((cols[iArpuVal]?.trim() || "0").replace(/,/g, "")),
-        ay26: (cols[iAy26]?.trim() || "").toLowerCase(),
+        center: (cols[iC]||"").trim() || "Unknown",
+        joiningDate: parseDate((cols[iJ]||"").trim() || ""),
+        eligibility: ((cols[iE]||"").trim() || "").toLowerCase(),
+        newPayment: ((cols[iN]||"").trim() || "").toLowerCase(),
+        batch: ((cols[iB]||"").trim() || "").toLowerCase(),
+        stream: (cols[iSt]||"").trim() || "Unknown",
+        classCourse: (cols[iCl]||"").trim() || "Unknown",
+        arpuCheck: ((cols[iArpu]||"").trim() || "").toUpperCase(),
+        formStatus: ((cols[iFormStatus]||"").trim() || "").toLowerCase(),
+        arpuVal: parseFloat(((cols[iArpuVal]||"").trim() || "0").replace(/,/g, "")),
+        ay26: ((cols[iAy26]||"").trim() || "").toLowerCase(),
       });
     });
     console.log("✅ Previous year data loaded:", prevYearRows.length, "rows");
@@ -1940,7 +1940,7 @@ function expandAllCities(expand) {
   });
 }
 
-function toggleSub(id){document.getElementById(id)?.classList.toggle("open");document.getElementById("chevron-"+id)?.classList.toggle("open");}
+function toggleSub(id){var el=document.getElementById(id);if(el)el.classList.toggle("open");var chev=document.getElementById("chevron-"+id);if(chev)chev.classList.toggle("open");}
 function setTheme(theme){document.documentElement.setAttribute("data-theme",theme);localStorage.setItem("pwTheme",theme);document.querySelectorAll(".theme-btn").forEach(function(b){b.classList.toggle("active",b.dataset.theme===theme);});if(allRows.length)applyFilters();}
 function logout(){localStorage.removeItem("loggedUser");window.location.href="login.html";}
 function setDefaultDates(){const today=new Date();const first=new Date(today.getFullYear(),today.getMonth(),1);document.getElementById("fFromDate").value=fmtDate(first);document.getElementById("fToDate").value=fmtDate(today);}
