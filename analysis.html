@@ -209,13 +209,13 @@
     .data-table-wrap { overflow-x:auto; }
     table.data-table { width:100%; border-collapse:collapse; }
     table.data-table thead tr { background:var(--bg2); border-bottom:1px solid var(--border); }
-    table.data-table thead th { padding:11px 14px; text-align:center; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; color:var(--text); white-space:nowrap; cursor:pointer; user-select:none; transition:var(--transition); vertical-align:middle; }
+    table.data-table thead th { padding:11px 14px; text-align:center; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; color:var(--text); white-space:nowrap; cursor:pointer; user-select:none; transition:var(--transition); vertical-align:middle; background:var(--bg2); }
     table.data-table thead th:hover, table.data-table thead th.sorted { color:var(--accent); }
     table.data-table tbody tr:hover td { background:var(--surface-hover); }
-    table.data-table tbody td { padding:11px 14px; font-size:13px; border-bottom:1px solid var(--border); background:var(--surface); color:var(--text-dim); text-align:center; vertical-align:middle; }
+    table.data-table tbody td { padding:11px 14px; font-size:13px; border-bottom:1px solid var(--border); background:transparent; color:var(--text-dim); text-align:center; vertical-align:middle; }
     table.data-table tbody td:first-child { text-align:left; color:var(--text); font-family:var(--font-display); font-weight:500; }
     table.data-table tbody tr { height:52px; }
-    table.data-table tbody tr:nth-child(even) td { background:var(--surface-hover); }
+    table.data-table tbody tr:nth-child(even) td { background:rgba(0,0,0,0.02); }
     table.data-table tbody td.sortable { cursor:pointer; user-select:none; }
     table.data-table tbody td.sortable:hover { color:var(--text); }
     table.data-table tbody td.sorted { color:var(--accent); }
@@ -237,22 +237,22 @@
     .pivot-table { border-collapse:collapse; font-size:13px; }
     .pivot-table tr { height:44px; }
     .pivot-table td, .pivot-table th { box-sizing:border-box; vertical-align:middle; }
-    .pivot-table th, .pivot-table td { padding:9px 14px; white-space:nowrap; border-bottom:1px solid var(--border); background:var(--surface); color:var(--text-dim); }
+    .pivot-table th, .pivot-table td { padding:9px 14px; white-space:nowrap; border-bottom:1px solid var(--border); background:transparent; color:var(--text-dim); }
     .pivot-table thead tr { position:sticky; top:0; z-index:3; }
     .pivot-table thead th { background:var(--bg2) !important; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:var(--text) !important; text-align:center; border-right:1px solid var(--border); box-shadow: 0 1px 0 var(--border); }
     .pivot-table thead th.center-col { text-align:left; min-width:220px; position:sticky; left:0; z-index:5; background:var(--bg2) !important; }
-    .pivot-table tbody td { text-align:center; color:var(--text-dim); background:var(--surface); }
-    .pivot-center-row td { color:var(--text-dim); font-weight:400; background:var(--surface) !important; }
+    .pivot-table tbody td { text-align:center; color:var(--text-dim); background:transparent; }
+    .pivot-center-row td { color:var(--text-dim); font-weight:400; background:transparent !important; }
     /* center-col handled inline */
-    .pivot-center-row:nth-child(even) td { background:var(--surface-hover) !important; }
-    .pivot-center-row:nth-child(even) td.center-col { background:var(--surface-hover) !important; }
+    .pivot-center-row:nth-child(even) td { background:rgba(0,0,0,0.02) !important; }
+    .pivot-center-row:nth-child(even) td.center-col { background:rgba(0,0,0,0.02) !important; }
     .pivot-center-row:hover td { background:var(--surface-hover) !important; }
     .pivot-center-row td.has-data { color:var(--text); font-weight:500; }
     .pivot-table tbody td.has-data { color:var(--text); font-weight:600; }
-    .pivot-table tbody td.center-col { position:sticky; left:0; z-index:10; font-family:var(--font-display); font-size:13px; border-right:3px solid var(--border); color:var(--text); }
+    .pivot-table tbody td.center-col { position:sticky; left:0; z-index:10; font-family:var(--font-display); font-size:13px; border-right:3px solid var(--border); color:var(--text); background:transparent; }
     .pivot-table tbody tr:hover td { background:var(--surface-hover); }
     .pivot-table tbody tr:hover td.center-col { background:var(--surface-hover) !important; }
-    .pivot-city-row td { font-weight:600; color:var(--text); font-family:var(--font-display); cursor:pointer; background:var(--surface) !important; }
+    .pivot-city-row td { font-weight:600; color:var(--text); font-family:var(--font-display); cursor:pointer; background:transparent !important; }
 
     .pivot-city-row:hover td { background:var(--surface-hover) !important; }
 
@@ -261,8 +261,8 @@
     .city-toggle.open { transform:rotate(90deg); }
     .pivot-total-cell { font-weight:700; color:var(--text); font-size:13px; }
     .pivot-date-total { background:var(--surface-hover) !important; font-weight:700; color:var(--text); }
-    .pivot-grand-row td { background:var(--surface-hover) !important; color:var(--text) !important; font-weight:700; border-bottom:2px solid var(--accent) !important; }
-    .pivot-grand-row td.center-col { background:var(--bg2) !important; color:var(--accent) !important; }
+    .pivot-grand-row td { background:transparent !important; color:var(--text) !important; font-weight:700; border-bottom:2px solid var(--accent) !important; }
+    .pivot-grand-row td.center-col { background:transparent !important; color:var(--accent) !important; }
 
     .target-wrap { display:inline-flex; flex-direction:column; gap:3px; min-width:120px; align-items:center; }
     .target-numbers { display:flex; align-items:center; justify-content:center; gap:4px; flex-wrap:wrap; }
@@ -601,28 +601,28 @@
           <span class="chart-badge" id="dodBadge">Last 30 days</span>
         </div>
         <!-- DoD Info Box -->
-        <div id="dodInfoBox" style="margin-bottom:12px;display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;">
-          <div style="display:flex;align-items:flex-end;gap:24px;flex-wrap:wrap;">
-            <div>
-              <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px;">Selected Date</div>
-              <span style="font-size:16px;font-weight:700;color:var(--text);" id="dodInfoDate">📅 Today</span>
-            </div>
-            <div>
-              <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px;">Current Year</div>
-              <div style="font-size:22px;font-weight:700;color:var(--success);" id="dodInfoCurr">—</div>
-            </div>
-            <div>
-              <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px;">Last Year</div>
-              <div style="font-size:22px;font-weight:700;color:var(--accent);" id="dodInfoPrev">—</div>
-            </div>
-            <div>
-              <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px;">Change</div>
-              <div style="font-size:22px;font-weight:700;" id="dodInfoChange">—</div>
-            </div>
-          </div>
+        <div id="dodInfoBox" style="margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
           <div style="display:flex;gap:16px;font-size:11px;color:var(--text-muted);">
             <span>● Current Year</span>
             <span style="color:var(--accent);">● Last Year</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;">
+            <div>
+              <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Selected</div>
+              <span style="font-size:16px;font-weight:700;color:var(--text);" id="dodInfoDate">📅 Today</span>
+            </div>
+            <div>
+              <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Current</div>
+              <div style="font-size:22px;font-weight:700;color:var(--success);" id="dodInfoCurr">—</div>
+            </div>
+            <div>
+              <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Last Year</div>
+              <div style="font-size:22px;font-weight:700;color:var(--accent);" id="dodInfoPrev">—</div>
+            </div>
+            <div>
+              <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Change</div>
+              <div style="font-size:22px;font-weight:700;" id="dodInfoChange">—</div>
+            </div>
           </div>
         </div>
         <div style="overflow-x:auto;overflow-y:hidden;width:100%;scrollbar-width:thin;" id="dodScrollContainer">
