@@ -172,14 +172,16 @@
     </div>
     <div class="sidebar-bottom">
       <div class="theme-switcher">
-        <button class="theme-btn active" data-theme="dark" onclick="setTheme('dark')">🌙 Dark</button>
-        <button class="theme-btn" data-theme="light" onclick="setTheme('light')">☀️ Light</button>
-        <button class="theme-btn" data-theme="eve" onclick="setTheme('eve')">🌿 Eve</button>
+        <button class="theme-btn active" data-theme="dark" onclick="setTheme('dark')">🌙</button>
+        <button class="theme-btn" data-theme="light" onclick="setTheme('light')">☀️</button>
+        <button class="theme-btn" data-theme="eve" onclick="setTheme('eve')">🌿</button>
       </div>
       <div class="user-badge" id="userBadge"></div>
       <button class="logout-btn" onclick="logout()"><span>↩</span> Logout</button>
     </div>
   </aside>
+  
+  <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
 
   <!-- MAIN -->
   <main class="exec-wrap">
@@ -849,8 +851,8 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove("show"), 2500);
 }
 function toggleSub(id) {
-  document.getElementById(id)?.classList.toggle("open");
-  document.getElementById("chevron-"+id)?.classList.toggle("open");
+  var el=document.getElementById(id);if(el)el.classList.toggle("open");
+  var chev=document.getElementById("chevron-"+id);if(chev)chev.classList.toggle("open");
 }
 function setTheme(theme) {
   document.documentElement.setAttribute("data-theme", theme);
@@ -861,6 +863,8 @@ function logout() {
   localStorage.removeItem("loggedUser");
   window.location.href = "login.html";
 }
+function toggleSidebar(){var sidebar=document.querySelector(".sidebar");var toggle=document.querySelector(".sidebar-toggle");sidebar.classList.toggle("collapsed");toggle.classList.toggle("visible");localStorage.setItem("sidebarCollapsed",sidebar.classList.contains("collapsed"));}
+function initSidebar(){var collapsed=localStorage.getItem("sidebarCollapsed")==="true";var sidebar=document.querySelector(".sidebar");var toggle=document.querySelector(".sidebar-toggle");if(collapsed){sidebar.classList.add("collapsed");toggle.classList.add("visible");}}
 
 // Apply saved theme
 (function(){
@@ -868,6 +872,7 @@ function logout() {
   document.documentElement.setAttribute("data-theme", saved);
   window.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".theme-btn").forEach(b => b.classList.toggle("active", b.dataset.theme === saved));
+    initSidebar();
   });
 })();
 

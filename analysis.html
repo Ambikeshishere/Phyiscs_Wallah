@@ -490,9 +490,9 @@
 
     <div class="sidebar-bottom">
       <div class="theme-switcher">
-        <button class="theme-btn active" data-theme="dark" onclick="setTheme('dark')">🌙 Dark</button>
-        <button class="theme-btn" data-theme="light" onclick="setTheme('light')">☀️ Light</button>
-        <button class="theme-btn" data-theme="eve" onclick="setTheme('eve')">🌿 Eve</button>
+        <button class="theme-btn active" data-theme="dark" onclick="setTheme('dark')">🌙</button>
+        <button class="theme-btn" data-theme="light" onclick="setTheme('light')">☀️</button>
+        <button class="theme-btn" data-theme="eve" onclick="setTheme('eve')">🌿</button>
       </div>
       <div class="user-badge" id="userBadge"></div>
       <button class="logout-btn" onclick="logout()">
@@ -500,6 +500,8 @@
       </button>
     </div>
   </aside>
+  
+  <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
 
   <main class="dash-wrap">
     <!-- Topbar -->
@@ -2028,6 +2030,10 @@ function expandAllCities(expand) {
 
 function toggleSub(id){var el=document.getElementById(id);if(el)el.classList.toggle("open");var chev=document.getElementById("chevron-"+id);if(chev)chev.classList.toggle("open");}
 function setTheme(theme){document.documentElement.setAttribute("data-theme",theme);localStorage.setItem("pwTheme",theme);document.querySelectorAll(".theme-btn").forEach(function(b){b.classList.toggle("active",b.dataset.theme===theme);});if(allRows.length)applyFilters();}
+
+function toggleSidebar(){var sidebar=document.querySelector(".sidebar");var toggle=document.querySelector(".sidebar-toggle");sidebar.classList.toggle("collapsed");toggle.classList.toggle("visible");localStorage.setItem("sidebarCollapsed",sidebar.classList.contains("collapsed"));}
+
+function initSidebar(){var collapsed=localStorage.getItem("sidebarCollapsed")==="true";var sidebar=document.querySelector(".sidebar");var toggle=document.querySelector(".sidebar-toggle");if(collapsed){sidebar.classList.add("collapsed");toggle.classList.add("visible");}}
 function logout(){localStorage.removeItem("loggedUser");window.location.href="login.html";}
 function setDefaultDates(){const today=new Date();const first=new Date(today.getFullYear(),today.getMonth(),1);document.getElementById("fFromDate").value=fmtDate(first);document.getElementById("fToDate").value=fmtDate(today);}
 
@@ -2035,7 +2041,7 @@ function setDefaultDates(){const today=new Date();const first=new Date(today.get
   const saved=localStorage.getItem("pwTheme")||"dark";
   document.documentElement.setAttribute("data-theme",saved);
   document.querySelectorAll(".theme-btn").forEach(function(b){b.classList.toggle("active",b.dataset.theme===saved);});
-  setDefaultDates(); loadData();
+  setDefaultDates(); initSidebar(); loadData();
 })();
 </script>
 <script>

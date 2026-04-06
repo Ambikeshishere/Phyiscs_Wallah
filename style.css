@@ -522,18 +522,127 @@ body {
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 12px 14px;
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-dim);
-  word-break: break-all;
   line-height: 1.4;
   display: flex;
   align-items: center;
   gap: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .user-badge::before {
   content: '👤';
   font-size: 18px;
+  flex-shrink: 0;
+}
+
+/* Sidebar Toggle Button */
+.sidebar-toggle {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+  width: 40px;
+  height: 40px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 18px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.sidebar-toggle.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.sidebar-toggle:hover {
+  background: var(--surface-hover);
+  border-color: var(--border-bright);
+}
+
+/* Sidebar collapsed state */
+.sidebar.collapsed {
+  width: 0;
+  padding: 0;
+  overflow: hidden;
+  transform: translateX(-100%);
+}
+
+.app.sidebar-collapsed .dash-wrap,
+.app.sidebar-collapsed .content {
+  margin-left: 0;
+}
+
+/* Dashboard Grid */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.dash-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px 20px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.dash-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--text);
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+
+.dash-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--border-bright);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+
+.dash-card:hover::before {
+  opacity: 1;
+}
+
+.dash-card-icon {
+  font-size: 36px;
+  margin-bottom: 12px;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+}
+
+.dash-card-title {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.dash-card-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.4;
 }
 
 .logout-btn {
