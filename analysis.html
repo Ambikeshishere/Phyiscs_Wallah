@@ -267,6 +267,130 @@
     .target-pct.low   { color:#f43f5e; }
 
     .no-target { color:var(--text-muted); font-size:11px; }
+
+    /* YoY Comparison Styles */
+    .yoy-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .yoy-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .yoy-title {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 700;
+    }
+    .yoy-badge {
+      font-size: 11px;
+      font-weight: 600;
+      background: rgba(249, 115, 22, 0.12);
+      color: var(--accent2);
+      border: 1px solid rgba(249, 115, 22, 0.2);
+      border-radius: 20px;
+      padding: 2px 8px;
+    }
+    .yoy-legend {
+      display: flex;
+      gap: 16px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .yoy-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .yoy-legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+    }
+    .yoy-legend-dot.current { background: var(--accent2); }
+    .yoy-legend-dot.previous { background: #818cf8; }
+    .yoy-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+      padding: 16px 18px;
+    }
+    .yoy-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .yoy-card-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+    }
+    .yoy-card-values {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+    .yoy-current {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--accent2);
+    }
+    .yoy-previous {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 600;
+      color: #818cf8;
+    }
+    .yoy-change {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .yoy-change.up {
+      background: rgba(34, 197, 94, 0.15);
+      color: #22c55e;
+    }
+    .yoy-change.down {
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+    }
+    .yoy-change.same {
+      background: rgba(148, 163, 184, 0.15);
+      color: #94a3b8;
+    }
+    .yoy-chart-wrap {
+      padding: 0 18px 16px;
+      overflow-x: auto;
+    }
+    .yoy-chart-wrap canvas {
+      max-height: 250px;
+      min-width: 600px;
+    }
+    .yoy-date-note {
+      font-size: 10px;
+      color: var(--text-muted);
+      padding: 8px 18px;
+      border-top: 1px solid var(--border);
+      background: var(--bg2);
+    }
   </style>
 </head>
 <body>
@@ -473,6 +597,33 @@
       </div>
     </div>
 
+    <!-- YoY Comparison Section -->
+    <div class="yoy-section">
+      <div class="yoy-header">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <span class="yoy-title">📊 Year-over-Year Comparison</span>
+          <span class="yoy-badge" id="yoyBadge">Loading...</span>
+        </div>
+        <div class="yoy-legend">
+          <div class="yoy-legend-item">
+            <div class="yoy-legend-dot current"></div>
+            <span>Current Year (up to today)</span>
+          </div>
+          <div class="yoy-legend-item">
+            <div class="yoy-legend-dot previous"></div>
+            <span>Previous Year (up to same date)</span>
+          </div>
+        </div>
+      </div>
+      <div class="yoy-grid" id="yoyGrid">
+        <!-- Filled by JavaScript -->
+      </div>
+      <div class="yoy-chart-wrap">
+        <canvas id="yoyChart"></canvas>
+      </div>
+      <div class="yoy-date-note" id="yoyDateNote"></div>
+    </div>
+
     <!-- Row 1: DoD (horizontal scroll) + Top 10 Centers (vertical scroll) side by side -->
     <div style="display:grid;grid-template-columns:3fr 2fr;gap:16px;">
       <div class="chart-card" style="min-height:360px;overflow:hidden;">
@@ -626,9 +777,12 @@
 <script>
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSIyfDHFpP7wqzoT3YoYM7y8lR8RBD-g9Pq-vgmb3v-yDZDdyUIS5DaCfysHvQBZVM80ny3LQBjVFSC/pub?gid=0&single=true&output=csv";
 const TARGET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSIyfDHFpP7wqzoT3YoYM7y8lR8RBD-g9Pq-vgmb3v-yDZDdyUIS5DaCfysHvQBZVM80ny3LQBjVFSC/pub?gid=1812402802&single=true&output=csv";
+// Previous Year Data (AY25) - Up to April 7, 2025
+const PREV_YEAR_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSIyfDHFpP7wqzoT3YoYM7y8lR8RBD-g9Pq-vgmb3v-yDZDdyUIS5DaCfysHvQBZVM80ny3LQBjVFSC/pub?gid=220102568&single=true&output=csv";
 let allRows=[], tableData=[], filteredData=[], sortKey="count", sortAsc=false;
 let targetMap = {}; // center name -> target number
-let dodC, feeC, centerC, streamC, arpuC, arpuPieC, classC, batchClassC, eligC;
+let prevYearRows = []; // Previous year data (AY25)
+let dodC, feeC, centerC, streamC, arpuC, arpuPieC, classC, batchClassC, eligC, yoyChart;
 
 document.getElementById("userBadge").innerText = "👤 " + localStorage.getItem("loggedUser");
 
@@ -653,6 +807,15 @@ function gc(){const s=getComputedStyle(document.documentElement);return{accent:s
 async function loadData(){
   document.getElementById("refreshBtn").classList.add("refreshing");
   document.getElementById("lastUpdatedText").innerText="Fetching...";
+  
+  // Check if running on file:// (CORS will fail)
+  if(window.location.protocol === "file:"){
+    document.getElementById("lastUpdatedText").innerText="⚠️ Open via HTTP server, not file://";
+    document.getElementById("refreshBtn").classList.remove("refreshing");
+    showToast("⚠️ Please open via HTTP server (not file://)");
+    return;
+  }
+  
   try{
     // Fetch main CSV first (critical)
     const res = await fetch(CSV_URL+"&t="+Date.now());
@@ -667,8 +830,8 @@ async function loadData(){
       targetLines.forEach(function(line){
         if(!line.trim()) return;
         const cols = parseCSVRow(line);
-        const center = cols[0]?.trim();
-        const target = parseInt((cols[1]?.trim()||"0").replace(/,/g,""));
+        const center = (cols[0]||"").trim();
+        const target = parseInt(((cols[1]||"").trim()||"0").replace(/,/g,""));
         if(center && !isNaN(target) && target > 0) targetMap[center] = target;
       });
     } catch(te) {
@@ -716,9 +879,299 @@ async function loadData(){
     populateDrop("fAdmMode",Array.from(new Set(allRows.map(function(r){return r.admMode;}))).filter(Boolean).sort());
     document.getElementById("lastUpdatedText").innerText="Last updated: "+new Date().toLocaleTimeString();
     showToast("✅ "+allRows.length+" registrations loaded");
+    
+    // Load previous year data for YoY comparison
+    const prevLoaded = await loadPrevYearData();
+    if (prevLoaded && prevYearRows.length > 0) {
+      renderYoYComparison();
+    } else {
+      document.getElementById("yoyBadge").innerHTML = "⚠️ Previous year data unavailable";
+    }
+    
     applyFilters();
   }catch(e){console.error(e);document.getElementById("lastUpdatedText").innerText="❌ Failed";showToast("❌ Error loading data");}
   document.getElementById("refreshBtn").classList.remove("refreshing");
+}
+
+// ── Previous Year Data Loading & YoY Comparison ──────────────
+async function loadPrevYearData() {
+  try {
+    const res = await fetch(PREV_YEAR_CSV_URL + "&t=" + Date.now());
+    const text = await res.text();
+    const lines = text.split("\n");
+    const headers = parseCSVRow(lines[0]).map(function(h) { return h.trim().toLowerCase().replace(/\s+/g, "_"); });
+    
+    const iC = headers.indexOf("center"), iF = headers.indexOf("fees_paid"), iFa = headers.indexOf("free_admission"),
+          iS = headers.indexOf("status"), iJ = headers.indexOf("joining_date"), iE = headers.indexOf("eligibility_status"),
+          iN = headers.indexOf("newpayment_checks"), iB = headers.indexOf("batch"), iSt = headers.indexOf("stream"),
+          iCl = headers.indexOf("class_course"), iArpu = headers.indexOf("arpu_check"), iFormStatus = headers.indexOf("form_status"),
+          iArpuVal = headers.indexOf("arpu"), iAy26 = headers.indexOf("ay26_enrollment_status");
+    
+    prevYearRows = [];
+    lines.slice(1).forEach(function(line) {
+      if (!line.trim()) return;
+      const cols = parseCSVRow(line);
+      const fp = parseFloat((cols[iF]?.trim() || "0").replace(/,/g, "").replace(/[^0-9.]/g, ""));
+      const fa = (cols[iFa]?.trim() || "").toUpperCase().trim();
+      const st = (cols[iS]?.trim() || "").toUpperCase().trim();
+      const faOk = fa === "FALSE" || fa === "NO" || fa === "0" || fa === "";
+      
+      // Same filter as main data: fees_paid > 3498, free_admission = false, status = active
+      if (!(fp > 3498 && faOk && st === "ACTIVE")) return;
+      
+      prevYearRows.push({
+        center: cols[iC]?.trim() || "Unknown",
+        joiningDate: parseDate(cols[iJ]?.trim() || ""),
+        eligibility: (cols[iE]?.trim() || "").toLowerCase(),
+        newPayment: (cols[iN]?.trim() || "").toLowerCase(),
+        batch: (cols[iB]?.trim() || "").toLowerCase(),
+        stream: cols[iSt]?.trim() || "Unknown",
+        classCourse: cols[iCl]?.trim() || "Unknown",
+        arpuCheck: (cols[iArpu]?.trim() || "").toUpperCase(),
+        formStatus: (cols[iFormStatus]?.trim() || "").toLowerCase(),
+        arpuVal: parseFloat((cols[iArpuVal]?.trim() || "0").replace(/,/g, "")),
+        ay26: (cols[iAy26]?.trim() || "").toLowerCase(),
+      });
+    });
+    console.log("✅ Previous year data loaded:", prevYearRows.length, "rows");
+    return true;
+  } catch (e) {
+    console.error("❌ Failed to load previous year data:", e);
+    return false;
+  }
+}
+
+function getYoYDateRange() {
+  const today = new Date();
+  const currentYear = today.getFullYear();
+  const currentMonth = today.getMonth();
+  const currentDay = today.getDate();
+  
+  // Current year range: Jan 1 to today
+  const currentStart = new Date(currentYear, 0, 1);
+  const currentEnd = new Date(currentYear, currentMonth, currentDay);
+  
+  // Previous year range: Jan 1 to same date last year
+  const prevYear = currentYear - 1;
+  const prevStart = new Date(prevYear, 0, 1);
+  const prevEnd = new Date(prevYear, currentMonth, currentDay);
+  
+  return {
+    currentStart, currentEnd,
+    prevStart, prevEnd,
+    currentYear, prevYear
+  };
+}
+
+function filterRowsByDateRange(rows, startDate, endDate) {
+  return rows.filter(function(r) {
+    if (!r.joiningDate) return false;
+    const d = new Date(r.joiningDate.getFullYear(), r.joiningDate.getMonth(), r.joiningDate.getDate());
+    const s = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+    const e = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
+    return d >= s && d <= e;
+  });
+}
+
+function calculateMetrics(rows) {
+  const total = rows.length;
+  const eligible = rows.filter(function(r) { return !r.eligibility.includes("not") && !r.newPayment.includes("token"); }).length;
+  const batch = rows.filter(function(r) { return r.batch && !r.batch.includes("no batch"); }).length;
+  const arpuRows = rows.filter(function(r) { return r.arpuCheck === "YES" && !r.formStatus.includes("admission cancel") && r.ay26.includes("admission"); });
+  const avgArpu = arpuRows.length > 0 ? Math.round(arpuRows.reduce(function(s, r) { return s + r.arpuVal; }, 0) / arpuRows.length) : 0;
+  const centers = new Set(rows.map(function(r) { return r.center; })).size;
+  
+  // Stream breakdown
+  const streamMap = {};
+  rows.forEach(function(r) {
+    streamMap[r.stream] = (streamMap[r.stream] || 0) + 1;
+  });
+  
+  // Day-wise data
+  const dayMap = {};
+  rows.forEach(function(r) {
+    if (!r.joiningDate) return;
+    const k = fmtDate(r.joiningDate);
+    dayMap[k] = (dayMap[k] || 0) + 1;
+  });
+  const sortedDays = Object.entries(dayMap).sort(function(a, b) { return a[0].localeCompare(b[0]); });
+  
+  return { total, eligible, batch, avgArpu, centers, streamMap, dayMap, sortedDays };
+}
+
+function renderYoYComparison() {
+  const dateRange = getYoYDateRange();
+  
+  // Filter current year data up to today
+  const currentFiltered = filterRowsByDateRange(allRows, dateRange.currentStart, dateRange.currentEnd);
+  // Filter previous year data up to same date
+  const prevFiltered = filterRowsByDateRange(prevYearRows, dateRange.prevStart, dateRange.prevEnd);
+  
+  const currentMetrics = calculateMetrics(currentFiltered);
+  const prevMetrics = calculateMetrics(prevFiltered);
+  
+  // Update badge
+  document.getElementById("yoyBadge").innerHTML = currentFiltered.length + " vs " + prevFiltered.length + " registrations";
+  
+  // Format date range text
+  const formatDateShort = function(d) {
+    return d.toLocaleDateString("en-IN", { day: "numeric", month: "short" });
+  };
+  document.getElementById("yoyDateNote").innerHTML = 
+    "📅 Comparing: <strong>Jan 1 " + dateRange.prevYear + " – " + formatDateShort(dateRange.prevEnd) + " " + dateRange.prevYear + "</strong> vs " +
+    "<strong>Jan 1 " + dateRange.currentYear + " – " + formatDateShort(dateRange.currentEnd) + " " + dateRange.currentYear + "</strong>";
+  
+  // Calculate changes
+  function calcChange(current, previous) {
+    if (previous === 0) return { value: current > 0 ? "+" + current : 0, pct: current > 0 ? 100 : 0, direction: current > 0 ? "up" : "same" };
+    const change = ((current - previous) / previous) * 100;
+    return {
+      value: (change >= 0 ? "+" : "") + change.toFixed(1) + "%",
+      raw: change,
+      direction: change > 0 ? "up" : change < 0 ? "down" : "same"
+    };
+  }
+  
+  // Build comparison cards
+  const cards = [
+    { label: "Total Registrations", current: currentMetrics.total, previous: prevMetrics.total, format: "number" },
+    { label: "Eligible + EMI", current: currentMetrics.eligible, previous: prevMetrics.eligible, format: "number" },
+    { label: "Batch Allotted", current: currentMetrics.batch, previous: prevMetrics.batch, format: "number" },
+    { label: "Avg ARPU", current: currentMetrics.avgArpu, previous: prevMetrics.avgArpu, format: "currency" },
+    { label: "Active Centers", current: currentMetrics.centers, previous: prevMetrics.centers, format: "number" },
+    { label: "Eligible %", current: currentMetrics.total > 0 ? (currentMetrics.eligible / currentMetrics.total * 100).toFixed(1) : 0, previous: prevMetrics.total > 0 ? (prevMetrics.eligible / prevMetrics.total * 100).toFixed(1) : 0, format: "percent" },
+  ];
+  
+  const grid = document.getElementById("yoyGrid");
+  grid.innerHTML = cards.map(function(card) {
+    const change = calcChange(
+      typeof card.current === "number" ? card.current : parseFloat(card.current),
+      typeof card.previous === "number" ? card.previous : parseFloat(card.previous)
+    );
+    
+    const formatValue = function(val) {
+      if (card.format === "currency") return "₹" + (typeof val === "number" ? val.toLocaleString() : val);
+      if (card.format === "percent") return val + "%";
+      return (typeof val === "number" ? val.toLocaleString() : val);
+    };
+    
+    const arrow = change.direction === "up" ? "▲" : change.direction === "down" ? "▼" : "—";
+    
+    return '<div class="yoy-card">' +
+      '<div class="yoy-card-label">' + card.label + '</div>' +
+      '<div class="yoy-card-values">' +
+        '<span class="yoy-current">' + formatValue(card.current) + '</span>' +
+        '<span class="yoy-previous">vs ' + formatValue(card.previous) + '</span>' +
+      '</div>' +
+      '<span class="yoy-change ' + change.direction + '">' + arrow + ' ' + change.value + '</span>' +
+    '</div>';
+  }).join("");
+  
+  // Render YoY comparison chart
+  renderYoYChart(currentMetrics, prevMetrics, dateRange);
+}
+
+function renderYoYChart(currentMetrics, prevMetrics, dateRange) {
+  const c = gc();
+  
+  // Combine all dates from both years
+  const allDates = new Set([
+    ...Object.keys(currentMetrics.dayMap),
+    ...Object.keys(prevMetrics.dayMap)
+  ]);
+  const sortedDates = Array.from(allDates).sort();
+  
+  const labels = sortedDates.map(function(d) {
+    const dt = new Date(d + "T00:00:00");
+    return dt.getDate() + " " + dt.toLocaleString("en", { month: "short" });
+  });
+  
+  const currentData = sortedDates.map(function(d) { return currentMetrics.dayMap[d] || 0; });
+  const prevData = sortedDates.map(function(d) { return prevMetrics.dayMap[d] || 0; });
+  
+  // Floating bar: [start, end] = [min, max] of both years
+  const barData = sortedDates.map(function(d, i) {
+    const curr = currentData[i] || 0;
+    const prev = prevData[i] || 0;
+    return [Math.min(curr, prev), Math.max(curr, prev)];
+  });
+  
+  // Color: green if growth, red if decline
+  const barColors = sortedDates.map(function(d, i) {
+    const curr = currentData[i] || 0;
+    const prev = prevData[i] || 0;
+    return curr >= prev ? "#22c55e" : "#ef4444";
+  });
+  
+  if (yoyChart) yoyChart.destroy();
+  
+  yoyChart = new Chart(document.getElementById("yoyChart"), {
+    type: "bar",
+    data: {
+      labels: labels,
+      datasets: [{
+        data: barData,
+        backgroundColor: barColors.map(function(col) { return col + "99"; }),
+        borderColor: barColors,
+        borderWidth: 2,
+        borderRadius: 4,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              const i = ctx.dataIndex;
+              const curr = currentData[i] || 0;
+              const prev = prevData[i] || 0;
+              const diff = curr - prev;
+              const diffSign = diff >= 0 ? "+" : "";
+              return [
+                dateRange.currentYear + ": " + curr,
+                dateRange.prevYear + ": " + prev,
+                "Change: " + diffSign + diff
+              ];
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: { color: c.muted, font: { size: 9 }, maxRotation: 45, autoSkip: false },
+          grid: { display: false }
+        },
+        y: {
+          ticks: { color: c.muted, font: { size: 10 } },
+          grid: { color: c.border },
+          beginAtZero: true
+        }
+      },
+      animation: {
+        onComplete: function() {
+          var ch = this;
+          var ctx2 = ch.ctx;
+          var meta = ch.getDatasetMeta(0);
+          ctx2.save();
+          ctx2.font = "bold 8px sans-serif";
+          ctx2.fillStyle = c.text;
+          ctx2.textAlign = "center";
+          ctx2.textBaseline = "bottom";
+          
+          for (var i = 0; i < meta.data.length; i++) {
+            var bar = meta.data[i];
+            var val = ch.data.datasets[0].data[i];
+            if (val && val[1] > 0) ctx2.fillText(val[1], bar.x, bar.y - 2);
+          }
+          ctx2.restore();
+        }
+      }
+    }
+  });
 }
 
 function populateDrop(id,vals){
@@ -1152,15 +1605,34 @@ function updateCharts(rows){
   // DoD
   const dayMap={};
   rows.forEach(function(r){if(!r.joiningDate)return;const k=fmtDate(r.joiningDate);dayMap[k]=(dayMap[k]||0)+1;});
+  
+  // Previous year day map (same date last year)
+  const prevDayMap={};
+  prevYearRows.forEach(function(r){if(!r.joiningDate)return;const k=fmtDate(r.joiningDate);prevDayMap[k]=(prevDayMap[k]||0)+1;});
+  
   const sorted=Object.entries(dayMap).sort(function(a,b){return a[0].localeCompare(b[0]);}).slice(-30);
   const labels=sorted.map(function(e){var dt=new Date(e[0]+"T00:00:00");return dt.getDate()+" "+dt.toLocaleString("en",{month:"short"});});
   const vals=sorted.map(function(e){return e[1];});
+  
+  // Get dates for tooltip lookup
+  const dateKeys=sorted.map(function(e){return e[0];});
+  
   document.getElementById("dodBadge").innerText="Last "+sorted.length+" days";
   if(dodC)dodC.destroy();
-  // Make DoD scrollable with all days but show 10 at a time
   const dodCanvas = document.getElementById("dodChart");
   if(dodC)dodC.destroy();
-  dodC=new Chart(dodCanvas,{type:"bar",data:{labels:labels,datasets:[{data:vals,backgroundColor:c.accent+"99",borderColor:c.accent,borderWidth:1,borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:c.muted,font:{size:10},maxRotation:45,autoSkip:false},grid:{color:c.border,display:false}},y:{ticks:{color:c.muted,font:{size:10}},grid:{color:c.border},beginAtZero:true}},animation:{onComplete:function(){var ch=this;var ctx=ch.ctx;var meta=ch.getDatasetMeta(0);ctx.save();ctx.font="bold 10px sans-serif";ctx.fillStyle=c.text;ctx.textAlign="center";ctx.textBaseline="bottom";for(var i=0;i<meta.data.length;i++){var bar=meta.data[i];var val=ch.data.datasets[0].data[i];if(val>0)ctx.fillText(val,bar.x,bar.y-3);}ctx.restore();}}}});
+  dodC=new Chart(dodCanvas,{type:"bar",data:{labels:labels,datasets:[{data:vals,backgroundColor:c.accent+"99",borderColor:c.accent,borderWidth:1,borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(ctx){
+    const i=ctx.dataIndex;
+    const currDate=dateKeys[i];
+    const currYear=currDate.split("-")[0];
+    const prevYear=parseInt(currYear)-1;
+    const prevDate=currDate.replace(currYear,prevYear);
+    const currVal=vals[i];
+    const prevVal=prevDayMap[prevDate]||0;
+    const diff=currVal-prevVal;
+    const diffSign=diff>=0?"+":"";
+    return ["Current: "+currVal,"Last Year: "+prevVal,"Change: "+diffSign+diff];
+  }}},scales:{x:{ticks:{color:c.muted,font:{size:10},maxRotation:45,autoSkip:false},grid:{color:c.border,display:false}},y:{ticks:{color:c.muted,font:{size:10}},grid:{color:c.border},beginAtZero:true}},animation:{onComplete:function(){var ch=this;var ctx=ch.ctx;var meta=ch.getDatasetMeta(0);ctx.save();ctx.font="bold 10px sans-serif";ctx.fillStyle=c.text;ctx.textAlign="center";ctx.textBaseline="bottom";for(var i=0;i<meta.data.length;i++){var bar=meta.data[i];var val=ch.data.datasets[0].data[i];if(val>0)ctx.fillText(val,bar.x,bar.y-3);}ctx.restore();}}}});
 
   // Fee
   const feeG={"Token Only":0,"Less than Token":0,"1st EMI Paid":0,"Token & EMI":0,"Total Paid":0,"Other":0};
