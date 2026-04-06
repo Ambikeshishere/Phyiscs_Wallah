@@ -752,8 +752,7 @@ let allRows=[], tableData=[], filteredData=[], sortKey="count", sortAsc=false;
 let targetMap = {}; // center name -> target number
 let prevYearRows = []; // Previous year data (AY25)
 let dodC, feeC, centerC, streamC, arpuC, arpuPieC, classC, batchClassC, eligC, yoyChart;
-
-document.getElementById("userBadge").innerText = "👤 " + localStorage.getItem("loggedUser");
+let allCenters = []; // Initialize empty array
 
 function parseCSVRow(row) {
   const res=[]; let cur="", inQ=false;
