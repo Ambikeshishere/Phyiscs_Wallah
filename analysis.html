@@ -1590,13 +1590,30 @@ function updateClassChart(rows, c) {
 
 function updateCharts(rows){
   const c=gc();
+  
+  // Get current filter values
+  const ct=document.getElementById("fCenterType").value;
+  const st=document.getElementById("fStream").value;
+  const cl=document.getElementById("fClass").value;
+  const am=document.getElementById("fAdmMode").value;
+  
+  // Filter previous year data with same filters
+  const filteredPrevRows=prevYearRows.filter(function(r){
+    if(ct==="vidyapeeth"&&r.center.toLowerCase().includes("tuition"))return false;
+    if(ct==="tuition"&&!r.center.toLowerCase().includes("tuition"))return false;
+    if(st!=="all"&&r.stream!==st)return false;
+    if(cl!=="all"&&r.classCourse!==cl)return false;
+    if(am!=="all"&&r.admMode!==am)return false;
+    return true;
+  });
+  
   // DoD
   const dayMap={};
   rows.forEach(function(r){if(!r.joiningDate)return;const k=fmtDate(r.joiningDate);dayMap[k]=(dayMap[k]||0)+1;});
   
-  // Previous year day map (same date last year)
+  // Previous year day map (same date last year) - FILTERED
   const prevDayMap={};
-  prevYearRows.forEach(function(r){if(!r.joiningDate)return;const k=fmtDate(r.joiningDate);prevDayMap[k]=(prevDayMap[k]||0)+1;});
+  filteredPrevRows.forEach(function(r){if(!r.joiningDate)return;const k=fmtDate(r.joiningDate);prevDayMap[k]=(prevDayMap[k]||0)+1;});
   
   const sorted=Object.entries(dayMap).sort(function(a,b){return a[0].localeCompare(b[0]);}).slice(-30);
   const labels=sorted.map(function(e){var dt=new Date(e[0]+"T00:00:00");return dt.getDate()+" "+dt.toLocaleString("en",{month:"short"});});
