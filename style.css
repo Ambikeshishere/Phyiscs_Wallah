@@ -236,6 +236,58 @@
   --radius-sm: 0px;
 }
 
+/* ===== DARK BG TEXT CONTRAST ===== */
+/* Ensure text is visible on dark backgrounds */
+[data-theme="dark"] body,
+[data-theme="eve"] body,
+[data-theme="midnight"] body,
+[data-theme="sunset"] body,
+[data-theme="forest"] body,
+[data-theme="ocean"] body,
+[data-theme="lavender"] body,
+[data-theme="skyblue"] body,
+[data-theme="rose"] body,
+[data-theme="amber"] body,
+[data-theme="sketch"] body {
+  color-scheme: dark;
+}
+
+/* Light backgrounds need dark text */
+[data-theme="light"] body,
+[data-theme="cream"] body,
+[data-theme="paper"] body {
+  color-scheme: light;
+}
+
+/* Ensure all text is readable */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ===== CONTRAST UTILITIES ===== */
+/* High contrast text on any background */
+.text-on-dark {
+  color: #fafafa !important;
+}
+
+.text-on-light {
+  color: #171717 !important;
+}
+
+/* Ensure interactive elements have good contrast */
+.menu-item,
+.nav-link,
+.sidebar-nav a {
+  color: var(--text);
+}
+
+.menu-item:hover,
+.nav-link:hover {
+  color: var(--text);
+  background: var(--surface-hover);
+}
+
 /* ===== DOODLE BACKGROUND PATTERNS ===== */
 
 /* Cream doodle dots pattern */
