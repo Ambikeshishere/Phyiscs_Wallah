@@ -383,16 +383,15 @@ body {
 .menu-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
-  border-radius: 12px;
-  font-size: 13.5px;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 13px;
   font-weight: 500;
   color: var(--text-dim);
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.15s ease;
   letter-spacing: 0.2px;
-  position: relative;
   border: 1px solid transparent;
 }
 
@@ -510,33 +509,11 @@ body {
 }
 
 .sidebar-bottom {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding-top: 12px;
-  border-top: 1px solid var(--border);
+  padding-top: 8px;
 }
 
 .user-badge {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 12px 14px;
-  font-size: 11px;
-  color: var(--text-dim);
-  line-height: 1.4;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.user-badge::before {
-  content: '👤';
-  font-size: 18px;
-  flex-shrink: 0;
+  display: none;
 }
 
 /* Sidebar Toggle Button */
@@ -648,24 +625,22 @@ body {
 .logout-btn {
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 8px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 12px 14px;
-  color: var(--text-dim);
+  background: transparent;
+  border: none;
+  padding: 10px 12px;
+  color: var(--text-muted);
   font-family: var(--font-body);
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.15s ease;
   width: 100%;
+  border-radius: 8px;
 }
 
 .logout-btn:hover {
   background: var(--surface-hover);
-  border-color: var(--border-bright);
   color: var(--text);
 }
 
@@ -1022,39 +997,32 @@ body {
 /* ===== THEME SWITCHER ===== */
 .theme-switcher {
   display: flex;
-  gap: 6px;
-  padding: 6px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  margin-bottom: 8px;
+  gap: 4px;
 }
 
 .theme-btn {
-  flex: 1;
-  padding: 6px 4px;
-  border: 1px solid transparent;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border);
   border-radius: 8px;
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 14px;
   cursor: pointer;
-  transition: var(--transition);
+  transition: all 0.15s ease;
   background: transparent;
-  color: var(--text-muted);
-  font-family: var(--font-body);
-  letter-spacing: 0.3px;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .theme-btn:hover {
   background: var(--surface-hover);
-  color: var(--text);
+  border-color: var(--border-bright);
 }
 
 .theme-btn.active {
-  background: var(--accent);
-  color: white;
-  border-color: var(--accent);
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
 }
 
 /* Eve theme overrides for grid/glows */
