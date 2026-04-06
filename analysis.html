@@ -1704,38 +1704,38 @@ function updateCharts(rows){
           }
           ctx.restore();
         }
+      },
+      interaction:{
+        mode:"index",
+        intersect:false
+      },
+      onHover:function(evt,elements){
+        if(elements.length>0){
+          var i=elements[0].index;
+          var currDate=dateKeys[i];
+          var currVal=vals[i];
+          var currYear=currDate.split("-")[0];
+          var prevYear=parseInt(currYear)-1;
+          var prevDate=currDate.replace(currYear,prevYear);
+          var prevVal=prevDayMap[prevDate]||0;
+          var diff=currVal-prevVal;
+          var diffSign=diff>=0?"+":"";
+          var arrow=diff>=0?"▲":"▼";
+          var diffColor=diff>=0?"#22c55e":"#ef4444";
+          
+          var dtParts=currDate.split("-");
+          var dt=new Date(parseInt(dtParts[0]),parseInt(dtParts[1])-1,parseInt(dtParts[2]));
+          var dateStr=dt.getDate()+" "+dt.toLocaleString("en",{month:"short"})+" "+dt.getFullYear();
+          
+          document.getElementById("dodInfoDate").innerHTML="📅 "+dateStr;
+          document.getElementById("dodInfoCurr").innerText=currVal;
+          document.getElementById("dodInfoPrev").innerText=prevVal;
+          document.getElementById("dodInfoChange").innerText=diffSign+diff+" "+arrow;
+          document.getElementById("dodInfoChange").style.color=diffColor;
+        }
       }
     }
   });
-  
-  // Add hover event to update info box
-  dodCanvas.onmousemove=function(evt){
-    var elements=dodC.getElementsAtEvent(evt);
-    if(elements.length>0){
-      var i=elements[0].index;
-      var currDate=dateKeys[i];
-      var currVal=vals[i];
-      var currYear=currDate.split("-")[0];
-      var prevYear=parseInt(currYear)-1;
-      var prevDate=currDate.replace(currYear,prevYear);
-      var prevVal=prevDayMap[prevDate]||0;
-      var diff=currVal-prevVal;
-      var diffSign=diff>=0?"+":"";
-      var arrow=diff>=0?"▲":"▼";
-      var diffColor=diff>=0?"#22c55e":"#ef4444";
-      
-      // Format date nicely
-      var dtParts=currDate.split("-");
-      var dt=new Date(parseInt(dtParts[0]),parseInt(dtParts[1])-1,parseInt(dtParts[2]));
-      var dateStr=dt.getDate()+" "+dt.toLocaleString("en",{month:"short"})+" "+dt.getFullYear();
-      
-      document.getElementById("dodInfoDate").innerHTML="📅 "+dateStr;
-      document.getElementById("dodInfoCurr").innerText=currVal;
-      document.getElementById("dodInfoPrev").innerText=prevVal;
-      document.getElementById("dodInfoChange").innerText=diffSign+diff+" "+arrow;
-      document.getElementById("dodInfoChange").style.color=diffColor;
-    }
-  };
   
   // Set default: show today's data (or last bar if today not in data)
   var today=fmtDate(new Date());
