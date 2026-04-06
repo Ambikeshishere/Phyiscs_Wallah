@@ -853,13 +853,8 @@ async function loadData(){
     document.getElementById("lastUpdatedText").innerText="Last updated: "+new Date().toLocaleTimeString();
     showToast("✅ "+allRows.length+" registrations loaded");
     
-    // Load previous year data for YoY comparison
-    const prevLoaded = await loadPrevYearData();
-    if (prevLoaded && prevYearRows.length > 0) {
-      renderYoYComparison();
-    } else {
-      document.getElementById("yoyBadge").innerHTML = "⚠️ Previous year data unavailable";
-    }
+    // Load previous year data for DoD comparison
+    await loadPrevYearData();
     
     applyFilters();
   }catch(e){console.error(e);document.getElementById("lastUpdatedText").innerText="❌ Failed";showToast("❌ Error loading data");}
