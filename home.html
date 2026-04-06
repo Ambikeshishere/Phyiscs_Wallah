@@ -183,16 +183,33 @@
     
     .home-theme-btns {
       display: flex;
+      flex-wrap: wrap;
       gap: 6px;
+      max-width: 280px;
+    }
+    
+    .theme-category {
+      width: 100%;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-top: 8px;
+      margin-bottom: 2px;
+      padding-left: 2px;
+    }
+    
+    .theme-category:first-child {
+      margin-top: 0;
     }
     
     .home-theme-btn {
-      padding: 8px 14px;
+      padding: 8px 12px;
       background: var(--bg2);
       border: 1px solid var(--border);
       border-radius: 8px;
       cursor: pointer;
-      font-size: 12px;
+      font-size: 11px;
       color: var(--text-dim);
       transition: all 0.2s;
     }
@@ -203,9 +220,9 @@
     }
     
     .home-theme-btn.active {
-      background: var(--text);
+      background: var(--accent);
       color: var(--bg);
-      border-color: var(--text);
+      border-color: var(--accent);
       font-weight: 600;
     }
     
@@ -386,9 +403,29 @@
             Theme
           </div>
           <div class="home-theme-btns" id="themeBtns">
-            <button class="home-theme-btn" data-theme="dark" onclick="setTheme('dark')">🌙 Dark</button>
-            <button class="home-theme-btn" data-theme="light" onclick="setTheme('light')">☀️ Light</button>
-            <button class="home-theme-btn" data-theme="eve" onclick="setTheme('eve')">🌿 Eve</button>
+            <!-- Classic -->
+            <div class="theme-category">Classic</div>
+            <button class="home-theme-btn" data-theme="dark" onclick="setTheme('dark')">⚫ Dark</button>
+            <button class="home-theme-btn" data-theme="light" onclick="setTheme('light')">⚪ Light</button>
+            <button class="home-theme-btn" data-theme="eve" onclick="setTheme('eve')">🌙 Eve</button>
+            <!-- Graphic -->
+            <div class="theme-category">Graphic</div>
+            <button class="home-theme-btn" data-theme="midnight" onclick="setTheme('midnight')">🌌 Midnight</button>
+            <button class="home-theme-btn" data-theme="sunset" onclick="setTheme('sunset')">🌅 Sunset</button>
+            <button class="home-theme-btn" data-theme="forest" onclick="setTheme('forest')">🌲 Forest</button>
+            <button class="home-theme-btn" data-theme="ocean" onclick="setTheme('ocean')">🌊 Ocean</button>
+            <!-- Doodle -->
+            <div class="theme-category">Doodle</div>
+            <button class="home-theme-btn" data-theme="cream" onclick="setTheme('cream')">📝 Cream</button>
+            <button class="home-theme-btn" data-theme="paper" onclick="setTheme('paper')">📄 Paper</button>
+            <button class="home-theme-btn" data-theme="sketch" onclick="setTheme('sketch')">✏️ Sketch</button>
+            <!-- Soothing Colors -->
+            <div class="theme-category">Soothing</div>
+            <button class="home-theme-btn" data-theme="sage" onclick="setTheme('sage')">🌿 Sage</button>
+            <button class="home-theme-btn" data-theme="lavender" onclick="setTheme('lavender')">💜 Lavender</button>
+            <button class="home-theme-btn" data-theme="skyblue" onclick="setTheme('skyblue')">☁️ Sky</button>
+            <button class="home-theme-btn" data-theme="rose" onclick="setTheme('rose')">🌸 Rose</button>
+            <button class="home-theme-btn" data-theme="amber" onclick="setTheme('amber')">🟡 Amber</button>
           </div>
         </div>
       </div>

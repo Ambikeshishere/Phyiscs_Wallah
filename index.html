@@ -80,6 +80,25 @@
     </div>
 
     <div class="sidebar-bottom">
+      <div class="sidebar-theme-switcher">
+        <select id="themeSelect" onchange="setTheme(this.value)" class="theme-select">
+          <option value="dark">⚫ Dark</option>
+          <option value="light">⚪ Light</option>
+          <option value="eve">🌙 Eve</option>
+          <option value="midnight">🌌 Midnight</option>
+          <option value="sunset">🌅 Sunset</option>
+          <option value="forest">🌲 Forest</option>
+          <option value="ocean">🌊 Ocean</option>
+          <option value="cream">📝 Cream</option>
+          <option value="paper">📄 Paper</option>
+          <option value="sketch">✏️ Sketch</option>
+          <option value="sage">🌿 Sage</option>
+          <option value="lavender">💜 Lavender</option>
+          <option value="skyblue">☁️ Sky</option>
+          <option value="rose">🌸 Rose</option>
+          <option value="amber">🟡 Amber</option>
+        </select>
+      </div>
       <button class="logout-btn" onclick="logout()">
         <span>↩</span> Logout
       </button>
@@ -140,7 +159,7 @@
 
   function toggleSidebar(){var sidebar=document.querySelector(".sidebar");var toggle=document.querySelector(".sidebar-toggle");sidebar.classList.toggle("collapsed");toggle.classList.toggle("visible");localStorage.setItem("sidebarCollapsed",sidebar.classList.contains("collapsed"));}
   function initSidebar(){var collapsed=localStorage.getItem("sidebarCollapsed")==="true";var sidebar=document.querySelector(".sidebar");var toggle=document.querySelector(".sidebar-toggle");if(collapsed){sidebar.classList.add("collapsed");toggle.classList.add("visible");}}
-  function setTheme(theme){document.documentElement.setAttribute("data-theme",theme);localStorage.setItem("pwTheme",theme);document.querySelectorAll(".theme-btn").forEach(function(b){b.classList.toggle("active",b.dataset.theme===theme);});}
+  function setTheme(theme){document.documentElement.setAttribute("data-theme",theme);localStorage.setItem("pwTheme",theme);document.querySelectorAll(".theme-btn").forEach(function(b){b.classList.toggle("active",b.dataset.theme===theme);});var sel=document.getElementById("themeSelect");if(sel)sel.value=theme;}
   function logout(){localStorage.removeItem("loggedUser");window.location.href="login.html";}
 </script>
 
