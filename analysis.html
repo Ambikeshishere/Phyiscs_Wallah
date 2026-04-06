@@ -224,9 +224,10 @@
     .sort-icon { font-size:10px; opacity:0.5; margin-left:4px; }
     table.data-table thead th:hover .sort-icon, table.data-table thead th.sorted .sort-icon { opacity:1; }
 
-    .cb-purple { background:var(--surface-hover); color:var(--accent); border-color:var(--border); }
-    .cb-green  { background:rgba(34,197,94,0.12);  color:var(--success); border-color:rgba(34,197,94,0.25);  }
-    .cb-yellow { background:rgba(251,191,36,0.12); color:var(--warning); border-color:rgba(251,191,36,0.25); }
+    .cb-purple, .cb-green, .cb-yellow { background:transparent; border:none; padding:0; }
+    .cb-purple { color:var(--accent); }
+    .cb-green  { color:var(--success); }
+    .cb-yellow { color:var(--warning); }
     .pct-text { font-size:10px; color:var(--text-muted); margin-left:3px; }
     .last-updated { padding:10px 16px; font-size:11px; color:var(--text-muted); border-top:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
     .refresh-btn { background:transparent; border:1px solid var(--border); border-radius:6px; padding:3px 8px; font-size:11px; color:var(--text-muted); cursor:pointer; font-family:var(--font-body); transition:var(--transition); display:flex; align-items:center; gap:4px; }
@@ -1372,9 +1373,9 @@ function renderTable(data){
       regCell = '<span class="cb cb-orange">'+r.count+'</span><span class="no-target" style="margin-left:5px;">&mdash; no target</span>';
     }
 
-    var arpuCell = r.avgArpu!==null ? '<span class="cb" style="background:var(--surface-hover);color:var(--text);border:1px solid var(--border);">₹'+r.avgArpu.toLocaleString()+'</span>' : '<span style="color:var(--text-muted);font-size:11px;">—</span>';
-    var discCell = r.avgDisc!==null ? '<span class="cb" style="background:var(--surface-hover);color:var(--text);border:1px solid var(--border);">'+r.avgDisc+'%</span>' : '<span style="color:var(--text-muted);font-size:11px;">—</span>';
-    return "<tr><td class=\"rank-cell\">"+(i+1)+"</td><td class=\"center-cell\">"+escH(r.center)+"</td><td>"+regCell+"</td><td><span class=\"cb cb-purple\">"+r.dateCount+"</span></td><td><span class=\"cb cb-green\">"+r.eligibleCount+"</span><span class=\"pct-text\">("+ep+"%)</span></td><td><span class=\"cb cb-yellow\">"+r.batchCount+"</span><span class=\"pct-text\">("+bp+"%)</span></td><td>"+arpuCell+"</td><td>"+discCell+"</td></tr>";
+    var arpuCell = r.avgArpu!==null ? '₹'+r.avgArpu.toLocaleString() : '—';
+    var discCell = r.avgDisc!==null ? r.avgDisc+'%' : '—';
+    return "<tr><td class=\"rank-cell\">"+(i+1)+"</td><td class=\"center-cell\">"+escH(r.center)+"</td><td>"+regCell+"</td><td>"+r.dateCount+"</td><td>"+r.eligibleCount+"<span class=\"pct-text\">("+ep+"%)</span></td><td>"+r.batchCount+"<span class=\"pct-text\">("+bp+"%)</span></td><td>"+arpuCell+"</td><td>"+discCell+"</td></tr>";
   }).join("");
 }
 
