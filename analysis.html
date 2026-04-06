@@ -1639,41 +1639,7 @@ function updateCharts(rows){
       maintainAspectRatio:false,
       plugins:{
         legend:{display:false},
-        tooltip:{
-          backgroundColor:"rgba(0,0,0)",
-          titleColor:"#f8fafc",
-          bodyColor:"#e2e8f0",
-          borderColor:"#475569",
-          borderWidth:1,
-          padding:12,
-          cornerRadius:8,
-          itemSort:function(a,b){return b.raw-a.raw;},
-          callbacks:{
-            title:function(ctx){
-              return dateKeys[ctx[0].dataIndex];
-            },
-            label:function(ctx){
-              var i=ctx.dataIndex;
-              var currDate=dateKeys[i];
-              var currYear=currDate.split("-")[0];
-              var prevYear=parseInt(currYear)-1;
-              var prevDate=currDate.replace(currYear,prevYear);
-              var currVal=vals[i];
-              var prevVal=prevDayMap[prevDate]||0;
-              var diff=currVal-prevVal;
-              var diffSign=diff>=0?"+":"";
-              var arrow=diff>=0?"▲":"▼";
-              var diffColor=diff>=0?"#22c55e":"#ef4444";
-              return [
-                "📅 "+currDate,
-                "━━━━━━━━━━━━━━━━",
-                "Current Year: "+currVal,
-                "Last Year: "+prevVal,
-                "Change: "+diffSign+diff+" "+arrow
-              ];
-            }
-          }
-        }
+        tooltip:{enabled:false}
       },
       scales:{
         x:{
