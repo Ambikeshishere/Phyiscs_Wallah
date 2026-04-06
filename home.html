@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PW Vidyapeeth Maharashtra — Home</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .home-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 24px;
+    }
+    
+    .home-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 48px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .home-logo {
+      width: 64px;
+      height: 64px;
+      background: var(--text);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+    }
+    
+    .home-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: invert(1);
+    }
+    
+    .home-title {
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.5px;
+    }
+    
+    .home-subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    
+    .home-section {
+      margin-bottom: 40px;
+    }
+    
+    .home-section-title {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .home-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 16px;
+    }
+    
+    .home-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px 20px;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      text-decoration: none;
+      display: block;
+    }
+    
+    .home-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--border-bright);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+    
+    .home-card-icon {
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+    
+    .home-card-title {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    
+    .home-card-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+    
+    .settings-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px 24px;
+    }
+    
+    .settings-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .settings-row:last-child {
+      border-bottom: none;
+    }
+    
+    .settings-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .settings-label-icon {
+      font-size: 18px;
+    }
+    
+    .settings-value {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    
+    .theme-options {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .theme-option {
+      padding: 8px 16px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 12px;
+      color: var(--text-dim);
+      transition: all 0.2s;
+    }
+    
+    .theme-option:hover {
+      border-color: var(--border-bright);
+      color: var(--text);
+    }
+    
+    .theme-option.active {
+      background: var(--text);
+      color: var(--bg);
+      border-color: var(--text);
+      font-weight: 600;
+    }
+    
+    .logout-btn-large {
+      width: 100%;
+      padding: 16px 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text-dim);
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .logout-btn-large:hover {
+      background: var(--surface-hover);
+      border-color: var(--border-bright);
+      color: var(--text);
+    }
+    
+    .user-info {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    
+    .user-avatar {
+      width: 48px;
+      height: 48px;
+      background: var(--bg2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+    
+    .user-details {
+      flex: 1;
+    }
+    
+    .user-email {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      word-break: break-all;
+    }
+    
+    .user-role {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+  </style>
+</head>
+<body>
+
+<script>
+  const user = localStorage.getItem("loggedUser");
+  if (!user) window.location.href = "login.html";
+  const t = localStorage.getItem("pwTheme") || "dark";
+  document.documentElement.setAttribute("data-theme", t);
+</script>
+
+<div class="home-container">
+  
+  <!-- Header -->
+  <div class="home-header">
+    <div class="home-logo">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/d/dd/Physics_wallah_logo.svg" alt="PW">
+    </div>
+    <div>
+      <div class="home-title">PW Vidyapeeth Maharashtra</div>
+      <div class="home-subtitle">Welcome to your dashboard</div>
+    </div>
+  </div>
+  
+  <!-- User Info -->
+  <div class="user-info">
+    <div class="user-avatar">👤</div>
+    <div class="user-details">
+      <div class="user-email" id="userEmail">Loading...</div>
+      <div class="user-role">Administrator</div>
+    </div>
+  </div>
+  
+  <!-- Quick Access -->
+  <div class="home-section">
+    <div class="home-section-title">🚀 Quick Access</div>
+    <div class="home-grid">
+      <a href="analysis.html" class="home-card">
+        <div class="home-card-icon">📈</div>
+        <div class="home-card-title">CRP Dashboard</div>
+        <div class="home-card-desc">Registration analytics, trends & day-on-day performance</div>
+      </a>
+      <a href="executive.html" class="home-card">
+        <div class="home-card-icon">👤</div>
+        <div class="home-card-title">Executive Wise Reg</div>
+        <div class="home-card-desc">Marketing executive performance tracking</div>
+      </a>
+      <a href="index.html" class="home-card">
+        <div class="home-card-icon">📋</div>
+        <div class="home-card-title">Sheet Library</div>
+        <div class="home-card-desc">All sheets, pinned items & quick links</div>
+      </a>
+    </div>
+  </div>
+  
+  <!-- Categories -->
+  <div class="home-section">
+    <div class="home-section-title">📁 Categories</div>
+    <div class="home-grid">
+      <a href="analysis.html" class="home-card">
+        <div class="home-card-icon">📊</div>
+        <div class="home-card-title">Analysis</div>
+        <div class="home-card-desc">Deep dive data analysis & insights</div>
+      </a>
+      <a href="analysis.html" class="home-card">
+        <div class="home-card-icon">📝</div>
+        <div class="home-card-title">B2B</div>
+        <div class="home-card-desc">Business to business data</div>
+      </a>
+      <a href="analysis.html" class="home-card">
+        <div class="home-card-icon">🎓</div>
+        <div class="home-card-title">Acad</div>
+        <div class="home-card-desc">Academic performance tracking</div>
+      </a>
+      <a href="analysis.html" class="home-card">
+        <div class="home-card-icon">🚨</div>
+        <div class="home-card-title">BWS</div>
+        <div class="home-card-desc">Batch wise statistics</div>
+      </a>
+      <a href="analysis.html" class="home-card">
+        <div class="home-card-icon">📣</div>
+        <div class="home-card-title">Comms</div>
+        <div class="home-card-desc">Communications & updates</div>
+      </a>
+      <a href="analysis.html" class="home-card">
+        <div class="home-card-icon">📈</div>
+        <div class="home-card-title">MH</div>
+        <div class="home-card-desc">Maharashtra regional data</div>
+      </a>
+    </div>
+  </div>
+  
+  <!-- Quick Links -->
+  <div class="home-section">
+    <div class="home-section-title">🔗 Quick Links</div>
+    <div class="home-grid">
+      <a href="https://erp.pw.live/home" target="_blank" class="home-card">
+        <div class="home-card-icon">🏢</div>
+        <div class="home-card-title">ERP PW</div>
+        <div class="home-card-desc">Open ERP Portal</div>
+      </a>
+      <a href="https://ambikeshishere.github.io/PW-Web/" target="_blank" class="home-card">
+        <div class="home-card-icon">🌐</div>
+        <div class="home-card-title">PW Web Report</div>
+        <div class="home-card-desc">Web analytics & reports</div>
+      </a>
+    </div>
+  </div>
+  
+  <!-- Settings -->
+  <div class="home-section">
+    <div class="home-section-title">⚙️ Settings</div>
+    <div class="settings-card">
+      <div class="settings-row">
+        <div class="settings-label">
+          <span class="settings-label-icon">🎨</span>
+          Theme
+        </div>
+        <div class="theme-options" id="themeOptions">
+          <button class="theme-option" data-theme="dark" onclick="setTheme('dark')">🌙 Dark</button>
+          <button class="theme-option" data-theme="light" onclick="setTheme('light')">☀️ Light</button>
+          <button class="theme-option" data-theme="eve" onclick="setTheme('eve')">🌿 Eve</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Logout -->
+  <div class="home-section">
+    <button class="logout-btn-large" onclick="logout()">
+      <span>↩</span> Logout
+    </button>
+  </div>
+
+</div>
+
+<script>
+  document.getElementById("userEmail").innerText = localStorage.getItem("loggedUser") || "Unknown User";
+  
+  function setTheme(theme) {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("pwTheme", theme);
+    document.querySelectorAll(".theme-option").forEach(function(b) {
+      b.classList.toggle("active", b.dataset.theme === theme);
+    });
+  }
+  
+  function logout() {
+    if (confirm("Are you sure you want to logout?")) {
+      localStorage.removeItem("loggedUser");
+      window.location.href = "login.html";
+    }
+  }
+  
+  // Set active theme on load
+  (function() {
+    const saved = localStorage.getItem("pwTheme") || "dark";
+    document.querySelectorAll(".theme-option").forEach(function(b) {
+      b.classList.toggle("active", b.dataset.theme === saved);
+    });
+  })();
+</script>
+
+</body>
+</html>

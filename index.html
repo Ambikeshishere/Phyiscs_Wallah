@@ -18,7 +18,7 @@
 
   <aside class="sidebar">
     <div class="sidebar-top">
-      <div class="logo">
+      <div class="logo" onclick="window.location.href='home.html'" style="cursor:pointer;">
         <span class="logo-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/d/dd/Physics_wallah_logo.svg" alt="PW Vidyapeeth Logo"></span>
         <div>
           <div class="logo-text">PW Vidyapeeth</div>
@@ -26,7 +26,11 @@
         </div>
       </div>
       <nav class="sidebar-nav">
-        <div class="menu-item active" data-filter="all">
+        <div class="menu-item" onclick="window.location.href='home.html'">
+          <span class="menu-icon">🏠</span>
+          Home
+        </div>
+        <div class="menu-item active" data-filter="all" onclick="window.location.href='index.html'">
           <span class="menu-icon">🗂️</span>
           All Sheets
         </div>
