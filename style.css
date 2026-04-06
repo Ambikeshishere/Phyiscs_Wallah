@@ -27,23 +27,23 @@
 
 /* ===== LIGHT B&W THEME ===== */
 [data-theme="light"] {
-  --bg: #fafafa;
-  --bg2: #f0f0f0;
+  --bg: #ffffff;
+  --bg2: #f5f5f5;
   --surface: rgba(0,0,0,0.03);
   --surface-hover: rgba(0,0,0,0.06);
-  --border: rgba(0,0,0,0.06);
-  --border-bright: rgba(0,0,0,0.12);
-  --accent: #171717;
-  --accent2: #404040;
+  --border: rgba(0,0,0,0.08);
+  --border-bright: rgba(0,0,0,0.15);
+  --accent: #000000;
+  --accent2: #1f1f1f;
   --accent-glow: rgba(0,0,0,0.1);
-  --text: #171717;
-  --text-muted: #737373;
-  --text-dim: #525252;
+  --text: #000000;
+  --text-muted: #4a4a4a;
+  --text-dim: #6b6b6b;
   --success: #16a34a;
   --danger: #dc2626;
   --info: #2563eb;
   --warning: #d97706;
-  --sidebar-bg: rgba(250,250,250,0.98);
+  --sidebar-bg: rgba(255,255,255,0.98);
   --auth-card-bg: rgba(255,255,255,0.98);
 }
 
@@ -163,49 +163,49 @@
 
 /* Doodle 1: Cream - Warm doodle style */
 [data-theme="cream"] {
-  --bg: #fefce8;
-  --bg2: #fef9c3;
-  --surface: rgba(139,90,43,0.06);
-  --surface-hover: rgba(139,90,43,0.12);
-  --border: rgba(139,90,43,0.15);
-  --border-bright: rgba(139,90,43,0.3);
-  --accent: #b45309;
-  --accent2: #92400e;
-  --accent-glow: rgba(180,83,9,0.1);
-  --text: #78350f;
-  --text-muted: #a16207;
-  --text-dim: #ca8a04;
+  --bg: #fffbeb;
+  --bg2: #fef3c7;
+  --surface: rgba(139,90,43,0.08);
+  --surface-hover: rgba(139,90,43,0.15);
+  --border: rgba(139,90,43,0.2);
+  --border-bright: rgba(139,90,43,0.35);
+  --accent: #92400e;
+  --accent2: #b45309;
+  --accent-glow: rgba(180,83,9,0.12);
+  --text: #451a03;
+  --text-muted: #78350f;
+  --text-dim: #a16207;
   --success: #15803d;
   --danger: #b91c1c;
   --info: #1d4ed8;
   --warning: #d97706;
-  --sidebar-bg: rgba(254,252,232,0.98);
-  --auth-card-bg: rgba(255,251,235,0.98);
+  --sidebar-bg: rgba(255,251,235,0.98);
+  --auth-card-bg: rgba(255,250,230,0.98);
   --font-display: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
-  --radius: 4px;
-  --radius-sm: 3px;
+  --radius: 8px;
+  --radius-sm: 6px;
 }
 
 /* Doodle 2: Paper - Notebook style */
 [data-theme="paper"] {
-  --bg: #fdfcf8;
-  --bg2: #f5f0e6;
-  --surface: rgba(0,0,0,0.04);
-  --surface-hover: rgba(0,0,0,0.08);
-  --border: rgba(0,0,0,0.1);
-  --border-bright: rgba(0,0,0,0.2);
-  --accent: #374151;
-  --accent2: #6b7280;
-  --accent-glow: rgba(0,0,0,0.08);
-  --text: #1f2937;
-  --text-muted: #6b7280;
-  --text-dim: #9ca3af;
+  --bg: #ffffff;
+  --bg2: #f8f6f0;
+  --surface: rgba(0,0,0,0.05);
+  --surface-hover: rgba(0,0,0,0.1);
+  --border: rgba(0,0,0,0.12);
+  --border-bright: rgba(0,0,0,0.25);
+  --accent: #1f2937;
+  --accent2: #374151;
+  --accent-glow: rgba(0,0,0,0.1);
+  --text: #111827;
+  --text-muted: #4b5563;
+  --text-dim: #6b7280;
   --success: #059669;
   --danger: #dc2626;
   --info: #2563eb;
   --warning: #d97706;
-  --sidebar-bg: rgba(253,252,248,0.98);
-  --auth-card-bg: rgba(255,255,250,0.98);
+  --sidebar-bg: rgba(255,255,255,0.99);
+  --auth-card-bg: rgba(255,255,255,0.99);
   --font-display: 'Bradley Hand', 'Comic Sans MS', cursive;
   --radius: 0px;
   --radius-sm: 0px;
@@ -213,24 +213,24 @@
 
 /* Doodle 3: Sketch - Pencil drawing style */
 [data-theme="sketch"] {
-  --bg: #fafaf9;
-  --bg2: #f0efed;
+  --bg: #ffffff;
+  --bg2: #f5f5f4;
   --surface: rgba(0,0,0,0.05);
   --surface-hover: rgba(0,0,0,0.1);
   --border: 2px dashed rgba(0,0,0,0.15);
   --border-bright: 2px dashed rgba(0,0,0,0.3);
-  --accent: #374151;
-  --accent2: #6b7280;
-  --accent-glow: rgba(0,0,0,0.05);
-  --text: #1f2937;
-  --text-muted: #6b7280;
-  --text-dim: #9ca3af;
+  --accent: #1f2937;
+  --accent2: #374151;
+  --accent-glow: rgba(0,0,0,0.08);
+  --text: #111827;
+  --text-muted: #4b5563;
+  --text-dim: #6b7280;
   --success: #059669;
   --danger: #dc2626;
   --info: #2563eb;
   --warning: #d97706;
-  --sidebar-bg: rgba(250,250,248,0.98);
-  --auth-card-bg: rgba(255,255,252,0.98);
+  --sidebar-bg: rgba(255,255,255,0.99);
+  --auth-card-bg: rgba(255,255,255,0.99);
   --font-display: 'Segoe Script', cursive;
   --radius: 0px;
   --radius-sm: 0px;
