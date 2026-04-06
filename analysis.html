@@ -604,8 +604,8 @@
           <span class="chart-title">&#128197; Day-on-Day Registrations</span>
           <span class="chart-badge" id="dodBadge">Last 30 days</span>
         </div>
-        <div style="overflow-x:auto;overflow-y:hidden;width:100%;">
-          <div id="dodChartWrap" style="min-width:600px;height:280px;">
+        <div style="overflow-x:auto;overflow-y:hidden;width:100%;scrollbar-width:thin;" id="dodScrollContainer">
+          <div id="dodChartWrap" style="height:280px;">
             <canvas id="dodChart"></canvas>
           </div>
         </div>
@@ -1603,7 +1603,7 @@ function updateCharts(rows){
   const barColors=changes.map(function(ch){return ch>=0?"#22c55e":"#ef4444";});
   const barBgColors=changes.map(function(ch){return ch>=0?"#22c55e99":"#ef444499";});
   
-  document.getElementById("dodBadge").innerText="Last "+sorted.length+" days";
+  document.getElementById("dodBadge").innerText="Last "+sorted.length+" days (scroll for more)";
   if(dodC)dodC.destroy();
   const dodCanvas=document.getElementById("dodChart");
   if(dodC)dodC.destroy();
@@ -1616,7 +1616,7 @@ function updateCharts(rows){
         backgroundColor:barBgColors,
         borderColor:barColors,
         borderWidth:2,
-        borderRadius:6
+        borderRadius:8
       }]
     },
     options:{
@@ -1625,7 +1625,17 @@ function updateCharts(rows){
       plugins:{
         legend:{display:false},
         tooltip:{
+          backgroundColor:"#1e293b",
+          titleColor:"#f8fafc",
+          bodyColor:"#e2e8f0",
+          borderColor:"#475569",
+          borderWidth:1,
+          padding:12,
+          cornerRadius:8,
           callbacks:{
+            title:function(ctx){
+              return dateKeys[ctx[0].dataIndex];
+            },
             label:function(ctx){
               var i=ctx.dataIndex;
               var currDate=dateKeys[i];
@@ -1636,16 +1646,25 @@ function updateCharts(rows){
               var prevVal=prevDayMap[prevDate]||0;
               var diff=currVal-prevVal;
               var diffSign=diff>=0?"+":"";
-              var arrow=diff>=0?" ▲":" ▼";
-              return ["Current: "+currVal,"Last Year: "+prevVal,"Change: "+diffSign+diff+arrow];
+              var arrow=diff>=0?"▲":"▼";
+              var diffColor=diff>=0?"#22c55e":"#ef4444";
+              return [
+                "📅 "+currDate,
+                "━━━━━━━━━━━━━━━━",
+                "Current Year: "+currVal,
+                "Last Year: "+prevVal,
+                "Change: "+diffSign+diff+" "+arrow
+              ];
             }
           }
         }
       },
       scales:{
         x:{
-          ticks:{color:c.muted,font:{size:10},maxRotation:45,autoSkip:false},
-          grid:{color:c.border,display:false}
+          ticks:{color:c.muted,font:{size:9},maxRotation:0,autoSkip:true,maxTicksLimit:15},
+          grid:{color:c.border,display:false},
+          categoryPercentage:0.6,
+          barPercentage:0.7
         },
         y:{
           ticks:{color:c.muted,font:{size:10}},
@@ -1659,7 +1678,7 @@ function updateCharts(rows){
           var ctx=ch.ctx;
           var meta=ch.getDatasetMeta(0);
           ctx.save();
-          ctx.font="bold 10px sans-serif";
+          ctx.font="bold 9px sans-serif";
           ctx.textAlign="center";
           ctx.textBaseline="bottom";
           for(var i=0;i<meta.data.length;i++){
@@ -1682,6 +1701,11 @@ function updateCharts(rows){
       }
     }
   });
+  
+  // Set chart width based on number of days (scrollable)
+  var chartWidth=Math.max(600,labels.length*45);
+  document.getElementById("dodChartWrap").style.width=chartWidth+"px";
+  document.getElementById("dodScrollContainer").scrollLeft=document.getElementById("dodScrollContainer").scrollWidth;
 
   // Fee
   const feeG={"Token Only":0,"Less than Token":0,"1st EMI Paid":0,"Token & EMI":0,"Total Paid":0,"Other":0};
