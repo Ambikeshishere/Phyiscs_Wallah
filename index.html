@@ -26,11 +26,15 @@
         </div>
       </div>
       <nav class="sidebar-nav">
-        <div class="menu-item active" data-filter="all" onclick="window.location.href='index.html'">
+        <div class="menu-item" onclick="window.location.href='home.html'">
+          <span class="menu-icon">🏠</span>
+          Home
+        </div>
+        <div class="menu-item active" onclick="window.location.href='index.html'">
           <span class="menu-icon">🗂️</span>
           All Sheets
         </div>
-        <div class="menu-item" data-filter="pinned">
+        <div class="menu-item" onclick="window.location.href='index.html#pinned'">
           <span class="menu-icon">📌</span>
           Pinned
         </div>
@@ -44,43 +48,25 @@
           <span class="menu-icon">👤</span>
           Executive Wise Reg
         </div>
-        <div class="menu-item" data-filter="analysis">
+        <div class="menu-item" onclick="window.location.href='index.html?filter=analysis'">
           <span class="menu-icon">📊</span>
           Analysis
         </div>
-        
-        <div class="menu-item" data-filter="b2b">
+        <div class="menu-item" onclick="window.location.href='index.html?filter=b2b'">
           <span class="menu-icon">📝</span>
           B2B
         </div>
-        <div class="menu-item" data-filter="acad">
+        <div class="menu-item" onclick="window.location.href='index.html?filter=acad'">
           <span class="menu-icon">🎓</span>
           Acad
         </div>
-        <div class="menu-item" data-filter="bws">
+        <div class="menu-item" onclick="window.location.href='index.html?filter=bws'">
           <span class="menu-icon">🚨</span>
           BWS
         </div>
-
-        <div class="menu-item has-sub" data-filter="comms" onclick="toggleSub('comms-sub')">
+        <div class="menu-item" onclick="window.location.href='index.html?filter=comms'">
           <span class="menu-icon">📣</span>
-          <span>Comms</span>
-          <span class="chevron" id="chevron-comms-sub">▸</span>
-        </div>
-        <div class="sub-menu" id="comms-sub">
-          <div class="sub-item" data-filter="gen">Gen</div>
-          <div class="sub-item" data-filter="ptm">PTM</div>
-          <div class="sub-item" data-filter="orientation">Orientation</div>
-          <div class="sub-item" data-filter="batch start">Batch Start</div>
-        </div>
-
-        <div class="menu-item has-sub" data-filter="mh" onclick="toggleSub('mh-sub')">
-          <span class="menu-icon">📈</span>
-          <span>MH</span>
-          <span class="chevron" id="chevron-mh-sub">▸</span>
-        </div>
-        <div class="sub-menu" id="mh-sub">
-          <div class="sub-item" data-filter="maharashtra">Maharashtra</div>
+          Comms
         </div>
 
         <div class="nav-divider"></div>
@@ -89,13 +75,11 @@
           ERP PW
           <span class="ext-icon">↗</span>
         </div>
-
         <div class="menu-item" onclick="window.open('https://ambikeshishere.github.io/PW-Web/', '_blank')">
           <span class="menu-icon">📋</span>
           PW Web Report
           <span class="ext-icon">↗</span>
         </div>
-
       </nav>
     </div>
 
@@ -108,57 +92,7 @@
   
   <main class="content">
 
-    <!-- Dashboard Cards -->
-    <section class="section">
-      <div class="section-header">
-        <h3>🚀 Dashboard</h3>
-        <span class="section-sub">Quick access to all modules</span>
-      </div>
-      <div class="dashboard-grid">
-        <div class="dash-card" onclick="window.location.href='analysis.html'">
-          <div class="dash-card-icon">📈</div>
-          <div class="dash-card-title">CRP Dashboard</div>
-          <div class="dash-card-desc">Registration analytics & trends</div>
-        </div>
-        <div class="dash-card" onclick="window.location.href='executive.html'">
-          <div class="dash-card-icon">👤</div>
-          <div class="dash-card-title">Executive Wise Reg</div>
-          <div class="dash-card-desc">Performance by marketing executive</div>
-        </div>
-        <div class="dash-card" onclick="window.location.href='analysis.html'">
-          <div class="dash-card-icon">📊</div>
-          <div class="dash-card-title">Analysis</div>
-          <div class="dash-card-desc">Deep dive data analysis</div>
-        </div>
-        <div class="dash-card" onclick="window.location.href='analysis.html'">
-          <div class="dash-card-icon">📝</div>
-          <div class="dash-card-title">B2B</div>
-          <div class="dash-card-desc">Business to Business data</div>
-        </div>
-        <div class="dash-card" onclick="window.location.href='analysis.html'">
-          <div class="dash-card-icon">🎓</div>
-          <div class="dash-card-title">Acad</div>
-          <div class="dash-card-desc">Academic performance tracking</div>
-        </div>
-        <div class="dash-card" onclick="window.location.href='analysis.html'">
-          <div class="dash-card-icon">🚨</div>
-          <div class="dash-card-title">BWS</div>
-          <div class="dash-card-desc">Batch wise statistics</div>
-        </div>
-        <div class="dash-card" onclick="window.location.href='analysis.html'">
-          <div class="dash-card-icon">📣</div>
-          <div class="dash-card-title">Comms</div>
-          <div class="dash-card-desc">Communications & updates</div>
-        </div>
-        <div class="dash-card" onclick="window.location.href='analysis.html'">
-          <div class="dash-card-icon">🏢</div>
-          <div class="dash-card-title">ERP PW</div>
-          <div class="dash-card-desc">Open ERP Portal</div>
-        </div>
-      </div>
-    </section>
-
-    <div class="topbar">
+<div class="topbar">
       <div class="topbar-left">
         <h2 class="page-title">Sheet Library</h2>
         <span class="sheet-count" id="sheetCount">— sheets</span>

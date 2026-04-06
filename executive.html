@@ -103,8 +103,6 @@
 </script>
 
 <div class="app">
-
-  <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="sidebar-top">
       <div class="logo" onclick="window.location.href='home.html'" style="cursor:pointer;">
@@ -115,51 +113,67 @@
         </div>
       </div>
       <nav class="sidebar-nav">
+        <div class="menu-item" onclick="window.location.href='home.html'">
+          <span class="menu-icon">🏠</span>
+          Home
+        </div>
+        <div class="menu-item" onclick="window.location.href='index.html'">
+          <span class="menu-icon">🗂️</span>
+          All Sheets
+        </div>
+        <div class="menu-item" onclick="window.location.href='index.html#pinned'">
+          <span class="menu-icon">📌</span>
+          Pinned
+        </div>
+
+        <div class="nav-divider"></div>
+        <div class="menu-item" onclick="window.location.href='analysis.html'">
+          <span class="menu-icon">📈</span>
+          CRP Dashboard
+        </div>
         <div class="menu-item active" onclick="window.location.href='executive.html'">
-          <span class="menu-icon">👤</span> Executive Wise Reg
+          <span class="menu-icon">👤</span>
+          Executive Wise Reg
         </div>
         <div class="menu-item" onclick="window.location.href='index.html?filter=analysis'">
-          <span class="menu-icon">📊</span> Analysis
+          <span class="menu-icon">📊</span>
+          Analysis
         </div>
         <div class="menu-item" onclick="window.location.href='index.html?filter=b2b'">
-          <span class="menu-icon">📝</span> B2B
+          <span class="menu-icon">📝</span>
+          B2B
         </div>
         <div class="menu-item" onclick="window.location.href='index.html?filter=acad'">
-          <span class="menu-icon">🎓</span> Acad
+          <span class="menu-icon">🎓</span>
+          Acad
         </div>
         <div class="menu-item" onclick="window.location.href='index.html?filter=bws'">
-          <span class="menu-icon">🚨</span> BWS
+          <span class="menu-icon">🚨</span>
+          BWS
         </div>
-        <div class="menu-item has-sub" onclick="toggleSub('comms-sub')">
+        <div class="menu-item" onclick="window.location.href='index.html?filter=comms'">
           <span class="menu-icon">📣</span>
-          <span>Comms</span>
-          <span class="chevron" id="chevron-comms-sub">▸</span>
+          Comms
         </div>
-        <div class="sub-menu" id="comms-sub">
-          <div class="sub-item" onclick="window.location.href='index.html?filter=gen'">Gen</div>
-          <div class="sub-item" onclick="window.location.href='index.html?filter=ptm'">PTM</div>
-          <div class="sub-item" onclick="window.location.href='index.html?filter=orientation'">Orientation</div>
-          <div class="sub-item" onclick="window.location.href='index.html?filter=batch+start'">Batch Start</div>
-        </div>
-        <div class="menu-item has-sub" onclick="toggleSub('mh-sub')">
-          <span class="menu-icon">📈</span>
-          <span>MH</span>
-          <span class="chevron" id="chevron-mh-sub">▸</span>
-        </div>
-        <div class="sub-menu" id="mh-sub">
-          <div class="sub-item" onclick="window.location.href='index.html?filter=maharashtra'">Maharashtra</div>
-        </div>
+
         <div class="nav-divider"></div>
-        <div class="menu-item" onclick="window.open('https://erp.pw.live/home','_blank')">
-          <span class="menu-icon">🏢</span> ERP PW <span class="ext-icon">↗</span>
+        <div class="menu-item" onclick="window.open('https://erp.pw.live/home', '_blank')">
+          <span class="menu-icon">🏢</span>
+          ERP PW
+          <span class="ext-icon">↗</span>
         </div>
-        <div class="menu-item" onclick="window.open('https://ambikeshishere.github.io/PW-Web/','_blank')">
-          <span class="menu-icon">📋</span> PW Web Report <span class="ext-icon">↗</span>
+        <div class="menu-item" onclick="window.open('https://ambikeshishere.github.io/PW-Web/', '_blank')">
+          <span class="menu-icon">📋</span>
+          PW Web Report
+          <span class="ext-icon">↗</span>
         </div>
       </nav>
     </div>
+
     <div class="sidebar-bottom">
-      <button class="logout-btn" onclick="logout()"><span>↩</span> Logout</button>
+      <button class="logout-btn" onclick="logout()">
+        <span>↩</span> Logout
+      </button>
     </div>
   </aside>
   

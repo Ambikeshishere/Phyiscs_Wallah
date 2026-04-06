@@ -413,11 +413,15 @@
         </div>
       </div>
       <nav class="sidebar-nav">
-        <div class="menu-item" data-filter="all" onclick="window.location.href='index.html'">
+        <div class="menu-item" onclick="window.location.href='home.html'">
+          <span class="menu-icon">🏠</span>
+          Home
+        </div>
+        <div class="menu-item" onclick="window.location.href='index.html'">
           <span class="menu-icon">🗂️</span>
           All Sheets
         </div>
-        <div class="menu-item" data-filter="pinned" onclick="window.location.href='index.html#pinned'">
+        <div class="menu-item" onclick="window.location.href='index.html#pinned'">
           <span class="menu-icon">📌</span>
           Pinned
         </div>
@@ -431,42 +435,25 @@
           <span class="menu-icon">👤</span>
           Executive Wise Reg
         </div>
-        <div class="menu-item" data-filter="analysis" onclick="window.location.href='index.html?filter=analysis'">
+        <div class="menu-item" onclick="window.location.href='index.html?filter=analysis'">
           <span class="menu-icon">📊</span>
           Analysis
         </div>
-        <div class="menu-item" data-filter="b2b" onclick="window.location.href='index.html?filter=b2b'">
+        <div class="menu-item" onclick="window.location.href='index.html?filter=b2b'">
           <span class="menu-icon">📝</span>
           B2B
         </div>
-        <div class="menu-item" data-filter="acad" onclick="window.location.href='index.html?filter=acad'">
+        <div class="menu-item" onclick="window.location.href='index.html?filter=acad'">
           <span class="menu-icon">🎓</span>
           Acad
         </div>
-        <div class="menu-item" data-filter="bws" onclick="window.location.href='index.html?filter=bws'">
+        <div class="menu-item" onclick="window.location.href='index.html?filter=bws'">
           <span class="menu-icon">🚨</span>
           BWS
         </div>
-
-        <div class="menu-item has-sub" data-filter="comms" onclick="toggleSub('comms-sub')">
+        <div class="menu-item" onclick="window.location.href='index.html?filter=comms'">
           <span class="menu-icon">📣</span>
-          <span>Comms</span>
-          <span class="chevron" id="chevron-comms-sub">▸</span>
-        </div>
-        <div class="sub-menu" id="comms-sub">
-          <div class="sub-item" onclick="window.location.href='index.html?filter=gen'">Gen</div>
-          <div class="sub-item" onclick="window.location.href='index.html?filter=ptm'">PTM</div>
-          <div class="sub-item" onclick="window.location.href='index.html?filter=orientation'">Orientation</div>
-          <div class="sub-item" onclick="window.location.href='index.html?filter=batch+start'">Batch Start</div>
-        </div>
-
-        <div class="menu-item has-sub" data-filter="mh" onclick="toggleSub('mh-sub')">
-          <span class="menu-icon">📈</span>
-          <span>MH</span>
-          <span class="chevron" id="chevron-mh-sub">▸</span>
-        </div>
-        <div class="sub-menu" id="mh-sub">
-          <div class="sub-item" onclick="window.location.href='index.html?filter=maharashtra'">Maharashtra</div>
+          Comms
         </div>
 
         <div class="nav-divider"></div>
@@ -475,13 +462,11 @@
           ERP PW
           <span class="ext-icon">↗</span>
         </div>
-
         <div class="menu-item" onclick="window.open('https://ambikeshishere.github.io/PW-Web/', '_blank')">
           <span class="menu-icon">📋</span>
           PW Web Report
           <span class="ext-icon">↗</span>
         </div>
-
       </nav>
     </div>
 
@@ -491,7 +476,7 @@
       </button>
     </div>
   </aside>
-  
+
   <main class="dash-wrap">
     <!-- Topbar -->
     <div class="dash-topbar">
