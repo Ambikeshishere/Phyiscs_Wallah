@@ -1735,7 +1735,7 @@ body {
   filter: brightness(0) invert(1);
 }
 
-/* Light themes - logo dark background */
+/* Light themes - white background, black logo */
 [data-theme="light"] .logo-icon img,
 [data-theme="cream"] .logo-icon img,
 [data-theme="paper"] .logo-icon img,
@@ -1745,16 +1745,6 @@ body {
 
 [data-theme="eve"] .logo-icon img {
   filter: brightness(0) saturate(100%) sepia(60%);
-}
-
-/* Add dark bg to sidebar logo for light themes */
-[data-theme="light"] .logo-icon,
-[data-theme="cream"] .logo-icon,
-[data-theme="paper"] .logo-icon,
-[data-theme="sketch"] .logo-icon {
-  background: #1a1a1a;
-  border-radius: 6px;
-  padding: 2px;
 }
 
 /* =========================================
